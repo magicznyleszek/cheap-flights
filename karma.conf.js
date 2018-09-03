@@ -1,12 +1,20 @@
 module.exports = function (config) {
-
-  var configuration = {
+  const configuration = {
     // base path used to resolve all patterns
     basePath: '',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai'],
+
+    plugins: [
+      'karma-chai',
+      'karma-chrome-launcher',
+      'karma-mocha',
+      'karma-mocha-reporter',
+      'karma-sourcemap-loader',
+      'karma-webpack'
+    ],
 
     // list of files/patterns to load in the browser
     files: [{ pattern: 'spec.bundle.js', watched: false }],
@@ -65,7 +73,7 @@ module.exports = function (config) {
     singleRun: true
   };
 
-  if(process.env.TRAVIS){
+  if (process.env.TRAVIS) {
     configuration.browsers = ['Chrome_travis_ci'];
     // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
     // configuration.coverageReporter = {
@@ -75,5 +83,4 @@ module.exports = function (config) {
   }
 
   config.set(configuration);
-
 };
