@@ -63,10 +63,10 @@ module.exports = function (config) {
     browsers: ['Chrome'],
 
     customLaunchers: {
-        Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
-        }
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
     },
 
     // if true, Karma runs tests once and exits

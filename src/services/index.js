@@ -1,2 +1,2 @@
-export * from './airports.service';
-export * from './cheapflights.service';
+export { AiportsService } from './airports.service';
+export { CheapFlightService } from './cheapflights.service';

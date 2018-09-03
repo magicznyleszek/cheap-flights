@@ -1,7 +1,7 @@
 import template from './date-wrapper.component.html';
 import controller from './date-wrapper.controller';
 
-export const DateWrapperComponent = {
+const DateWrapperComponent = {
   bindings: {
     startDate: '=',
     endDate: '='
@@ -9,3 +9,5 @@ export const DateWrapperComponent = {
   template,
   controller
 };
+
+export default DateWrapperComponent;

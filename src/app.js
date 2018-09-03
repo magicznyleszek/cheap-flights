@@ -1,7 +1,7 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
 import Components from './components/components';
-import { HomeComponent } from './home/home.component';
+import HomeComponent from './home/home.component';
 import {
   CheapFlightService,
   AirportsService
@@ -16,6 +16,7 @@ angular.module('myApp', [
 .service('CheapFlightService', CheapFlightService)
 .config(($stateProvider) => {
   'ngInject';
+
   $stateProvider
     .state('home', {
       url: '',
