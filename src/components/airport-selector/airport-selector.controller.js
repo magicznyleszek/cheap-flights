@@ -1,4 +1,6 @@
-export default function AirportSelectorController() {
+export default function AirportSelectorController($element, $timeout) {
+  'ngInject';
+
   this.isActive = false;
   this.filterValue = '';
   this.selected = null;
@@ -9,6 +11,8 @@ export default function AirportSelectorController() {
 
   this.startSelection = () => {
     this.isActive = true;
+    $timeout(() => { $element[0].querySelector('[js-airport-selector-filter]').focus(); });
+    console.log(this, $element[0].querySelector('[js-airport-selector-filter]'));
   };
 
   this.endSelection = () => {

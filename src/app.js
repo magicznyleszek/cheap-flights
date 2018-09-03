@@ -7,8 +7,10 @@ import {
   CheapFlightService,
   AirportsService
 } from './services';
+import './config/reset.scss';
+import './config/root.scss';
 
-angular.module('myApp', [
+angular.module('cheapFlightsApp', [
   uiRouter,
   Components
 ])

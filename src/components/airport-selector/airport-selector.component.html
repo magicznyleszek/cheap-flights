@@ -4,16 +4,17 @@
 >
   <input
     class="airport-selector__filter"
+    js-airport-selector-filter
     type="text"
     ng-model="$ctrl.filterValue"
   ></input>
 
-  <div
+  <label
     class="airport-selector__value"
     ng-click="$ctrl.startSelection()"
   >
     {{$ctrl.selected.label || 'Select…'}}
-  </div>
+  </label>
 
   <ol class="airport-selector__options">
     <li

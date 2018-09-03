@@ -1,15 +1,23 @@
+@import "../../config/variables";
+
 .airport-selector {
-  display: block;
+  background-color: $c-white;
+  border-radius: $s-global-br;
+  display: inline-block;
+  position: relative;
+  width: 200px;
 }
 
 .airport-selector__filter {
+  width: 100%;
   .airport-selector:not(.airport-selector--active) & {
     display: none;
   }
 }
 
 .airport-selector__value {
-  color: pink;
+  display: block;
+  width: 100%;
 
   .airport-selector--active & {
     display: none;
@@ -18,6 +26,9 @@
 
 .airport-selector__options {
   list-style: none;
+  position: absolute;
+  top: 100%;
+  width: 100%;
 
   &:empty {
     content: "Nothing";
