@@ -6,7 +6,7 @@ const commonConfig = require('./webpack.common.js');
 const WebpackMd5Hash = require('webpack-md5-hash');
 const DedupePlugin = require('webpack/lib/optimize/DedupePlugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 
 module.exports = webpackMerge(commonConfig, {
@@ -83,7 +83,7 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   sassConfig: {
-    includePaths: [path.resolve(__dirname, '..', 'src/scss')],
+    includePaths: [path.resolve(__dirname, '..', 'src/scss')]
   },
 
   /**
@@ -99,7 +99,7 @@ module.exports = webpackMerge(commonConfig, {
      *
      * See: https://www.npmjs.com/package/webpack-md5-hash
      */
-    // new WebpackMd5Hash(),
+    new WebpackMd5Hash(),
 
     /**
      * Plugin: DedupePlugin
@@ -136,12 +136,12 @@ module.exports = webpackMerge(commonConfig, {
 
 
       beautify: false, //prod
-      mangle: { screw_ie8 : true }, //prod
+      mangle: { screw_ie8: true }, //prod
       compress: { screw_ie8: true }, //prod
       comments: false //prod
     }),
 
-    new ExtractTextPlugin("styles.min.css")
+    new ExtractTextPlugin('styles.min.css')
   ]
 
 });
