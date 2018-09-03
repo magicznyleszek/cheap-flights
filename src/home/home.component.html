@@ -1,36 +1,45 @@
-# Ryanair FE Test 
+<div>
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-item is-brand" href="#">
+      CheapFlight
+    </a>
+  </div>
 
-## Development
+  <div class="nav-center">
+  </div>
 
-Create a JS bundle with Webpack::
+  <span class="nav-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
 
-  $ npm run build
-
-Start the Webpack development server on 'localhost:3000'::
-
-  $ npm run start
-
-Run tests::
-
-  $ npm run test
-
-Linting::
-
-  $ npm run lint
-
-
-## Tasks
+  <div class="nav-right nav-menu"></div>
+</nav>
+  <section>
+    <!-- TODO: Add your code here -->
+    <pre class="box">
+<strong>
+  Tasks
+</strong>
 
 Build a small web app that will find the cheapest flights around Europe.
 The webapp needs to have at least the following components:
 
-### Styling
+<strong>
+  Styling
+</strong>
 
 Apply a styleguide following the Ryanair branding ( colors )
 
-### Components
+<strong>
+  Components
+</strong>
 
-#### AirportSelector
+<strong>
+  AirportSelector
+</strong>
 
 An airport selector which will display the list of airports and allow the user
 to select an aiport.
@@ -40,24 +49,26 @@ be reusable for both scenarios.
 
 The component needs to be a custom select with autocomplete support.
 
-#### Flight List
+<strong>
+  Flight List
+</strong>
 
 A component that will show all the information relative to the flights between the
 origin and destination selected.
 
-Requirements:
-
-* OneWay Dataflow
 
 Extra points will be given for:
 
 * Styling
+* OneWay Dataflow
 * Mobile first design
 * No third party libraries
 
-### Services
+<strong>
+  Services
+</strong>
 
-In order to get the list of Iata codes ( airport codes )  with the relative destinations
+In order to get the list of IATA codes ( airport codes )  with the relative destinations
 the webapp will get those information from the following API:
 
 ```
@@ -73,7 +84,9 @@ https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/201
 where DUBis the originating IATA code, STNis the destination IATA code,
 the first date range is the start of the period, and the second is the end.
 
-### Routing
+<strong>
+  Routing
+</strong>
 
 The flight list page needs to be a child route of the home page, the search widget
 needs to be accessibile even after a search
@@ -81,18 +94,23 @@ needs to be accessibile even after a search
 The flight list page needs to be deep linked, so i can share the URL and access
 directly the flights that i'm looking for.
 
-### Refactor
+<strong>
+  Refactor
+</strong>
 
 The `DateWrapper` and `DateSelector` component is not using a one-way dataflow approach
 refactor the component using that dataflow avoiding two way binding
 between the two
 
-### Unit Testing ( not mandatory )
+<strong>
+  Unit Testing ( not mandatory )
+</strong>
 
 Extra points will be given for unit testing all the functionality written.
-
-## Workflow
-
-* Fork the project on gitlab
-* Do your magic
-* Send the test source to the HR contact
+    </pre>
+    <date-wrapper
+      start-date="$ctrl.startDate"
+      end-date="$ctrl.endDate">
+    </date-wrapper>
+  </section>
+</div>
