@@ -1,0 +1,34 @@
+<div
+  class="airport-selector"
+  ng-class="{'airport-selector--active': $ctrl.isActive}"
+>
+  <input
+    class="airport-selector__filter"
+    type="text"
+    ng-model="$ctrl.filterValue"
+  ></input>
+
+  <div
+    class="airport-selector__value"
+    ng-click="$ctrl.startSelection()"
+  >
+    {{$ctrl.selected.label || 'Select…'}}
+  </div>
+
+  <ol class="airport-selector__options">
+    <li
+      class="airport-selector__option"
+      ng-repeat="airport in $ctrl.filteredAirports() as filteredAirports"
+      ng-click="$ctrl.selectAirport(airport.id)"
+    >
+      {{airport.label}}
+    </li>
+
+    <li
+      class="airport-selector__option"
+      ng-if="filteredAirports.length === 0"
+    >
+      No airport
+    </li>
+  </ol>
+</div>

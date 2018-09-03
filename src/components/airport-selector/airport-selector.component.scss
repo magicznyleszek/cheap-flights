@@ -1,0 +1,33 @@
+.airport-selector {
+  display: block;
+}
+
+.airport-selector__filter {
+  .airport-selector:not(.airport-selector--active) & {
+    display: none;
+  }
+}
+
+.airport-selector__value {
+  color: pink;
+
+  .airport-selector--active & {
+    display: none;
+  }
+}
+
+.airport-selector__options {
+  list-style: none;
+
+  &:empty {
+    content: "Nothing";
+  }
+
+  .airport-selector:not(.airport-selector--active) & {
+    display: none;
+  }
+}
+
+.airport-selector__option {
+
+}
