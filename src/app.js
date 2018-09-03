@@ -2,6 +2,7 @@ import angular from 'angular';
 import uiRouter from 'angular-ui-router';
 import Components from './components/components';
 import HomeComponent from './home/home.component';
+import ResultsComponent from './results/results.component';
 import {
   CheapFlightService,
   AirportsService
@@ -12,14 +13,20 @@ angular.module('myApp', [
   Components
 ])
 .component('homePage', HomeComponent)
+.component('resultsPage', ResultsComponent)
 .service('AiportsService', AirportsService)
 .service('CheapFlightService', CheapFlightService)
-.config(($stateProvider) => {
+.config(($stateProvider, $urlRouterProvider) => {
   'ngInject';
 
+  $urlRouterProvider.otherwise('/');
   $stateProvider
     .state('home', {
-      url: '',
+      url: '/',
       template: '<home-page></home-page>'
+    })
+    .state('results', {
+      url: '/results',
+      template: '<results-page></results-page>'
     });
 });
