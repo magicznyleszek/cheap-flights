@@ -1,0 +1,82 @@
+/*******************************************************************************
+root stuff and normalizations
+
+NOTE: Root line height is being used in many places throughout the project.
+It is recommended to keep all vertical margins and heights of elements to match
+the leading. Use caution when adding borders or when using vertical-align middle
+as they tend to add unwanted pixels, thus braking the flow.
+*******************************************************************************/
+
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin-ext");
+@import "./variables";
+
+html {
+  background-color: $c-root-bg;
+  color: $c-root-txt;
+  font-family: $font-sansSerif;
+
+  /*
+  clever page scaling with root font size changes:
+  https://www.smashingmagazine.com/2016/05/fluid-typography/
+  calc(AZ + (B - A) * (100vw - CZ) / (D - C))
+  - A: min font size
+  - B: max font size
+  - C: min screen size
+  - D: max screen size
+  - Z: unit (px, rem, etc.)
+  */
+  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (120 - 30));
+  font-weight: normal;
+  line-height: $root-lineHeight;
+  min-height: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+/*******************************************************************************
+user-action influenced states
+*******************************************************************************/
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: inherit;
+}
+
+a:hover {
+  color: $c-ryanair-blue;
+}
+
+a:active {
+  color: $c-bright-blue;
+}
+
+::-moz-focus-inner {
+  border: 0;
+}
+
+:focus {
+  background-color: $c-root-focus;
+  outline: $c-root-focus solid 0.125rem;
+}
+
+:focus svg {
+  background-color: $c-root-focus;
+}
+
+::selection {
+  background-color: $c-ryanair-blue;
+  color: $c-ryanair-yellow;
+}
+
+[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+
+  /* avoid adding up opacity on nested disabled elements */
+  [disabled] {
+    opacity: 1;
+  }
+}
