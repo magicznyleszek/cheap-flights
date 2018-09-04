@@ -24,4 +24,10 @@ export default function AirportSelectorController($element, $timeout) {
 
   this.filteredAirports = () => this.airports.filter(airport =>
     airport.label.toLowerCase().startsWith(this.filterValue.toLowerCase()));
+
+  this.onKeyup = ($event) => {
+    if ($event.key === 'Escape') {
+      this.endSelection();
+    }
+  };
 }

@@ -1,6 +1,7 @@
 <div
   class="airport-selector"
   ng-class="{'airport-selector--active': $ctrl.isActive}"
+  ng-keyup="$ctrl.onKeyup($event)"
 >
   <input
     class="airport-selector__filter"
