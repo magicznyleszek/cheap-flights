@@ -1,0 +1,12 @@
+<div>
+  <airport-selector
+    airports="$ctrl.sourceAirports"
+    on-selected-change="$ctrl.onSourceChange(airport)"
+  ></airport-selector>
+
+  <airport-selector
+    airports="$ctrl.destinationAirports"
+    on-selected-change="$ctrl.onDestinationChange(airport)"
+  >
+  </airport-selector>
+</div>
