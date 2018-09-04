@@ -1,4 +1,4 @@
-# Ryanair FE Test 
+# Ryanair FE Test
 
 ## Development
 
@@ -47,7 +47,7 @@ origin and destination selected.
 
 Requirements:
 
-* OneWay Dataflow
+* [OneWay Dataflow](https://buildingvts.com/one-way-data-flow-in-angularjs-1-6-453f97339ae3)
 
 Extra points will be given for:
 
@@ -70,13 +70,13 @@ Instead to get the list of cheap flights:
 https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/2014-12-02/2015-02-02/250/unique/?limit=15&offset-0
 ```
 
-where DUBis the originating IATA code, STNis the destination IATA code,
+where DUB is the originating IATA code, STN is the destination IATA code,
 the first date range is the start of the period, and the second is the end.
 
 ### Routing
 
 The flight list page needs to be a child route of the home page, the search widget
-needs to be accessibile even after a search
+needs to be accessible even after a search
 
 The flight list page needs to be deep linked, so i can share the URL and access
 directly the flights that i'm looking for.

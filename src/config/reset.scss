@@ -2,9 +2,7 @@
 a simple reset
 *******************************************************************************/
 
-*,
-*::after,
-*::before {
+* {
   background-color: transparent;
   border: 0;
   box-sizing: inherit;
