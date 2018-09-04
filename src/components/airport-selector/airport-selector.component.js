@@ -3,6 +3,10 @@ import controller from './airport-selector.controller';
 import './airport-selector.component.scss';
 
 const AirportSelectorComponent = {
+  bindings: {
+    airports: '<',
+    onSelectedChange: '&'
+  },
   template,
   controller
 };
