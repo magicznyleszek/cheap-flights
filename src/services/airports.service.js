@@ -32,12 +32,13 @@ export default function AirportsService($q, $http) {
   };
 
   this.onGetAPIDataFailed = (deferred, response) => {
+    throw new Error('Failed getting Airports API Data!');
     deferred.reject(response);
   };
 
   this.getAirportDestinations = (iataCode) => {
     if (apiData === null) {
-      throw new Error('API Data not ready yet!');
+      throw new Error('Airports API Data not ready yet!');
     }
     const destinations = [];
     apiData.routes[iataCode].forEach((routeIataCode) => {

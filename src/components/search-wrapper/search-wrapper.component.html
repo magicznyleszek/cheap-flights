@@ -1,18 +1,16 @@
 <form class="search-wrapper" ng-submit="$ctrl.findFlights()">
-  <div class="spinner" ng-if="$ctrl.sourceAirports.length === 0">
-    Loading…
-  </div>
   <airport-selector
     airports="$ctrl.sourceAirports"
     selected-iata-code="$ctrl.sourceIataCode"
     on-selected-change="$ctrl.onSourceChange(iataCode)"
+    ng-disabled="$ctrl.sourceAirports.length === 0"
   ></airport-selector>
 
   <airport-selector
     airports="$ctrl.destinationAirports"
     selected-iata-code="$ctrl.destinationIataCode"
     on-selected-change="$ctrl.onDestinationChange(iataCode)"
-    ng-disabled="$ctrl.sourceIataCode === null"
+    ng-disabled="$ctrl.destinationAirports.length === 0"
   ></airport-selector>
 
   <date-selector

@@ -5,16 +5,11 @@ export default function SearchWrapperController(AirportsService) {
 
   this.$onInit = () => {
     AirportsService.getAirportsAsync().then(
-      this.onGetAirportsCompleted.bind(this),
-      this.onGetAirportsFailed.bind(this)
+      (airports) => {
+        this.sourceAirports = airports;
+      }
     );
   };
-  this.onGetAirportsCompleted = (airports) => {
-    this.sourceAirports = airports;
-  }
-  this.onGetAirportsFailed = (response) => {
-    console.log(response);
-  }
 
   this.findFlights = () => {
     console.log('findFlights');
