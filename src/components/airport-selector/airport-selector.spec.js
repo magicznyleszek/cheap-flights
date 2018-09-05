@@ -52,7 +52,6 @@ describe('Component airportSelector', () => {
     ];
     scope.selectedId = 'lsb';
     scope.$apply();
-    console.log(selectorEl);
     expect(selectorEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
   });
 

@@ -23,7 +23,9 @@ describe('Component dateSelector', () => {
   }));
 
   it('should preselect provided date', () => {
-    expect(false).to.equal(true);
+    scope.date = new Date('Fri Nov 22 2000 10:00:00 GMT+0200 (Central European Summer Time)');
+    scope.$apply();
+    expect(selectorEl[0].querySelector('.date-selector').value).to.equal('2000-11-22');
   });
 
   it('should call provided callback with selected date', () => {
