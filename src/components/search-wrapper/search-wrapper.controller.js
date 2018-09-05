@@ -5,14 +5,13 @@ export default function SearchWrapperController(AirportsService) {
 
   this.$onInit = () => {
     AirportsService.getAirportsAsync().then(
-      this.onGetAirportsCompleted.bind(this)
+      this.onGetAirportsCompleted.bind(this),
+      this.onGetAirportsFailed.bind(this)
     );
   };
-
   this.onGetAirportsCompleted = (airports) => {
-    console.log('onGetAirportsCompleted', airports);
+    this.sourceAirports = airports;
   }
-
   this.onGetAirportsFailed = (response) => {
     console.log(response);
   }
@@ -22,32 +21,17 @@ export default function SearchWrapperController(AirportsService) {
   };
 
   this.sourceIataCode = null;
-  this.sourceAirports = [
-    { name: 'Lisbon', iataCode: 'lsb' },
-    { name: 'Warsaw', iataCode: 'waw' }
-  ];
+  this.sourceAirports = [];
   this.onSourceChange = (iataCode) => {
     this.sourceIataCode = iataCode;
-    console.log('onSourceChange', iataCode);
+    this.destinationIataCode = null;
+    this.destinationAirports = AirportsService.getAirportDestinations(this.sourceIataCode);
   };
 
   this.destinationIataCode = null;
-  this.destinationAirports = [
-    { name: 'Airport1', iataCode: 'ai1' },
-    { name: 'Airport2', iataCode: 'ai2' },
-    { name: 'Airport3', iataCode: 'ai3' },
-    { name: 'Airport4', iataCode: 'ai4' },
-    { name: 'Airport5', iataCode: 'ai5' },
-    { name: 'Airport6', iataCode: 'ai6' },
-    { name: 'Airport7', iataCode: 'ai7' },
-    { name: 'Airport8', iataCode: 'ai8' },
-    { name: 'Airport9', iataCode: 'ai9' },
-    { name: 'Paris', iataCode: 'prs' },
-    { name: 'London', iataCode: 'lnd' }
-  ];
+  this.destinationAirports = [];
   this.onDestinationChange = (iataCode) => {
     this.destinationIataCode = iataCode;
-    console.log('onDestinationChange', iataCode);
   };
 
   this.startDate = null;

@@ -39,5 +39,10 @@ export default function AirportsService($q, $http) {
     if (apiData === null) {
       throw new Error('API Data not ready yet!');
     }
+    const destinations = [];
+    apiData.routes[iataCode].forEach((routeIataCode) => {
+      destinations.push(apiData.airports.find(airport => airport.iataCode === routeIataCode));
+    });
+    return destinations;
   };
 }

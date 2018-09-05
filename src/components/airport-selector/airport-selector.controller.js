@@ -22,7 +22,7 @@ export default function AirportSelectorController($element, $timeout, $scope) {
   };
 
   this.getSelectedAirportName = () => {
-    const selectedAirport = this.airports.filter(airport => airport.iataCode === this.selectedIataCode)[0];
+    const selectedAirport = this.airports.find(airport => airport.iataCode === this.selectedIataCode);
     return selectedAirport ? selectedAirport.name : null;
   };
 

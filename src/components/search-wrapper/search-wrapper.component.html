@@ -1,4 +1,7 @@
 <form class="search-wrapper" ng-submit="$ctrl.findFlights()">
+  <div class="spinner" ng-if="$ctrl.sourceAirports.length === 0">
+    Loading…
+  </div>
   <airport-selector
     airports="$ctrl.sourceAirports"
     selected-iata-code="$ctrl.sourceIataCode"
