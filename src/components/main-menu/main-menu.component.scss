@@ -1,0 +1,9 @@
+@import "../../config/variables";
+
+.main-menu {
+  background-color: $c-ryanair-blue;
+}
+
+.main-menu__logo {
+  height: $s-leading * 2;
+}
