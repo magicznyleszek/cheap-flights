@@ -31,4 +31,8 @@ describe('Component dateSelector', () => {
   it('should call provided callback with selected date', () => {
     expect(false).to.equal(true);
   });
+
+  it('should display provided error message', () => {
+    expect(false).to.equal(true);
+  });
 });

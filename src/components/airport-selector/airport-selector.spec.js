@@ -62,4 +62,8 @@ describe('Component airportSelector', () => {
   it('should close on ESC key', () => {
     expect(false).to.equal(true);
   });
+
+  it('should display provided error message', () => {
+    expect(false).to.equal(true);
+  });
 });
