@@ -36,4 +36,16 @@ describe('Component airportSelector', () => {
     scope.$apply();
     expect(selectorEl[0].querySelectorAll('.airport-selector__option').length).to.equal(2);
   });
+
+  it('should preselect provided airport', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should call provided callback with selected airport', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should close on ESC key', () => {
+    expect(false).to.equal(true);
+  });
 });
