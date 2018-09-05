@@ -32,8 +32,8 @@ export default function AirportsService($q, $http) {
   };
 
   this.onGetAPIDataFailed = (deferred, response) => {
-    throw new Error('Failed getting Airports API Data!');
     deferred.reject(response);
+    throw new Error('Failed getting Airports API Data!');
   };
 
   this.getAirportDestinations = (iataCode) => {
