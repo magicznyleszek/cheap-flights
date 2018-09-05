@@ -3,7 +3,7 @@ import AirportSelectorComponent from './airport-selector.component';
 describe('Component airportSelector', () => {
   let $compile;
   let scope;
-  let selectorEl;
+  let componentEl;
 
   beforeEach(() => {
     angular.module('cheapFlightsApp', ['ng', 'ngMock'])
@@ -26,14 +26,14 @@ describe('Component airportSelector', () => {
         on-selected-change="callback(iataCode)"
       ></airport-selector>
     `);
-    selectorEl = $compile(el)(scope);
+    componentEl = $compile(el)(scope);
     scope.$digest();
   }));
 
   it('should display empty message for no airports', () => {
     scope.airports = [];
     scope.$apply();
-    expect(selectorEl[0].querySelector('.airport-selector__option').innerText).to.equal('No airport');
+    expect(componentEl[0].querySelector('.airport-selector__option').innerText).to.equal('No airport');
   });
 
   it('should display provided list of airports', () => {
@@ -42,7 +42,7 @@ describe('Component airportSelector', () => {
       { name: 'Warsaw', iataCode: 'waw' }
     ];
     scope.$apply();
-    expect(selectorEl[0].querySelectorAll('.airport-selector__option').length).to.equal(2);
+    expect(componentEl[0].querySelectorAll('.airport-selector__option').length).to.equal(2);
   });
 
   it('should preselect provided airport', () => {
@@ -52,7 +52,7 @@ describe('Component airportSelector', () => {
     ];
     scope.selectedIataCode = 'lsb';
     scope.$apply();
-    expect(selectorEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
+    expect(componentEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
   });
 
   it('should call provided callback with selected airport', () => {

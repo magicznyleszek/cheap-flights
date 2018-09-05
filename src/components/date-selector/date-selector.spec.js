@@ -3,7 +3,7 @@ import DateSelectorComponent from './date-selector.component';
 describe('Component dateSelector', () => {
   let $compile;
   let scope;
-  let selectorEl;
+  let componentEl;
 
   beforeEach(() => {
     angular.module('cheapFlightsApp', ['ng', 'ngMock'])
@@ -18,14 +18,14 @@ describe('Component dateSelector', () => {
     scope.date = null;
 
     const el = angular.element('<date-selector date="date"/>');
-    selectorEl = $compile(el)(scope);
+    componentEl = $compile(el)(scope);
     scope.$digest();
   }));
 
   it('should preselect provided date', () => {
     scope.date = new Date('Fri Nov 22 2000 10:00:00 GMT+0200 (Central European Summer Time)');
     scope.$apply();
-    expect(selectorEl[0].querySelector('.date-selector').value).to.equal('2000-11-22');
+    expect(componentEl[0].querySelector('.date-selector').value).to.equal('2000-11-22');
   });
 
   it('should call provided callback with selected date', () => {
