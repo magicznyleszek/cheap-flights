@@ -5,3 +5,27 @@
   border-radius: $s-global-br;
   padding: 1rem;
 }
+
+.search-wrapper__submit-button {
+  background-color: $c-ryanair-yellow;
+  border-radius: $s-global-br;
+  box-shadow: 0 0 0 1px saturate(darken($c-ryanair-yellow, 25%), 50%);
+  color: saturate(darken($c-ryanair-yellow, 42%), 50%);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  height: $s-leading + 2 * 0.25rem;
+  line-height: $s-leading;
+  padding: 0.25rem 1.5rem;
+  text-transform: uppercase;
+  vertical-align: top;
+
+  &:hover {
+    background-color: saturate(lighten($c-ryanair-yellow, 5%), 50%);
+  }
+
+  &:active {
+    background-color: saturate(lighten($c-ryanair-yellow, 10%), 50%);
+  }
+}
