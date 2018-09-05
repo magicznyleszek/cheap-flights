@@ -3,7 +3,6 @@ export default function AirportSelectorController($element, $timeout, $scope) {
 
   this.isActive = false;
   this.filterValue = '';
-  this.selected = null;
 
   this.activate = () => {
     this.isActive = true;
@@ -18,10 +17,13 @@ export default function AirportSelectorController($element, $timeout, $scope) {
   };
 
   this.selectAirport = (airportId) => {
-    const selectedAirport = this.airports.filter(airport => airport.id === airportId)[0];
-    this.selected = selectedAirport || null;
-    this.onSelectedChange({ airport: this.selected });
+    this.onSelectedChange({ airportId });
     this.deactivate();
+  };
+
+  this.getSelectedAirportLabel = () => {
+    const selectedAirport = this.airports.filter(airport => airport.id === this.selectedId)[0];
+    return selectedAirport ? selectedAirport.label : null;
   };
 
   this.filteredAirports = () => this.airports.filter(airport =>

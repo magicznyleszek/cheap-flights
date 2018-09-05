@@ -9,7 +9,7 @@
     ng-focus="$ctrl.onInputFocus($event)"
     tabindex="0"
   >
-    {{$ctrl.selected.label || 'Select…'}}
+    {{$ctrl.getSelectedAirportLabel() || 'Select…'}}
   </label>
 
   <input
@@ -23,15 +23,13 @@
   <ol class="airport-selector__options">
     <li
       class="airport-selector__option"
-      ng-class="{'airport-selector__option--seleceted': airport.id === $ctrl.selected.id}"
+      ng-class="{'airport-selector__option--selected': airport.id === $ctrl.selectedId}"
       ng-repeat="airport in $ctrl.filteredAirports() as filteredAirports"
       ng-click="$ctrl.selectAirport(airport.id)"
       ng-keyup="$ctrl.onOptionKeyup($event, airport.id)"
       ng-blur="$ctrl.onFocusableChildBlur($event)"
       tabindex="0"
-    >
-      {{airport.label}}
-    </li>
+    >{{airport.label}}</li>
 
     <li
       class="airport-selector__option airport-selector__option--message"

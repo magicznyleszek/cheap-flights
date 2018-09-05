@@ -16,8 +16,16 @@ describe('Component airportSelector', () => {
     $compile = $injector.get('$compile');
 
     scope.airports = [];
+    scope.selectedId = null;
+    scope.callback = angular.noop;
 
-    const el = angular.element('<airport-selector airports="airports"/>');
+    const el = angular.element(`
+      <airport-selector
+        airports="airports"
+        selected-id="selectedId"
+        on-selected-change="callback(airportId)"
+      ></airport-selector>
+    `);
     selectorEl = $compile(el)(scope);
     scope.$digest();
   }));
@@ -38,7 +46,14 @@ describe('Component airportSelector', () => {
   });
 
   it('should preselect provided airport', () => {
-    expect(false).to.equal(true);
+    scope.airports = [
+      { label: 'Lisbon', id: 'lsb' },
+      { label: 'Warsaw', id: 'waw' }
+    ];
+    scope.selectedId = 'lsb';
+    scope.$apply();
+    console.log(selectorEl);
+    expect(selectorEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
   });
 
   it('should call provided callback with selected airport', () => {

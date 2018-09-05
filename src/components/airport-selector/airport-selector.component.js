@@ -4,6 +4,7 @@ import './airport-selector.component.scss';
 
 const AirportSelectorComponent = {
   bindings: {
+    selectedId: '<',
     airports: '<',
     onSelectedChange: '&'
   },

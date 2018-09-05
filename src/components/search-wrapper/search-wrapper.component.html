@@ -1,12 +1,14 @@
 <form class="search-wrapper" ng-submit="$ctrl.findFlights()">
   <airport-selector
     airports="$ctrl.sourceAirports"
-    on-selected-change="$ctrl.onSourceChange(airport)"
+    selected-id="$ctrl.sourceId"
+    on-selected-change="$ctrl.onSourceChange(airportId)"
   ></airport-selector>
 
   <airport-selector
     airports="$ctrl.destinationAirports"
-    on-selected-change="$ctrl.onDestinationChange(airport)"
+    selected-id="$ctrl.destinationId"
+    on-selected-change="$ctrl.onDestinationChange(airportId)"
   ></airport-selector>
 
   <date-selector

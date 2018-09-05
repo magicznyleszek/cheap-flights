@@ -5,11 +5,17 @@ export default function SearchWrapperController() {
     console.log('findFlights');
   };
 
+  this.sourceId = null;
   this.sourceAirports = [
     { label: 'Lisbon', id: 'lsb' },
     { label: 'Warsaw', id: 'waw' }
   ];
+  this.onSourceChange = (airportId) => {
+    this.sourceId = airportId;
+    console.log('onSourceChange', airportId);
+  };
 
+  this.destinationId = null;
   this.destinationAirports = [
     { label: 'Airport1', id: 'ai1' },
     { label: 'Airport2', id: 'ai2' },
@@ -23,23 +29,18 @@ export default function SearchWrapperController() {
     { label: 'Paris', id: 'prs' },
     { label: 'London', id: 'lnd' }
   ];
-
-  this.onSourceChange = (airport) => {
-    console.log('onSourceChange', airport);
-  };
-
-  this.onDestinationChange = (airport) => {
-    console.log('onDestinationChange', airport);
+  this.onDestinationChange = (airportId) => {
+    this.destinationId = airportId;
+    console.log('onDestinationChange', airportId);
   };
 
   this.startDate = null;
-  this.endDate = null;
-
   this.onStartDateChange = (date) => {
     this.startDate = date;
     this.fixDates();
   };
 
+  this.endDate = null;
   this.onEndDateChange = (date) => {
     this.endDate = date;
     this.fixDates();
