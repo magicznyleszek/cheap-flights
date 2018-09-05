@@ -4,7 +4,7 @@ import './airport-selector.component.scss';
 
 const AirportSelectorComponent = {
   bindings: {
-    selectedId: '<',
+    selectedIataCode: '<',
     airports: '<',
     onSelectedChange: '&'
   },

@@ -16,22 +16,22 @@ export default function AirportSelectorController($element, $timeout, $scope) {
     this.filterValue = '';
   };
 
-  this.selectAirport = (airportId) => {
-    this.onSelectedChange({ airportId });
+  this.selectAirport = (iataCode) => {
+    this.onSelectedChange({ iataCode });
     this.deactivate();
   };
 
-  this.getSelectedAirportLabel = () => {
-    const selectedAirport = this.airports.filter(airport => airport.id === this.selectedId)[0];
-    return selectedAirport ? selectedAirport.label : null;
+  this.getSelectedAirportName = () => {
+    const selectedAirport = this.airports.filter(airport => airport.iataCode === this.selectedIataCode)[0];
+    return selectedAirport ? selectedAirport.name : null;
   };
 
   this.filteredAirports = () => this.airports.filter(airport =>
-    airport.label.toLowerCase().startsWith(this.filterValue.toLowerCase()));
+    airport.name.toLowerCase().startsWith(this.filterValue.toLowerCase()));
 
-  this.onOptionKeyup = ($event, airportId) => {
+  this.onOptionKeyup = ($event, iataCode) => {
     if ($event.key === 'Enter') {
-      this.selectAirport(airportId);
+      this.selectAirport(iataCode);
     }
   };
 

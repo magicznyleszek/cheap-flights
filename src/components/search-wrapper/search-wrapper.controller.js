@@ -1,37 +1,53 @@
 import moment from 'moment';
 
-export default function SearchWrapperController() {
+export default function SearchWrapperController(AirportsService) {
+  'ngInject';
+
+  this.$onInit = () => {
+    AirportsService.getAirportsAsync().then(
+      this.onGetAirportsCompleted.bind(this)
+    );
+  };
+
+  this.onGetAirportsCompleted = (airports) => {
+    console.log('onGetAirportsCompleted', airports);
+  }
+
+  this.onGetAirportsFailed = (response) => {
+    console.log(response);
+  }
+
   this.findFlights = () => {
     console.log('findFlights');
   };
 
-  this.sourceId = null;
+  this.sourceIataCode = null;
   this.sourceAirports = [
-    { label: 'Lisbon', id: 'lsb' },
-    { label: 'Warsaw', id: 'waw' }
+    { name: 'Lisbon', iataCode: 'lsb' },
+    { name: 'Warsaw', iataCode: 'waw' }
   ];
-  this.onSourceChange = (airportId) => {
-    this.sourceId = airportId;
-    console.log('onSourceChange', airportId);
+  this.onSourceChange = (iataCode) => {
+    this.sourceIataCode = iataCode;
+    console.log('onSourceChange', iataCode);
   };
 
-  this.destinationId = null;
+  this.destinationIataCode = null;
   this.destinationAirports = [
-    { label: 'Airport1', id: 'ai1' },
-    { label: 'Airport2', id: 'ai2' },
-    { label: 'Airport3', id: 'ai3' },
-    { label: 'Airport4', id: 'ai4' },
-    { label: 'Airport5', id: 'ai5' },
-    { label: 'Airport6', id: 'ai6' },
-    { label: 'Airport7', id: 'ai7' },
-    { label: 'Airport8', id: 'ai8' },
-    { label: 'Airport9', id: 'ai9' },
-    { label: 'Paris', id: 'prs' },
-    { label: 'London', id: 'lnd' }
+    { name: 'Airport1', iataCode: 'ai1' },
+    { name: 'Airport2', iataCode: 'ai2' },
+    { name: 'Airport3', iataCode: 'ai3' },
+    { name: 'Airport4', iataCode: 'ai4' },
+    { name: 'Airport5', iataCode: 'ai5' },
+    { name: 'Airport6', iataCode: 'ai6' },
+    { name: 'Airport7', iataCode: 'ai7' },
+    { name: 'Airport8', iataCode: 'ai8' },
+    { name: 'Airport9', iataCode: 'ai9' },
+    { name: 'Paris', iataCode: 'prs' },
+    { name: 'London', iataCode: 'lnd' }
   ];
-  this.onDestinationChange = (airportId) => {
-    this.destinationId = airportId;
-    console.log('onDestinationChange', airportId);
+  this.onDestinationChange = (iataCode) => {
+    this.destinationIataCode = iataCode;
+    console.log('onDestinationChange', iataCode);
   };
 
   this.startDate = null;

@@ -1,2 +1,2 @@
-export { AiportsService } from './airports.service';
-export { CheapFlightService } from './cheapflights.service';
+export { default as AirportsService } from './airports.service';
+export { default as CheapFlightsService } from './cheapflights.service';

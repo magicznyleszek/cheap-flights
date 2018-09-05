@@ -1,5 +1,3 @@
-const CheapFlightService = () => {
+export default function CheapFlightsService() {
   //TODO: Write your own implementation
-};
-
-export default CheapFlightService;
+}

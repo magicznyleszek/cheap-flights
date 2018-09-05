@@ -16,14 +16,14 @@ describe('Component airportSelector', () => {
     $compile = $injector.get('$compile');
 
     scope.airports = [];
-    scope.selectedId = null;
+    scope.selectedIataCode = null;
     scope.callback = angular.noop;
 
     const el = angular.element(`
       <airport-selector
         airports="airports"
-        selected-id="selectedId"
-        on-selected-change="callback(airportId)"
+        selected-iata-code="selectedIataCode"
+        on-selected-change="callback(iataCode)"
       ></airport-selector>
     `);
     selectorEl = $compile(el)(scope);
@@ -38,8 +38,8 @@ describe('Component airportSelector', () => {
 
   it('should display provided list of airports', () => {
     scope.airports = [
-      { label: 'Lisbon', id: 'lsb' },
-      { label: 'Warsaw', id: 'waw' }
+      { name: 'Lisbon', iataCode: 'lsb' },
+      { name: 'Warsaw', iataCode: 'waw' }
     ];
     scope.$apply();
     expect(selectorEl[0].querySelectorAll('.airport-selector__option').length).to.equal(2);
@@ -47,10 +47,10 @@ describe('Component airportSelector', () => {
 
   it('should preselect provided airport', () => {
     scope.airports = [
-      { label: 'Lisbon', id: 'lsb' },
-      { label: 'Warsaw', id: 'waw' }
+      { name: 'Lisbon', iataCode: 'lsb' },
+      { name: 'Warsaw', iataCode: 'waw' }
     ];
-    scope.selectedId = 'lsb';
+    scope.selectedIataCode = 'lsb';
     scope.$apply();
     expect(selectorEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
   });
