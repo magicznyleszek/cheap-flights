@@ -12,7 +12,7 @@
 
   <label
     class="airport-selector__value"
-    ng-click="$ctrl.startSelection()"
+    ng-click="$ctrl.activate()"
   >
     {{$ctrl.selected.label || 'Select…'}}
   </label>
@@ -20,6 +20,7 @@
   <ol class="airport-selector__options">
     <li
       class="airport-selector__option"
+      ng-class="{'airport-selector__option--seleceted': airport.id === $ctrl.selected.id}"
       ng-repeat="airport in $ctrl.filteredAirports() as filteredAirports"
       ng-click="$ctrl.selectAirport(airport.id)"
     >

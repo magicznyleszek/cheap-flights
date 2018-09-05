@@ -1,31 +1,51 @@
 @import "../../config/variables";
 
 .airport-selector {
+  display: inline-block;
+  max-width: 10rem;
+  position: relative;
+  width: 100%;
+}
+
+.airport-selector__value,
+.airport-selector__filter {
   background-color: $c-white;
   border-radius: $s-global-br;
-  display: inline-block;
-  position: relative;
-  width: 200px;
+  color: $c-very-very-dark-grey;
+  display: block;
+  padding: 0.25rem 0.5rem;
+  width: 100%;
 }
 
 .airport-selector__filter {
   width: 100%;
+
+  .airport-selector--active & {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
   .airport-selector:not(.airport-selector--active) & {
     display: none;
   }
 }
 
 .airport-selector__value {
-  display: block;
-  width: 100%;
-
   .airport-selector--active & {
     display: none;
   }
 }
 
 .airport-selector__options {
+  background: $c-white;
+  border-bottom-left-radius: $s-global-br;
+  border-bottom-right-radius: $s-global-br;
+  border-top: 1px solid $c-washed-blue;
+  box-shadow: 0 2px 3px -2px rgba(0, 0, 0, 0.5);
   list-style: none;
+  max-height: $s-leading * 6;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: absolute;
   top: 100%;
   width: 100%;
@@ -40,5 +60,23 @@
 }
 
 .airport-selector__option {
+  background-color: $c-white;
+  border-radius: $s-leading * 0.5;
+  cursor: pointer;
+  line-height: $s-leading;
+  margin: 0.25rem;
+  padding: 0 0.5rem;
 
+  &:hover {
+    background-color: lighten($c-bright-blue, 40%);
+  }
+
+  &:active,
+  &.airport-selector__option--seleceted {
+    background-color: lighten($c-bright-blue, 30%);
+  }
+
+  &.airport-selector__option--message {
+    color: $c-pale-grey;
+  }
 }

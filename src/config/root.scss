@@ -59,7 +59,7 @@ a:active {
 
 :focus {
   background-color: $c-root-focus;
-  outline: $c-root-focus solid 0.125rem;
+  outline: none;
 }
 
 :focus svg {
