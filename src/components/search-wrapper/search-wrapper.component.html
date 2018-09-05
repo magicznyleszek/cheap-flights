@@ -1,4 +1,4 @@
-<div>
+<div class="search-wrapper">
   <airport-selector
     airports="$ctrl.sourceAirports"
     on-selected-change="$ctrl.onSourceChange(airport)"
@@ -9,4 +9,9 @@
     on-selected-change="$ctrl.onDestinationChange(airport)"
   >
   </airport-selector>
+
+  <date-wrapper
+    start-date="$ctrl.startDate"
+    end-date="$ctrl.endDate">
+  </date-wrapper>
 </div>
