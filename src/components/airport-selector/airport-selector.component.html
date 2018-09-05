@@ -1,21 +1,24 @@
 <div
   class="airport-selector"
   ng-class="{'airport-selector--active': $ctrl.isActive}"
-  ng-keyup="$ctrl.onKeyup($event)"
+  ng-keyup="$ctrl.onSelectKeyup($event)"
 >
+  <label
+    class="airport-selector__value"
+    ng-click="$ctrl.activate()"
+    ng-focus="$ctrl.onInputFocus($event)"
+    tabindex="0"
+  >
+    {{$ctrl.selected.label || 'Select…'}}
+  </label>
+
   <input
     class="airport-selector__filter"
     js-airport-selector-filter
     type="text"
     ng-model="$ctrl.filterValue"
+    ng-blur="$ctrl.onFocusableChildBlur($event)"
   ></input>
-
-  <label
-    class="airport-selector__value"
-    ng-click="$ctrl.activate()"
-  >
-    {{$ctrl.selected.label || 'Select…'}}
-  </label>
 
   <ol class="airport-selector__options">
     <li
@@ -23,6 +26,9 @@
       ng-class="{'airport-selector__option--seleceted': airport.id === $ctrl.selected.id}"
       ng-repeat="airport in $ctrl.filteredAirports() as filteredAirports"
       ng-click="$ctrl.selectAirport(airport.id)"
+      ng-keyup="$ctrl.onOptionKeyup($event, airport.id)"
+      ng-blur="$ctrl.onFocusableChildBlur($event)"
+      tabindex="0"
     >
       {{airport.label}}
     </li>

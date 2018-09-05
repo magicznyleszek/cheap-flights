@@ -80,7 +80,12 @@
     background-color: lighten($c-bright-blue, 30%);
   }
 
+  &:focus {
+    background-color: $c-root-focus;
+  }
+
   &.airport-selector__option--message {
     color: $c-pale-grey;
+    pointer-events: none;
   }
 }

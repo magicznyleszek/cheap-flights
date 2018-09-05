@@ -1,6 +1,10 @@
 import moment from 'moment';
 
 export default function SearchWrapperController() {
+  this.findFlights = () => {
+    console.log('findFlights');
+  };
+
   this.sourceAirports = [
     { label: 'Lisbon', id: 'lsb' },
     { label: 'Warsaw', id: 'waw' }

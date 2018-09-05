@@ -5,8 +5,6 @@ export default function AirportSelectorController($element, $timeout, $scope) {
   this.filterValue = '';
   this.selected = null;
 
-  // TODO: keyboard navigation up/down arrows and ENTER key with scrollIntoViewIfNeeded
-
   this.activate = () => {
     this.isActive = true;
     document.addEventListener('click', this.checkOutsideCloseBound);
@@ -29,8 +27,30 @@ export default function AirportSelectorController($element, $timeout, $scope) {
   this.filteredAirports = () => this.airports.filter(airport =>
     airport.label.toLowerCase().startsWith(this.filterValue.toLowerCase()));
 
-  this.onKeyup = ($event) => {
+  this.onOptionKeyup = ($event, airportId) => {
+    if ($event.key === 'Enter') {
+      this.selectAirport(airportId);
+    }
+  };
+
+  this.onSelectKeyup = ($event) => {
     if ($event.key === 'Escape') {
+      this.deactivate();
+    }
+    // close selector if tabbing out of it
+    if ($event.key === 'Tab') {
+      this.checkOutsideClose($event);
+    }
+  };
+
+  this.onInputFocus = () => {
+    if (!this.isActive) {
+      this.activate();
+    }
+  };
+
+  this.onFocusableChildBlur = ($event) => {
+    if (!$element[0].contains($event.relatedTarget)) {
       this.deactivate();
     }
   };

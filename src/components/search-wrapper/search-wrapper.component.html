@@ -1,4 +1,4 @@
-<div class="search-wrapper">
+<form class="search-wrapper" ng-submit="$ctrl.findFlights()">
   <airport-selector
     airports="$ctrl.sourceAirports"
     on-selected-change="$ctrl.onSourceChange(airport)"
@@ -18,4 +18,12 @@
     date="$ctrl.endDate"
     on-date-change="$ctrl.onEndDateChange(date)"
   ></date-selector>
-</div>
+
+  <button
+    class="search-wrapper__submit-button"
+    type="submit"
+    name="button"
+  >Find flights!</button>
+
+  <div class="url reader service"> </div>
+</form>
