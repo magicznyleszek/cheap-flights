@@ -1,1 +1,6 @@
-<input type="date" ng-model="$ctrl.date">
+<input
+  class="date-selector"
+  type="date"
+  ng-model="$ctrl.date"
+  ng-change="$ctrl.onInputChange()"
+>

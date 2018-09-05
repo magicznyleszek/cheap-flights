@@ -4,6 +4,7 @@
   display: inline-block;
   max-width: 10rem;
   position: relative;
+  vertical-align: top;
   width: 100%;
 }
 
@@ -11,8 +12,11 @@
 .airport-selector__filter {
   background-color: $c-white;
   border-radius: $s-global-br;
+  box-shadow: 0 0 0 1px $c-medium-blue;
   color: $c-very-very-dark-grey;
   display: block;
+  height: $s-leading + 2 * 0.25rem;
+  line-height: $s-leading;
   padding: 0.25rem 0.5rem;
   width: 100%;
 }

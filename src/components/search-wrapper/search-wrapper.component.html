@@ -7,11 +7,15 @@
   <airport-selector
     airports="$ctrl.destinationAirports"
     on-selected-change="$ctrl.onDestinationChange(airport)"
-  >
-  </airport-selector>
+  ></airport-selector>
 
-  <date-wrapper
-    start-date="$ctrl.startDate"
-    end-date="$ctrl.endDate">
-  </date-wrapper>
+  <date-selector
+    date="$ctrl.startDate"
+    on-date-change="$ctrl.onStartDateChange(date)"
+  ></date-selector>
+
+  <date-selector
+    date="$ctrl.endDate"
+    on-date-change="$ctrl.onEndDateChange(date)"
+  ></date-selector>
 </div>

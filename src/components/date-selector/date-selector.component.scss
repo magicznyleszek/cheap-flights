@@ -1,0 +1,16 @@
+@import "../../config/variables";
+
+.date-selector {
+  background-color: $c-white;
+  border-radius: $s-global-br;
+  box-shadow: 0 0 0 1px $c-medium-blue;
+  color: $c-very-very-dark-grey;
+  display: inline-block;
+  height: $s-leading + 2 * 0.25rem;
+  line-height: $s-leading;
+  max-width: 10rem;
+  padding: 0.25rem 0.5rem;
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
