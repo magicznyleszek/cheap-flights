@@ -1,6 +1,11 @@
 <div class="flights-list">
-  <flight
+  <div
     ng-repeat="flight in $ctrl.flights track by $index"
-    date-from="flight.dateFrom"
-  ></flight>
+    class="flights-list__item"
+  >
+    <span ng-bind="flight.dateFrom"></span>
+    <span ng-bind="flight.dateTo"></span>
+    <span ng-bind="flight.currency"></span>
+    <span ng-bind="flight.price"></span>
+  </div>
 </div>

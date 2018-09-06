@@ -1,0 +1,9 @@
+@import "../../config/variables";
+
+.flights-list__item {
+  background: pink;
+  display: block;
+  margin: $s-leading;
+
+  min-height: $s-leading; // DEV
+}

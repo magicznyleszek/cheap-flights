@@ -1,4 +1,4 @@
-export default function ResultsPageController(CheapFlightsService, $state) {
+export default function ResultsPageController(CheapFlightsService) {
   'ngInject';
 
   this.flights = [];

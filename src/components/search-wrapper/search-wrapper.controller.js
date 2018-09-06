@@ -1,35 +1,49 @@
 import moment from 'moment';
 
-export default function SearchWrapperController(AirportsService, $location) {
+export default function SearchWrapperController(AirportsService, SearchParamsService) {
   'ngInject';
 
   this.$onInit = () => {
     AirportsService.getAirportsAsync().then(
       (airports) => {
         this.sourceAirports = airports;
-        this.readUrlParams();
+        this.readURLParams();
       }
     );
   };
 
-  this.readUrlParams = () => {
-    const params = $location.search();
+  this.readURLParams = () => {
+    const source = SearchParamsService.getParam('source');
+    const dest = SearchParamsService.getParam('dest');
+    const from = SearchParamsService.getParam('from');
+    const to = SearchParamsService.getParam('to');
 
-    if (params.source) { this.onSourceChange(params.source); }
-    if (params.dest) { this.onDestinationChange(params.dest); }
-    if (params.from) { this.onStartDateChange(new Date(params.from)); }
-    if (params.to) { this.onEndDateChange(new Date(params.to)); }
+    if (source) { this.onSourceChange(source); }
+    if (dest) { this.onDestinationChange(dest); }
+    if (from) { this.onStartDateChange(new Date(from)); }
+    if (to) { this.onEndDateChange(new Date(to)); }
 
-    if (params.source || params.dest || params.from || params.to) {
+    if (source || dest || from || to) {
       this.onSafeSubmit();
+    }
+  };
+
+  this.setURLParams = () => {
+    if (this.sourceIataCode) { SearchParamsService.setParam('source', this.sourceIataCode); }
+    if (this.destinationIataCode) { SearchParamsService.setParam('dest', this.destinationIataCode); }
+    if (this.startDate) {
+      SearchParamsService.setParam('from', moment(this.startDate).format('YYYY-MM-DD'));
+    }
+    if (this.endDate) {
+      SearchParamsService.setParam('to', moment(this.endDate).format('YYYY-MM-DD'));
     }
   };
 
   this.getSearchSubmitParams = () => ({
     sourceIataCode: this.sourceIataCode,
     destinationIataCode: this.destinationIataCode,
-    startDate: this.startDate,
-    endDate: this.endDate
+    startDate: moment(this.startDate).format('YYYY-MM-DD'),
+    endDate: moment(this.endDate).format('YYYY-MM-DD')
   });
 
   this.onSafeSubmit = () => {
@@ -37,6 +51,7 @@ export default function SearchWrapperController(AirportsService, $location) {
     const isValid = true;
     if (isValid) {
       this.onSubmit({ params: this.getSearchSubmitParams() });
+      this.setURLParams();
     }
   };
 

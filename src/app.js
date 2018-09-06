@@ -5,7 +5,8 @@ import HomeComponent from './home/home.component';
 import ResultsComponent from './results/results.component';
 import {
   CheapFlightsService,
-  AirportsService
+  AirportsService,
+  SearchParamsService
 } from './services';
 import './config/reset.scss';
 import './config/root.scss';
@@ -18,6 +19,7 @@ angular.module('cheapFlightsApp', [
 .component('resultsPage', ResultsComponent)
 .service('AirportsService', AirportsService)
 .service('CheapFlightsService', CheapFlightsService)
+.service('SearchParamsService', SearchParamsService)
 .config(($stateProvider, $urlRouterProvider) => {
   'ngInject';
 
