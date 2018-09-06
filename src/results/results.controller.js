@@ -1,15 +1,9 @@
-export default function ResultsPageController(CheapFlightsService) {
+export default function ResultsPageController(CheapFlightsService, $state) {
   'ngInject';
 
   this.flights = [];
-  this.currentPage = 0;
   this.isLoading = true;
   this.currentParams = null;
-
-  this.onLoadNextPage = () => {
-    this.currentPage += 1;
-    this.loadFlights(this.currentPage);
-  };
 
   this.onSearchSubmit = (params) => {
     this.currentParams = params;
@@ -19,18 +13,16 @@ export default function ResultsPageController(CheapFlightsService) {
 
   this.clearData = () => {
     this.flights = [];
-    this.currentPage = 0;
     this.isLoading = true;
   };
 
-  this.loadFlights = (page) => {
+  this.loadFlights = () => {
     this.isLoading = true;
     CheapFlightsService.findFlights(
       this.currentParams.sourceIataCode,
       this.currentParams.destinationIataCode,
       this.currentParams.startDate,
-      this.currentParams.endDate,
-      page
+      this.currentParams.endDate
     ).then(
       this.onFindFlightsCompleted.bind(this),
       this.onFindFlightsFailed.bind(this)
@@ -44,6 +36,5 @@ export default function ResultsPageController(CheapFlightsService) {
 
   this.onFindFlightsFailed = () => {
     this.isLoading = false;
-    this.currentPage -= 1;
   };
 }

@@ -5,11 +5,7 @@
 
   <flights-list flights="$ctrl.flights"></flights-list>
 
-  <button
-    type="button"
-    ng-disabled="$ctrl.isLoading"
-    ng-click="$ctrl.onLoadNextPage()"
-  >
-    load more
-  </button>
+  <div ng-if=$ctrl.isLoading>
+    Loading…
+  </div>
 </div>
