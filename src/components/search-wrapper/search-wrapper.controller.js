@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export default function SearchWrapperController(AirportsService) {
+export default function SearchWrapperController(AirportsService, $location) {
   'ngInject';
 
   this.$onInit = () => {
@@ -9,7 +9,13 @@ export default function SearchWrapperController(AirportsService) {
         this.sourceAirports = airports;
       }
     );
+    this.readUrlParams();
   };
+
+  this.readUrlParams = () => {
+    const params = $location.search();
+    console.log('readUrlParams', params);
+  }
 
   this.findFlights = () => {
     console.log('findFlights');

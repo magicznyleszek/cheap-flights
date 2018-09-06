@@ -25,7 +25,7 @@ html {
   - D: max screen size
   - Z: unit (px, rem, etc.)
   */
-  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (120 - 30));
+  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (160 - 30));
   font-weight: normal;
   line-height: $root-lineHeight;
   min-height: 100%;

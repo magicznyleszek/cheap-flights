@@ -1,11 +1,15 @@
 @import "../../config/variables";
 
 .airport-selector {
-  display: inline-block;
-  max-width: 10rem;
+  display: block;
+  min-width: 8rem;
   position: relative;
-  vertical-align: top;
   width: 100%;
+  z-index: 1;
+
+  &.airport-selector--active {
+    z-index: 2;
+  }
 }
 
 .airport-selector__value,
