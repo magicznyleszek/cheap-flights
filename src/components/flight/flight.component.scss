@@ -1,0 +1,9 @@
+@import "../../config/variables";
+
+.flight {
+  background: pink;
+  display: block;
+  margin: $s-leading;
+
+  min-height: $s-leading; // DEV
+}

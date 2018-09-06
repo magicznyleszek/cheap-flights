@@ -3,5 +3,13 @@
 
   <search-wrapper on-submit="$ctrl.onSearchSubmit(params)"></search-wrapper>
 
-  <flights-list></flights-list>
+  <flights-list flights="$ctrl.flights"></flights-list>
+
+  <button
+    type="button"
+    ng-disabled="$ctrl.isLoading"
+    ng-click="$ctrl.onLoadNextPage()"
+  >
+    load more
+  </button>
 </div>

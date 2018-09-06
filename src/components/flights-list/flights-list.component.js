@@ -3,6 +3,9 @@ import controller from './flights-list.controller';
 import './flights-list.component.scss';
 
 const FlightsListComponent = {
+  bindings: {
+    flights: '<'
+  },
   template,
   controller
 };

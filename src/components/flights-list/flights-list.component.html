@@ -1,7 +1,6 @@
 <div class="flights-list">
-  <ol class="flights-list__results">
-    <flight></flight>
-  </ol>
-  <button class="flights-list__more-button"></button>
-  <div class="flights-list__message"></div>
+  <flight
+    ng-repeat="flight in $ctrl.flights track by $index"
+    date-from="flight.dateFrom"
+  ></flight>
 </div>

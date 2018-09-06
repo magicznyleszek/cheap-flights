@@ -3,6 +3,9 @@ import controller from './flight.controller';
 import './flight.component.scss';
 
 const FlightComponent = {
+  bindings: {
+    dateFrom: '<'
+  },
   template,
   controller
 };
