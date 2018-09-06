@@ -4,7 +4,7 @@ export default function CheapFlightsService($q, $http) {
   const baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/2014-12-02/2015-02-02/250/unique/?limit=15&offset-0';
   const pageSize = 15;
 
-  this.getUrl = (sourceIataCode, destinationIataCode, startDate, endDate, page = 0) => {
+  this.getURL = (sourceIataCode, destinationIataCode, startDate, endDate, page = 0) => {
     const offset = page * pageSize;
     let finalURL = baseURL;
     finalURL += `/from/${sourceIataCode}`;
