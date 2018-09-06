@@ -3,6 +3,9 @@ import controller from './search-wrapper.controller';
 import './search-wrapper.component.scss';
 
 const SearchWrapperComponent = {
+  bindings: {
+    onSubmit: '&'
+  },
   template,
   controller
 };
