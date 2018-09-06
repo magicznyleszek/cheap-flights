@@ -2,34 +2,36 @@
 
 .search-wrapper {
   background: $c-bright-blue;
-  border-radius: $s-global-br;
   display: flex;
   flex-flow: column wrap;
-  max-width: $b-big;
-  padding: 0.5rem;
+  padding: $s-leading/2;
 
   & > * {
-    margin: 0.5rem;
+    margin: $s-leading/2;
   }
 
   @media (min-width: #{$b-medium}) {
+    border-radius: $s-global-br;
+    box-shadow: 0 0 0 2px darken($c-bright-blue, 5%);
     flex-direction: row;
+    margin: $s-leading/2;
   }
 
   @media (min-width: #{$b-medium}) and (max-width: #{$b-big - 0.025rem}) {
     & > * {
-      width: calc(50% - 1rem);
+      width: calc(50% - #{$s-leading});
     }
     & > *:last-child:nth-child(odd) {
-      width: calc(100% - 1rem);
+      width: calc(100% - #{$s-leading});
     }
   }
 
   @media (min-width: #{$b-big}) {
     flex-wrap: nowrap;
     justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
+    margin: $s-leading auto;
+    max-width: calc(100vw - #{$s-leading * 2});
+    width: $b-big;
 
     & > * {
       flex: 2;
