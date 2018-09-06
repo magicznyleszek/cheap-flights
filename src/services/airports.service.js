@@ -6,16 +6,16 @@ that API data doesn't change during lifetime of the application
 export default function AirportsService($q, $http) {
   'ngInject';
 
-  const apiURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/forms/flight-booking-selector/';
-  let apiData = null;
+  const baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/forms/flight-booking-selector/';
+  let APIData = null;
 
-  this.getAPIData = () => $http({ method: 'get', url: apiURL, cache: true });
+  this.getAPIData = () => $http({ method: 'get', url: baseURL, cache: true });
 
   this.getAirportsAsync = () => {
     const deferred = $q.defer();
 
-    if (apiData !== null) {
-      deferred.resolve(apiData.airports);
+    if (APIData !== null) {
+      deferred.resolve(APIData.airports);
     } else {
       this.getAPIData().then(
         this.onGetAPIDataCompleted.bind(this, deferred),
@@ -27,7 +27,7 @@ export default function AirportsService($q, $http) {
   };
 
   this.onGetAPIDataCompleted = (deferred, response) => {
-    apiData = response.data;
+    APIData = response.data;
     deferred.resolve(response.data.airports);
   };
 
@@ -37,12 +37,12 @@ export default function AirportsService($q, $http) {
   };
 
   this.getAirportDestinations = (iataCode) => {
-    if (apiData === null) {
+    if (APIData === null) {
       throw new Error('Airports API Data not ready yet!');
     }
     const destinations = [];
-    apiData.routes[iataCode].forEach((routeIataCode) => {
-      destinations.push(apiData.airports.find(airport => airport.iataCode === routeIataCode));
+    APIData.routes[iataCode].forEach((routeIataCode) => {
+      destinations.push(APIData.airports.find(airport => airport.iataCode === routeIataCode));
     });
     return destinations;
   };
