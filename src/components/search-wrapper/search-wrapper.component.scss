@@ -34,10 +34,10 @@
     width: $b-big;
 
     & > * {
-      flex: 2;
+      width: 16.66%;
     }
     & .search-wrapper__submit-button {
-      flex: 3;
+      flex: 1;
     }
   }
 }
