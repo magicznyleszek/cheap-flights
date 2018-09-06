@@ -1,6 +1,14 @@
-<input
-  class="date-selector"
-  type="date"
-  ng-model="$ctrl.date"
-  ng-change="$ctrl.onInputChange()"
->
+<div class="date-selector" ng-class="{'date-selector--has-value': $ctrl.date}">
+  <label
+    class="date-selector__label"
+    ng-if="$ctrl.label"
+    ng-bind="$ctrl.label"
+  ></label>
+
+  <input
+    class="date-selector__input"
+    type="date"
+    ng-model="$ctrl.date"
+    ng-change="$ctrl.onInputChange()"
+  />
+</div>

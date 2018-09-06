@@ -4,6 +4,7 @@ import './date-selector.component.scss';
 
 const DateSelectorComponent = {
   bindings: {
+    label: '<',
     date: '<',
     onDateChange: '&'
   },

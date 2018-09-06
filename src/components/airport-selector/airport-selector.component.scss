@@ -39,8 +39,16 @@
 }
 
 .airport-selector__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   .airport-selector--active & {
     display: none;
+  }
+
+  .airport-selector--has-value & {
+    color: $c-ryanair-blue;
   }
 }
 

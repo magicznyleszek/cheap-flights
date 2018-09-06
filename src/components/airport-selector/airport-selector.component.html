@@ -1,6 +1,9 @@
 <div
   class="airport-selector"
-  ng-class="{'airport-selector--active': $ctrl.isActive}"
+  ng-class="{
+    'airport-selector--active': $ctrl.isActive,
+    'airport-selector--has-value': $ctrl.selectedIataCode
+  }"
   ng-keyup="$ctrl.onSelectKeyup($event)"
 >
   <label
@@ -9,7 +12,7 @@
     ng-focus="$ctrl.onInputFocus($event)"
     tabindex="0"
   >
-    {{$ctrl.getSelectedAirportName() || 'Select…'}}
+    {{$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'}}
   </label>
 
   <input

@@ -1,6 +1,18 @@
 @import "../../config/variables";
 
 .date-selector {
+  position: relative;
+}
+
+.date-selector__label {
+  bottom: 100%;
+  color: rgba($c-white, 0.75);
+  font-size: 0.75rem;
+  left: 0;
+  position: absolute;
+}
+
+.date-selector__input {
   background-color: $c-white;
   border-radius: $s-global-br;
   box-shadow: 0 0 0 1px $c-medium-blue;
@@ -11,4 +23,8 @@
   min-width: 8rem;
   padding: 0.25rem 0.5rem;
   width: 100%;
+
+  .date-selector--has-value & {
+    color: $c-ryanair-blue;
+  }
 }
