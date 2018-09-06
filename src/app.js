@@ -28,7 +28,7 @@ angular.module('cheapFlightsApp', [
       template: '<home-page></home-page>'
     })
     .state('results', {
-      url: '/results',
+      url: '/results?:source&:dest&:from&:to',
       template: '<results-page></results-page>'
     });
 });
