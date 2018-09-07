@@ -20,6 +20,7 @@
   display: block;
   height: $s-leading + 2 * 0.25rem;
   line-height: $s-leading;
+  -webkit-min-logical-width: calc(100% - 16px); // for mobile
   min-width: 8rem;
   padding: 0.25rem 0.5rem;
   width: 100%;
