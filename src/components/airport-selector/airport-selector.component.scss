@@ -25,19 +25,6 @@
   width: 100%;
 }
 
-.airport-selector__filter {
-  width: 100%;
-
-  .airport-selector--active & {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .airport-selector:not(.airport-selector--active) & {
-    display: none;
-  }
-}
-
 .airport-selector__value {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -50,6 +37,33 @@
   .airport-selector--has-value & {
     color: $c-ryanair-blue;
   }
+}
+
+.airport-selector--has-error {
+  .airport-selector__value,
+  .airport-selector__filter {
+    box-shadow: 0 0 0 1px $c-ruby;
+  }
+}
+
+.airport-selector--active .airport-selector__filter {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.airport-selector:not(.airport-selector--active) .airport-selector__filter {
+  display: none;
+}
+
+.airport-selector__error {
+  background-color: $c-lavender;
+  border-radius: $s-global-br;
+  color: $c-ruby;
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 1px);
 }
 
 .airport-selector__options {

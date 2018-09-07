@@ -47,37 +47,71 @@ export default function SearchWrapperController(AirportsService, SearchParamsSer
   });
 
   this.onSafeSubmit = () => {
-    // TODO verify form and display errors
-    const isValid = true;
+    const isValid = this.checkValidity();
     if (isValid) {
       this.onSubmit({ params: this.getSearchSubmitParams() });
       this.setURLParams();
     }
   };
 
+  this.checkValidity = () => {
+    let isValid = true;
+    this.sourceError = null;
+    this.destinationError = null;
+    this.startDateError = null;
+    this.endDateError = null;
+
+    if (this.sourceIataCode === null) {
+      this.sourceError = 'Choose your airport!';
+      isValid = false;
+    }
+    if (this.destinationIataCode === null) {
+      this.destinationError = 'Plane needs to land!';
+      isValid = false;
+    }
+    if (this.startDate === null) {
+      this.startDateError = 'Pick start date!';
+      isValid = false;
+    }
+    if (this.endDate === null) {
+      this.endDateError = 'Pick end date!';
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   this.sourceIataCode = null;
+  this.sourceError = null;
   this.sourceAirports = [];
   this.onSourceChange = (iataCode) => {
     this.sourceIataCode = iataCode;
     this.destinationIataCode = null;
+    this.sourceError = null;
     this.destinationAirports = AirportsService.getAirportDestinations(this.sourceIataCode);
   };
 
   this.destinationIataCode = null;
+  this.destinationError = null;
   this.destinationAirports = [];
   this.onDestinationChange = (iataCode) => {
     this.destinationIataCode = iataCode;
+    this.destinationError = null;
   };
 
   this.startDate = null;
+  this.startDateError = null;
   this.onStartDateChange = (date) => {
     this.startDate = date;
+    this.startDateError = null;
     this.fixDates();
   };
 
   this.endDate = null;
+  this.endDateError = null;
   this.onEndDateChange = (date) => {
     this.endDate = date;
+    this.endDateError = null;
     this.fixDates();
   };
 

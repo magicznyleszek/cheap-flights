@@ -2,10 +2,17 @@
   class="airport-selector"
   ng-class="{
     'airport-selector--active': $ctrl.isActive,
-    'airport-selector--has-value': $ctrl.selectedIataCode
+    'airport-selector--has-value': $ctrl.selectedIataCode,
+    'airport-selector--has-error': $ctrl.error
   }"
   ng-keyup="$ctrl.onSelectKeyup($event)"
 >
+  <span
+    class="airport-selector__error"
+    ng-if="$ctrl.error"
+    ng-bind="$ctrl.error"
+  ></span>
+
   <label
     class="airport-selector__value"
     ng-click="$ctrl.activate()"

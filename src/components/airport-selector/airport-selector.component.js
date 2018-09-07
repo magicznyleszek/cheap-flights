@@ -5,6 +5,7 @@ import './airport-selector.component.scss';
 const AirportSelectorComponent = {
   bindings: {
     placeholder: '<',
+    error: '<',
     selectedIataCode: '<',
     airports: '<',
     onSelectedChange: '&'

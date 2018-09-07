@@ -5,11 +5,22 @@
 }
 
 .date-selector__label {
-  bottom: 100%;
+  bottom: calc(100% + 1px);
   color: rgba($c-white, 0.75);
   font-size: 0.75rem;
   left: 0;
   position: absolute;
+}
+
+.date-selector__error {
+  background-color: $c-lavender;
+  border-radius: $s-global-br;
+  color: $c-ruby;
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 1px);
 }
 
 .date-selector__input {
@@ -27,5 +38,9 @@
 
   .date-selector--has-value & {
     color: $c-ryanair-blue;
+  }
+
+  .date-selector--has-error & {
+    box-shadow: 0 0 0 1px $c-ruby;
   }
 }

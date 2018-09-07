@@ -1,9 +1,21 @@
-<div class="date-selector" ng-class="{'date-selector--has-value': $ctrl.date}">
+<div
+  class="date-selector"
+  ng-class="{
+    'date-selector--has-value': $ctrl.date,
+    'date-selector--has-error': $ctrl.error
+  }"
+>
   <label
     class="date-selector__label"
     ng-if="$ctrl.label"
     ng-bind="$ctrl.label"
   ></label>
+
+  <span
+    class="date-selector__error"
+    ng-if="$ctrl.error"
+    ng-bind="$ctrl.error"
+  ></span>
 
   <input
     class="date-selector__input"

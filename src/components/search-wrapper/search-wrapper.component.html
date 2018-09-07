@@ -1,6 +1,7 @@
 <form class="search-wrapper" ng-submit="$ctrl.onSafeSubmit()">
   <airport-selector
     placeholder="'Source…'"
+    error="$ctrl.sourceError"
     airports="$ctrl.sourceAirports"
     selected-iata-code="$ctrl.sourceIataCode"
     on-selected-change="$ctrl.onSourceChange(iataCode)"
@@ -9,6 +10,7 @@
 
   <airport-selector
     placeholder="'Destination…'"
+    error="$ctrl.destinationError"
     airports="$ctrl.destinationAirports"
     selected-iata-code="$ctrl.destinationIataCode"
     on-selected-change="$ctrl.onDestinationChange(iataCode)"
@@ -17,12 +19,14 @@
 
   <date-selector
     label="'From:'"
+    error="$ctrl.startDateError"
     date="$ctrl.startDate"
     on-date-change="$ctrl.onStartDateChange(date)"
   ></date-selector>
 
   <date-selector
     label="'To:'"
+    error="$ctrl.endDateError"
     date="$ctrl.endDate"
     on-date-change="$ctrl.onEndDateChange(date)"
   ></date-selector>
