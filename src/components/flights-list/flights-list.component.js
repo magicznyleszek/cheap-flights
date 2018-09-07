@@ -6,7 +6,8 @@ const FlightsListComponent = {
   bindings: {
     isLoading: '<',
     emptyMessage: '<',
-    flights: '<'
+    flights: '<',
+    onFlightSelected: '&'
   },
   template,
   controller

@@ -36,6 +36,13 @@ export default function AirportsService($q, $http) {
     throw new Error('Failed getting Airports API Data!');
   };
 
+  this.getAirport = (iataCode) => {
+    if (APIData === null) {
+      throw new Error('Airports API Data not ready yet!');
+    }
+    return APIData.airports.find(airport => airport.iataCode === iataCode);
+  };
+
   this.getAirportDestinations = (iataCode) => {
     if (APIData === null) {
       throw new Error('Airports API Data not ready yet!');

@@ -1,4 +1,4 @@
-export default function ResultsPageController(CheapFlightsService) {
+export default function ResultsPageController(AirportsService, CheapFlightsService) {
   'ngInject';
 
   this.flights = null;
@@ -40,5 +40,11 @@ export default function ResultsPageController(CheapFlightsService) {
 
   this.onFindFlightsFailed = () => {
     this.isLoading = false;
+  };
+
+  this.onFlightSelected = (flight) => {
+    const sourceAirport = AirportsService.getAirport(this.currentParams.sourceIataCode);
+    const destinationAirport = AirportsService.getAirport(this.currentParams.destinationIataCode);
+    console.info(`From: ${sourceAirport.name}\nTo: ${destinationAirport.name}\nFlight data: ${JSON.stringify(flight)}`);
   };
 }
