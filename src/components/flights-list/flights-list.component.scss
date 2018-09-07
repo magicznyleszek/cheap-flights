@@ -1,9 +1,23 @@
 @import "../../config/variables";
 
 .flights-list__item {
-  background: pink;
+  background-color: $c-white;
   display: block;
-  margin: $s-leading;
+  padding: $s-leading/2;
 
-  min-height: $s-leading; // DEV
+  @media (max-width: #{$b-medium - 0.125rem}) {
+    border-bottom: 2px solid darken($c-background-grey, 5%);
+  }
+
+  @media (min-width: #{$b-medium}) {
+    border-radius: $s-global-br;
+    box-shadow: 0 0 0 2px darken($c-background-grey, 5%);
+    margin: $s-leading/2;
+  }
+
+  @media (min-width: #{$b-big}) {
+    margin: $s-leading auto;
+    max-width: calc(100vw - #{$s-leading * 2});
+    width: $b-big;
+  }
 }
