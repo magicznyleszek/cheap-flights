@@ -8,6 +8,6 @@ export default function FlightsListController() {
     // TODO: given better API response (currency code) and application language
     // we should use Intl.NumberFormat
     const roundedPrice = Number(price).toFixed(2);
-    return `${roundedPrice} ${currency}`;
+    return `${roundedPrice}${currency}`;
   };
 }

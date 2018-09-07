@@ -1,10 +1,22 @@
 @import "../../config/variables";
 @import "../../config/animations";
 
+.flights-list {
+  margin-bottom: $s-leading;
+
+  @media (min-width: #{$b-medium}) {
+    margin-bottom: $s-leading*2;
+    margin-top: $s-leading*2;
+  }
+}
+
 .flights-list__item {
+  align-items: center;
   background-color: $c-white;
-  display: block;
-  padding: $s-leading/2;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: $s-leading/2 $s-leading;
 
   @media (max-width: #{$b-medium - 0.125rem}) {
     border-bottom: 2px solid darken($c-background-grey, 5%);
@@ -24,17 +36,49 @@
 
   &.flights-list__item--empty-message {
     background-color: $c-background-grey;
-    text-align: center;
+    justify-content: center;
   }
 }
 
 .flights-list__date {
+  &::before {
+    color: $c-bright-blue;
+    font-size: 1.5rem;
+    margin-right: 4px;
+  }
   &.flights-list__date--liftoff::before {
     content: "\2191";
   }
   &.flights-list__date--landing::before {
     content: "\2193";
   }
+}
+
+.flights-list__buy-button {
+  background-color: $c-ryanair-yellow;
+  border-radius: $s-global-br;
+  box-shadow: 0 0 0 1px darken($c-ryanair-yellow, 20%);
+  color: rgba($c-charcoal, 0.8);
+  cursor: pointer;
+  min-width: 10rem;
+  padding: $s-leading/2;
+
+  &:hover,
+  &:focus {
+    color: rgba($c-charcoal, 0.9);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.flights-list__buy-button-price {
+  font-weight: bold;
+}
+
+.flights-list__buy-button-label {
+  text-transform: uppercase;
 }
 
 .flights-list__loading {

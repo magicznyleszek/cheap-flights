@@ -15,10 +15,16 @@
       ng-bind="::$ctrl.getHumanDate(flight.dateTo)"
     ></time>
 
-    <div
-      class="flights-list__price-tag"
-      ng-bind="::$ctrl.getHumanPrice(flight.price, flight.currency)"
-    ></div>
+    <button class="flights-list__buy-button">
+      <span
+        class="flights-list__buy-button-price"
+        ng-bind="::$ctrl.getHumanPrice(flight.price, flight.currency)"
+      ></span>
+
+      <span class="flights-list__buy-button-label">
+        buy
+      </span>
+    </button>
   </div>
 
   <div
