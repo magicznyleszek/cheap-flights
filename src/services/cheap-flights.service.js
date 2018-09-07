@@ -32,7 +32,7 @@ export default function CheapFlightsService($q, $http) {
   };
 
   this.onFindFlightsCompleted = (deferred, response) => {
-    deferred.resolve(response.flights);
+    deferred.resolve(response.data.flights);
   };
 
   this.onFindFlightsFailed = (deferred, response) => {
