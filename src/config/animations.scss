@@ -1,0 +1,61 @@
+@keyframes horizontal-flight-animation {
+  0% {
+    left: -10%;
+  }
+  100% {
+    left: 110%;
+  }
+}
+
+@mixin horizontal-flight {
+  animation-direction: normal;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-name: horizontal-flight-animation;
+  animation-play-state: running;
+  animation-timing-function: ease-in-out;
+}
+
+$s-float-x: 1%;
+$s-float-y: 0.5%;
+
+@keyframes float-animation {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  12.5% {
+    transform: translate(#{$s-float-x * 2}, #{$s-float-y * 2});
+  }
+  25% {
+    transform: translate(#{$s-float-x * 3}, 0%);
+  }
+  37.5% {
+    transform: translate(#{$s-float-x * 2}, #{$s-float-y * -2});
+  }
+  50% {
+    transform: translate(0%, 0%);
+  }
+  62.5% {
+    transform: translate(#{$s-float-x * -2}, #{$s-float-y * 2});
+  }
+  75% {
+    transform: translate(#{$s-float-x * -3}, 0%);
+  }
+  87.5% {
+    transform: translate(#{$s-float-x * -2}, #{$s-float-y * -2});
+  }
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+
+@mixin float {
+  animation-direction: normal;
+  animation-duration: 20s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-name: float-animation;
+  animation-play-state: running;
+  animation-timing-function: linear;
+}

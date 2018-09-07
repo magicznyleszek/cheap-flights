@@ -1,0 +1,64 @@
+@import "../../config/variables";
+@import "../../config/animations";
+
+.global-footer {
+  background-image: linear-gradient(to bottom, $c-root-bg 10%, $c-bright-blue);
+  min-height: $s-leading * 5;
+  overflow: hidden;
+  padding: $s-leading calc(calc(100vw - #{$b-big}) * 0.5);
+  position: relative;
+
+  &:hover .global-footer__clouds--back {
+    right: -40%;
+  }
+
+  &:hover .global-footer__clouds--front {
+    left: -40%;
+  }
+}
+
+.global-footer__text {
+  margin: 0 auto;
+  max-width: calc(100vw - #{$s-leading * 2});
+  padding: $s-leading/2 0;
+  position: relative;
+  text-align: center;
+  width: $b-big;
+  z-index: 2;
+
+  h1 {
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 0.75rem;
+  }
+}
+
+.global-footer__clouds {
+  @include float;
+  bottom: $s-leading;
+  display: block;
+  height: $s-leading * 4;
+  pointer-events: none;
+  position: absolute;
+  transition-duration: 5s;
+
+  .global-footer:hover & {
+    transition-delay: 200ms;
+  }
+
+  &.global-footer__clouds--front {
+    animation-delay: -1s;
+    left: 0;
+    transition-property: left;
+    z-index: 3;
+  }
+
+  &.global-footer__clouds--back {
+    animation-delay: -5s;
+    right: 0;
+    transition-property: right;
+    z-index: 1;
+  }
+}

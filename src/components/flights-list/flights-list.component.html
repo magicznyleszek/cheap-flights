@@ -3,9 +3,31 @@
     ng-repeat="flight in $ctrl.flights track by $index"
     class="flights-list__item"
   >
-    <span ng-bind="$ctrl.getHumanDate(flight.dateFrom)"></span>
-    <span ng-bind="$ctrl.getHumanDate(flight.dateTo)"></span>
-    <span ng-bind="::flight.currency"></span>
-    <span ng-bind="::flight.price"></span>
+    <time
+      class="flights-list__date flights-list__date--liftoff"
+      datetime="{{::flight.dateFrom}}"
+      ng-bind="::$ctrl.getHumanDate(flight.dateFrom)"
+    ></time>
+
+    <time
+      class="flights-list__date flights-list__date--landing"
+      datetime="{{::flight.dateTo}}"
+      ng-bind="::$ctrl.getHumanDate(flight.dateTo)"
+    ></time>
+
+    <div
+      class="flights-list__price-tag"
+      ng-bind="::$ctrl.getHumanPrice(flight.price, flight.currency)"
+    ></div>
+  </div>
+
+  <div
+    class="flights-list__item flights-list__item--empty-message"
+    ng-bind="$ctrl.emptyMessage"
+    ng-if="$ctrl.flights.length === 0"
+  ></div>
+
+  <div class="flights-list__loading" ng-if=$ctrl.isLoading>
+    <img ng-src="{{::$ctrl.planeSVG}}" alt="Loading…">
   </div>
 </div>

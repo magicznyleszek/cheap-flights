@@ -4,6 +4,8 @@ import './flights-list.component.scss';
 
 const FlightsListComponent = {
   bindings: {
+    isLoading: '<',
+    emptyMessage: '<',
     flights: '<'
   },
   template,

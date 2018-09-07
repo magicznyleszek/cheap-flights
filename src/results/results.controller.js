@@ -1,7 +1,7 @@
 export default function ResultsPageController(CheapFlightsService) {
   'ngInject';
 
-  this.flights = [];
+  this.flights = null;
   this.isLoading = true;
   this.currentParams = null;
 
@@ -12,7 +12,7 @@ export default function ResultsPageController(CheapFlightsService) {
   };
 
   this.clearData = () => {
-    this.flights = [];
+    this.flights = null;
     this.isLoading = true;
   };
 
@@ -31,7 +31,11 @@ export default function ResultsPageController(CheapFlightsService) {
 
   this.onFindFlightsCompleted = (flights) => {
     this.isLoading = false;
-    this.flights = this.flights.concat(flights);
+    if (this.flights === null) {
+      this.flights = flights;
+    } else {
+      this.flights = this.flights.concat(flights);
+    }
   };
 
   this.onFindFlightsFailed = () => {

@@ -2,16 +2,13 @@
 variables - all global and pallete variables for project
 *******************************************************************************/
 
-// primary colors
+// primary brand colors
 $c-ryanair-blue: rgb(7, 53, 144);
 $c-ryanair-yellow: rgb(241, 201, 51);
 $c-bright-blue: rgb(32, 145, 235);
-// extended colors
-$c-medium-blue: rgb(13, 73, 192);
-$c-dark-blue: rgb(6, 43, 113);
-$c-washed-blue: rgb(205, 215, 233);
-$c-very-very-dark-grey: rgb(46, 46, 46);
-$c-pale-grey: rgb(174, 179, 189);
+// secondary colors
+$c-charcoal: rgb(46, 46, 46);
+$c-pale-grey: rgb(180, 180, 180);
 $c-background-grey: rgb(244, 244, 244);
 $c-white: rgb(255, 255, 255);
 
@@ -22,7 +19,7 @@ $font-monospace: "Input", "Office Code Pro", "Source Code Pro", "Fira Mono",
   "DejaVu Sans Mono", monospace;
 
 // base
-$c-root-txt: $c-very-very-dark-grey;
+$c-root-txt: $c-charcoal;
 $c-root-bg: $c-background-grey;
 $c-root-focus: $c-ryanair-yellow;
 

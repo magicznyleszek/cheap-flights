@@ -1,4 +1,5 @@
 @import "../../config/variables";
+@import "../../config/animations";
 
 .flights-list__item {
   background-color: $c-white;
@@ -19,5 +20,33 @@
     margin: $s-leading auto;
     max-width: calc(100vw - #{$s-leading * 2});
     width: $b-big;
+  }
+
+  &.flights-list__item--empty-message {
+    background-color: $c-background-grey;
+    text-align: center;
+  }
+}
+
+.flights-list__date {
+  &.flights-list__date--liftoff::before {
+    content: "\2191";
+  }
+  &.flights-list__date--landing::before {
+    content: "\2193";
+  }
+}
+
+.flights-list__loading {
+  height: $s-leading * 2;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  img {
+    @include horizontal-flight;
+    height: $s-leading * 2;
+    max-width: 100%;
+    position: absolute;
   }
 }

@@ -45,8 +45,8 @@
 .search-wrapper__submit-button {
   background-color: $c-ryanair-yellow;
   border-radius: $s-global-br;
-  box-shadow: 0 0 0 1px rgba($c-very-very-dark-grey, 0.25);
-  color: rgba($c-very-very-dark-grey, 0.8);
+  box-shadow: 0 0 0 1px rgba($c-charcoal, 0.25);
+  color: rgba($c-charcoal, 0.8);
   cursor: pointer;
   display: block;
   font-size: 0.8rem;
@@ -61,7 +61,7 @@
 
   &:hover,
   &:focus {
-    color: rgba($c-very-very-dark-grey, 0.9);
+    color: rgba($c-charcoal, 0.9);
   }
 
   &:active {

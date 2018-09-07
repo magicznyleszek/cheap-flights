@@ -1,11 +1,13 @@
-<div>
-  <main-menu></main-menu>
+<div class="results-page">
+  <global-menu></global-menu>
 
   <search-wrapper on-submit="$ctrl.onSearchSubmit(params)"></search-wrapper>
 
-  <flights-list flights="$ctrl.flights"></flights-list>
+  <flights-list
+    flights="$ctrl.flights"
+    is-loading="$ctrl.isLoading"
+    empty-message="'Could not find any flights :('"
+  ></flights-list>
 
-  <div ng-if=$ctrl.isLoading>
-    Loading…
-  </div>
+  <global-footer></global-footer>
 </div>
