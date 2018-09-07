@@ -58,18 +58,32 @@
 	
 	var _components2 = _interopRequireDefault(_components);
 	
-	var _home = __webpack_require__(211);
+	var _home = __webpack_require__(245);
 	
-	var _services = __webpack_require__(218);
+	var _home2 = _interopRequireDefault(_home);
+	
+	var _results = __webpack_require__(248);
+	
+	var _results2 = _interopRequireDefault(_results);
+	
+	var _services = __webpack_require__(251);
+	
+	__webpack_require__(255);
+	
+	__webpack_require__(257);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	_angular2.default.module('myApp', [_angularUiRouter2.default, _components2.default]).component('homePage', _home.HomeComponent).service('AiportsService', _services.AirportsService).service('CheapFlightService', _services.CheapFlightService).config(["$stateProvider", function ($stateProvider) {
+	_angular2.default.module('cheapFlightsApp', [_angularUiRouter2.default, _components2.default]).component('homePage', _home2.default).component('resultsPage', _results2.default).service('AirportsService', _services.AirportsService).service('CheapFlightsService', _services.CheapFlightsService).service('SearchParamsService', _services.SearchParamsService).config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
 	  'ngInject';
 	
+	  $urlRouterProvider.otherwise('/');
 	  $stateProvider.state('home', {
-	    url: '',
+	    url: '/',
 	    template: '<home-page></home-page>'
+	  }).state('results', {
+	    url: '/results?:source&:dest&:from&:to',
+	    template: '<results-page></results-page>'
 	  });
 	}]);
 
@@ -44809,13 +44823,35 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _dateWrapper = __webpack_require__(79);
+	var _airportSelector = __webpack_require__(79);
 	
-	var _dateSelector = __webpack_require__(208);
+	var _airportSelector2 = _interopRequireDefault(_airportSelector);
+	
+	var _dateSelector = __webpack_require__(87);
+	
+	var _dateSelector2 = _interopRequireDefault(_dateSelector);
+	
+	var _flightsList = __webpack_require__(92);
+	
+	var _flightsList2 = _interopRequireDefault(_flightsList);
+	
+	var _globalMenu = __webpack_require__(224);
+	
+	var _globalMenu2 = _interopRequireDefault(_globalMenu);
+	
+	var _globalFooter = __webpack_require__(230);
+	
+	var _globalFooter2 = _interopRequireDefault(_globalFooter);
+	
+	var _searchWrapper = __webpack_require__(237);
+	
+	var _searchWrapper2 = _interopRequireDefault(_searchWrapper);
+	
+	__webpack_require__(242);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = _angular2.default.module('app.components', []).component('dateWrapper', _dateWrapper.DateWrapperComponent).component('dateSelector', _dateSelector.DateSelectorComponent).name;
+	exports.default = _angular2.default.module('app.components', []).component('airportSelector', _airportSelector2.default).component('dateSelector', _dateSelector2.default).component('flightsList', _flightsList2.default).component('globalMenu', _globalMenu2.default).component('globalFooter', _globalFooter2.default).component('searchWrapper', _searchWrapper2.default).name;
 
 /***/ },
 /* 79 */
@@ -44826,71 +44862,816 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DateWrapperComponent = undefined;
 	
-	var _dateWrapperComponent = __webpack_require__(80);
+	var _airportSelectorComponent = __webpack_require__(80);
 	
-	var _dateWrapperComponent2 = _interopRequireDefault(_dateWrapperComponent);
+	var _airportSelectorComponent2 = _interopRequireDefault(_airportSelectorComponent);
 	
-	var _dateWrapper = __webpack_require__(81);
+	var _airportSelector = __webpack_require__(81);
 	
-	var _dateWrapper2 = _interopRequireDefault(_dateWrapper);
+	var _airportSelector2 = _interopRequireDefault(_airportSelector);
+	
+	__webpack_require__(82);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var DateWrapperComponent = exports.DateWrapperComponent = {
+	var AirportSelectorComponent = {
 	  bindings: {
-	    startDate: '=',
-	    endDate: '='
+	    placeholder: '<',
+	    selectedIataCode: '<',
+	    airports: '<',
+	    onSelectedChange: '&'
 	  },
-	  template: _dateWrapperComponent2.default,
-	  controller: _dateWrapper2.default
+	  template: _airportSelectorComponent2.default,
+	  controller: _airportSelector2.default
 	};
+	
+	exports.default = AirportSelectorComponent;
 
 /***/ },
 /* 80 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"control is-horizontal\">\n  <div class=\"control-label\">\n    <label class=\"label\">\n      Fly out:\n    </label>\n  </div>\n\n  <div class=\"control\">\n    <date-selector date=\"$ctrl.startDate\">\n    </date-selector>\n  </div>\n\n  <div class=\"control-label\">\n    <label class=\"label\">\n      Fly back:\n    </label>\n  </div>\n  <div class=\"control\">\n    <date-selector date=\"$ctrl.endDate\">\n    </date-selector>\n  </div>\n</div>\n"
+	module.exports = "<div\n  class=\"airport-selector\"\n  ng-class=\"{\n    'airport-selector--active': $ctrl.isActive,\n    'airport-selector--has-value': $ctrl.selectedIataCode\n  }\"\n  ng-keyup=\"$ctrl.onSelectKeyup($event)\"\n>\n  <label\n    class=\"airport-selector__value\"\n    ng-click=\"$ctrl.activate()\"\n    ng-focus=\"$ctrl.onInputFocus($event)\"\n    tabindex=\"0\"\n  >\n    {{$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'}}\n  </label>\n\n  <input\n    class=\"airport-selector__filter\"\n    js-airport-selector-filter\n    type=\"text\"\n    ng-model=\"$ctrl.filterValue\"\n    ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n  ></input>\n\n  <ol class=\"airport-selector__options\">\n    <li\n      class=\"airport-selector__option\"\n      ng-class=\"{'airport-selector__option--selected': airport.iataCode === $ctrl.selectedIataCode}\"\n      ng-repeat=\"airport in $ctrl.filteredAirports() as filteredAirports\"\n      ng-click=\"$ctrl.selectAirport(airport.iataCode)\"\n      ng-keyup=\"$ctrl.onOptionKeyup($event, airport.iataCode)\"\n      ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n      tabindex=\"0\"\n    >{{airport.name}}</li>\n\n    <li\n      class=\"airport-selector__option airport-selector__option--message\"\n      ng-if=\"filteredAirports.length === 0\"\n    >No airport</li>\n  </ol>\n</div>\n"
 
 /***/ },
 /* 81 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 	
-	DateWrapperController.$inject = ["$scope"];
+	AirportSelectorController.$inject = ["$element", "$timeout", "$scope"];
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = DateWrapperController;
-	
-	var _moment = __webpack_require__(82);
-	
-	var _moment2 = _interopRequireDefault(_moment);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function DateWrapperController($scope) {
+	exports.default = AirportSelectorController;
+	function AirportSelectorController($element, $timeout, $scope) {
 	  'ngInject';
 	
 	  var _this = this;
 	
-	  $scope.$watch('$ctrl.startDate', function () {
-	    if ((0, _moment2.default)(_this.startDate) > (0, _moment2.default)(_this.endDate)) {
-	      _this.endDate = (0, _moment2.default)(_this.startDate).add(2, 'd').toDate();
-	    }
-	  });
+	  this.isActive = false;
+	  this.filterValue = '';
 	
-	  $scope.$watch('$ctrl.endDate', function () {
-	    if ((0, _moment2.default)(_this.endDate) < (0, _moment2.default)(_this.startDate)) {
-	      _this.startDate = (0, _moment2.default)(_this.endDate).subtract(2, 'd').toDate();
+	  this.activate = function () {
+	    _this.isActive = true;
+	    document.addEventListener('click', _this.checkOutsideCloseBound);
+	    $timeout(function () {
+	      $element[0].querySelector('[js-airport-selector-filter]').focus();
+	    });
+	  };
+	
+	  this.deactivate = function () {
+	    _this.isActive = false;
+	    document.removeEventListener('click', _this.checkOutsideCloseBound);
+	    _this.filterValue = '';
+	  };
+	
+	  this.selectAirport = function (iataCode) {
+	    _this.onSelectedChange({ iataCode: iataCode });
+	    _this.deactivate();
+	  };
+	
+	  this.getSelectedAirportName = function () {
+	    var selectedAirport = _this.airports.find(function (airport) {
+	      return airport.iataCode === _this.selectedIataCode;
+	    });
+	    return selectedAirport ? selectedAirport.name : null;
+	  };
+	
+	  this.filteredAirports = function () {
+	    return _this.airports.filter(function (airport) {
+	      return airport.name.toLowerCase().startsWith(_this.filterValue.toLowerCase());
+	    });
+	  };
+	
+	  this.onOptionKeyup = function ($event, iataCode) {
+	    if ($event.key === 'Enter') {
+	      _this.selectAirport(iataCode);
 	    }
-	  });
+	  };
+	
+	  this.onSelectKeyup = function ($event) {
+	    if ($event.key === 'Escape') {
+	      _this.deactivate();
+	    }
+	    // close selector if tabbing out of it
+	    if ($event.key === 'Tab') {
+	      _this.checkOutsideClose($event);
+	    }
+	  };
+	
+	  this.onInputFocus = function () {
+	    if (!_this.isActive) {
+	      _this.activate();
+	    }
+	  };
+	
+	  this.onFocusableChildBlur = function ($event) {
+	    if (!$element[0].contains($event.relatedTarget)) {
+	      _this.deactivate();
+	    }
+	  };
+	
+	  this.checkOutsideClose = function (evt) {
+	    if ($element !== evt.target && !$element[0].contains(evt.target)) {
+	      $scope.$apply(_this.deactivate);
+	    }
+	  };
+	
+	  this.checkOutsideCloseBound = this.checkOutsideClose.bind(this);
 	}
 
 /***/ },
 /* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(83);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./airport-selector.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./airport-selector.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n.airport-selector {\n  display: block;\n  min-width: 8rem;\n  position: relative;\n  width: 100%;\n  z-index: 901; }\n  .airport-selector.airport-selector--active {\n    z-index: 902; }\n\n.airport-selector__value,\n.airport-selector__filter {\n  background-color: white;\n  border-radius: 0.313rem;\n  box-shadow: 0 0 0 1px #073590;\n  color: #2e2e2e;\n  display: block;\n  height: 2rem;\n  line-height: 1.5rem;\n  padding: 0.25rem 0.5rem;\n  width: 100%; }\n\n.airport-selector__filter {\n  width: 100%; }\n  .airport-selector--active .airport-selector__filter {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0; }\n  .airport-selector:not(.airport-selector--active) .airport-selector__filter {\n    display: none; }\n\n.airport-selector__value {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap; }\n  .airport-selector--active .airport-selector__value {\n    display: none; }\n  .airport-selector--has-value .airport-selector__value {\n    color: #073590; }\n\n.airport-selector__options {\n  background: white;\n  border-bottom-left-radius: 0.313rem;\n  border-bottom-right-radius: 0.313rem;\n  border-top: 1px solid #dbedfc;\n  box-shadow: 0 2px 3px -2px rgba(0, 0, 0, 0.5);\n  list-style: none;\n  max-height: 9rem;\n  overflow-x: hidden;\n  overflow-y: auto;\n  position: absolute;\n  top: 100%;\n  width: 100%; }\n  .airport-selector__options:empty {\n    content: \"Nothing\"; }\n  .airport-selector:not(.airport-selector--active) .airport-selector__options {\n    display: none; }\n\n.airport-selector__option {\n  background-color: white;\n  border-radius: 0.75rem;\n  cursor: pointer;\n  line-height: 1.5rem;\n  margin: 0.25rem;\n  padding: 0 0.5rem; }\n  .airport-selector__option:hover {\n    background-color: #dbedfc; }\n  .airport-selector__option:active, .airport-selector__option.airport-selector__option--seleceted {\n    background-color: #acd6f8; }\n  .airport-selector__option:focus {\n    background-color: #f1c933; }\n  .airport-selector__option.airport-selector__option--message {\n    color: #b4b4b4;\n    pointer-events: none; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/airport-selector/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/airport-selector/src/components/airport-selector/airport-selector.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACAhF;EACE,eAAc;EACd,gBAAe;EACf,mBAAkB;EAClB,YAAW;EACX,aD0BgB,ECrBjB;EAVD;IAQI,aDuBc,ECtBf;;AAGH;;EAEE,wBDJ0B;ECK1B,wBDaoB;ECZpB,8BDb8B;ECc9B,eDV0B;ECW1B,eAAc;EACd,aAAgC;EAChC,oBDKiC;ECJjC,wBAAuB;EACvB,YAAW,EACZ;;AAED;EACE,YAAW,EAUZ;EARC;IACE,6BAA4B;IAC5B,8BAA6B,EAC9B;EAED;IACE,cAAa,EACd;;AAGH;EACE,iBAAgB;EAChB,wBAAuB;EACvB,oBAAmB,EASpB;EAPC;IACE,cAAa,EACd;EAED;IACE,eD7C4B,EC8C7B;;AAGH;EACE,kBD3C0B;EC4C1B,oCD1BoB;EC2BpB,qCD3BoB;EC4BpB,8BAAkD;EAClD,8CAA6C;EAC7C,iBAAgB;EAChB,iBAA0B;EAC1B,mBAAkB;EAClB,iBAAgB;EAChB,mBAAkB;EAClB,UAAS;EACT,YAAW,EASZ;EArBD;IAeI,mBAAkB,EACnB;EAED;IACE,cAAa,EACd;;AAGH;EACE,wBDlE0B;ECmE1B,uBAA+B;EAC/B,gBAAe;EACf,oBDtDiC;ECuDjC,gBAAe;EACf,kBAAiB,EAmBlB;EAzBD;IASI,0BAA8C,EAC/C;EAVH;IAcI,0BAA8C,EAC/C;EAfH;IAkBI,0BDzFgC,EC0FjC;EAnBH;IAsBI,eDzF4B;IC0F5B,qBAAoB,EACrB","file":"airport-selector.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@import \"../../config/variables\";\n\n.airport-selector {\n  display: block;\n  min-width: 8rem;\n  position: relative;\n  width: 100%;\n  z-index: $z-global-top + 1;\n\n  &.airport-selector--active {\n    z-index: $z-global-top + 2;\n  }\n}\n\n.airport-selector__value,\n.airport-selector__filter {\n  background-color: $c-white;\n  border-radius: $s-global-br;\n  box-shadow: 0 0 0 1px $c-ryanair-blue;\n  color: $c-charcoal;\n  display: block;\n  height: $s-leading + 2 * 0.25rem;\n  line-height: $s-leading;\n  padding: 0.25rem 0.5rem;\n  width: 100%;\n}\n\n.airport-selector__filter {\n  width: 100%;\n\n  .airport-selector--active & {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n  }\n\n  .airport-selector:not(.airport-selector--active) & {\n    display: none;\n  }\n}\n\n.airport-selector__value {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n\n  .airport-selector--active & {\n    display: none;\n  }\n\n  .airport-selector--has-value & {\n    color: $c-ryanair-blue;\n  }\n}\n\n.airport-selector__options {\n  background: $c-white;\n  border-bottom-left-radius: $s-global-br;\n  border-bottom-right-radius: $s-global-br;\n  border-top: 1px solid lighten($c-bright-blue, 40%);\n  box-shadow: 0 2px 3px -2px rgba(0, 0, 0, 0.5);\n  list-style: none;\n  max-height: $s-leading * 6;\n  overflow-x: hidden;\n  overflow-y: auto;\n  position: absolute;\n  top: 100%;\n  width: 100%;\n\n  &:empty {\n    content: \"Nothing\";\n  }\n\n  .airport-selector:not(.airport-selector--active) & {\n    display: none;\n  }\n}\n\n.airport-selector__option {\n  background-color: $c-white;\n  border-radius: $s-leading * 0.5;\n  cursor: pointer;\n  line-height: $s-leading;\n  margin: 0.25rem;\n  padding: 0 0.5rem;\n\n  &:hover {\n    background-color: lighten($c-bright-blue, 40%);\n  }\n\n  &:active,\n  &.airport-selector__option--seleceted {\n    background-color: lighten($c-bright-blue, 30%);\n  }\n\n  &:focus {\n    background-color: $c-root-focus;\n  }\n\n  &.airport-selector__option--message {\n    color: $c-pale-grey;\n    pointer-events: none;\n  }\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 84 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function(useSourceMap) {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			return this.map(function (item) {
+				var content = cssWithMappingToString(item, useSourceMap);
+				if(item[2]) {
+					return "@media " + item[2] + "{" + content + "}";
+				} else {
+					return content;
+				}
+			}).join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+	
+	function cssWithMappingToString(item, useSourceMap) {
+		var content = item[1] || '';
+		var cssMapping = item[3];
+		if (!cssMapping) {
+			return content;
+		}
+	
+		if (useSourceMap && typeof btoa === 'function') {
+			var sourceMapping = toComment(cssMapping);
+			var sourceURLs = cssMapping.sources.map(function (source) {
+				return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+			});
+	
+			return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+		}
+	
+		return [content].join('\n');
+	}
+	
+	// Adapted from convert-source-map (MIT)
+	function toComment(sourceMap) {
+		// eslint-disable-next-line no-undef
+		var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+		var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+	
+		return '/*# ' + data + ' */';
+	}
+
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			// Test for IE <= 9 as proposed by Browserhacks
+			// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+			// Tests for existence of standard globals is to allow style-loader 
+			// to operate correctly into non-standard environments
+			// @see https://github.com/webpack-contrib/style-loader/issues/177
+			return window && document && document.all && !window.atob;
+		}),
+		getElement = (function(fn) {
+			var memo = {};
+			return function(selector) {
+				if (typeof memo[selector] === "undefined") {
+					memo[selector] = fn.call(this, selector);
+				}
+				return memo[selector]
+			};
+		})(function (styleTarget) {
+			return document.querySelector(styleTarget)
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [],
+		fixUrls = __webpack_require__(86);
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+	
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the <head> element
+		if (typeof options.insertInto === "undefined") options.insertInto = "head";
+	
+		// By default, add <style> tags to the bottom of the target
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	};
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var styleTarget = getElement(options.insertInto)
+		if (!styleTarget) {
+			throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+		}
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				styleTarget.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			styleTarget.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		options.attrs.type = "text/css";
+	
+		attachTagAttrs(styleElement, options.attrs);
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		options.attrs.type = "text/css";
+		options.attrs.rel = "stylesheet";
+	
+		attachTagAttrs(linkElement, options.attrs);
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function attachTagAttrs(element, attrs) {
+		Object.keys(attrs).forEach(function (key) {
+			element.setAttribute(key, attrs[key]);
+		});
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement, options);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, options, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+		*/
+		var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+	
+		if (options.convertToAbsoluteUrls || autoFixUrls){
+			css = fixUrls(css);
+		}
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 86 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+	 * embed the css on the page. This breaks all relative urls because now they are relative to a
+	 * bundle instead of the current page.
+	 *
+	 * One solution is to only use full urls, but that may be impossible.
+	 *
+	 * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+	 *
+	 * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+	 *
+	 */
+	
+	module.exports = function (css) {
+	  // get current location
+	  var location = typeof window !== "undefined" && window.location;
+	
+	  if (!location) {
+	    throw new Error("fixUrls requires window.location");
+	  }
+	
+		// blank or null?
+		if (!css || typeof css !== "string") {
+		  return css;
+	  }
+	
+	  var baseUrl = location.protocol + "//" + location.host;
+	  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+	
+		// convert each url(...)
+		/*
+		This regular expression is just a way to recursively match brackets within
+		a string.
+	
+		 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+		   (  = Start a capturing group
+		     (?:  = Start a non-capturing group
+		         [^)(]  = Match anything that isn't a parentheses
+		         |  = OR
+		         \(  = Match a start parentheses
+		             (?:  = Start another non-capturing groups
+		                 [^)(]+  = Match anything that isn't a parentheses
+		                 |  = OR
+		                 \(  = Match a start parentheses
+		                     [^)(]*  = Match anything that isn't a parentheses
+		                 \)  = Match a end parentheses
+		             )  = End Group
+	              *\) = Match anything and then a close parens
+	          )  = Close non-capturing group
+	          *  = Match anything
+	       )  = Close capturing group
+		 \)  = Match a close parens
+	
+		 /gi  = Get all matches, not the first.  Be case insensitive.
+		 */
+		var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+			// strip quotes (if they exist)
+			var unquotedOrigUrl = origUrl
+				.trim()
+				.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+				.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+	
+			// already a full url? no change
+			if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
+			  return fullMatch;
+			}
+	
+			// convert the url to a full url
+			var newUrl;
+	
+			if (unquotedOrigUrl.indexOf("//") === 0) {
+			  	//TODO: should we add protocol?
+				newUrl = unquotedOrigUrl;
+			} else if (unquotedOrigUrl.indexOf("/") === 0) {
+				// path should be relative to the base url
+				newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+			} else {
+				// path should be relative to current directory
+				newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+			}
+	
+			// send back the fixed url(...)
+			return "url(" + JSON.stringify(newUrl) + ")";
+		});
+	
+		// send back the fixed css
+		return fixedCss;
+	};
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _dateSelectorComponent = __webpack_require__(88);
+	
+	var _dateSelectorComponent2 = _interopRequireDefault(_dateSelectorComponent);
+	
+	var _dateSelector = __webpack_require__(89);
+	
+	var _dateSelector2 = _interopRequireDefault(_dateSelector);
+	
+	__webpack_require__(90);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var DateSelectorComponent = {
+	  bindings: {
+	    label: '<',
+	    date: '<',
+	    onDateChange: '&'
+	  },
+	  template: _dateSelectorComponent2.default,
+	  controller: _dateSelector2.default
+	};
+	
+	exports.default = DateSelectorComponent;
+
+/***/ },
+/* 88 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"date-selector\" ng-class=\"{'date-selector--has-value': $ctrl.date}\">\n  <label\n    class=\"date-selector__label\"\n    ng-if=\"$ctrl.label\"\n    ng-bind=\"$ctrl.label\"\n  ></label>\n\n  <input\n    class=\"date-selector__input\"\n    type=\"date\"\n    ng-model=\"$ctrl.date\"\n    ng-change=\"$ctrl.onInputChange()\"\n  />\n</div>\n"
+
+/***/ },
+/* 89 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = DateSelectorController;
+	function DateSelectorController() {
+	  var _this = this;
+	
+	  this.onInputChange = function () {
+	    _this.onDateChange({ date: _this.date });
+	  };
+	}
+
+/***/ },
+/* 90 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(91);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./date-selector.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./date-selector.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n.date-selector {\n  position: relative; }\n\n.date-selector__label {\n  bottom: 100%;\n  color: rgba(255, 255, 255, 0.75);\n  font-size: 0.75rem;\n  left: 0;\n  position: absolute; }\n\n.date-selector__input {\n  background-color: white;\n  border-radius: 0.313rem;\n  box-shadow: 0 0 0 1px #073590;\n  color: #2e2e2e;\n  display: block;\n  height: 2rem;\n  line-height: 1.5rem;\n  min-width: 8rem;\n  padding: 0.25rem 0.5rem;\n  width: 100%; }\n  .date-selector--has-value .date-selector__input {\n    color: #073590; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/date-selector/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/date-selector/src/components/date-selector/date-selector.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACAhF;EACE,mBAAkB,EACnB;;AAED;EACE,aAAY;EACZ,iCDI0B;ECH1B,mBAAkB;EAClB,QAAO;EACP,mBAAkB,EACnB;;AAED;EACE,wBDH0B;ECI1B,wBDcoB;ECbpB,8BDZ8B;ECa9B,eDT0B;ECU1B,eAAc;EACd,aAAgC;EAChC,oBDMiC;ECLjC,gBAAe;EACf,wBAAuB;EACvB,YAAW,EAKZ;EAHC;IACE,eDtB4B,ECuB7B","file":"date-selector.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@import \"../../config/variables\";\n\n.date-selector {\n  position: relative;\n}\n\n.date-selector__label {\n  bottom: 100%;\n  color: rgba($c-white, 0.75);\n  font-size: 0.75rem;\n  left: 0;\n  position: absolute;\n}\n\n.date-selector__input {\n  background-color: $c-white;\n  border-radius: $s-global-br;\n  box-shadow: 0 0 0 1px $c-ryanair-blue;\n  color: $c-charcoal;\n  display: block;\n  height: $s-leading + 2 * 0.25rem;\n  line-height: $s-leading;\n  min-width: 8rem;\n  padding: 0.25rem 0.5rem;\n  width: 100%;\n\n  .date-selector--has-value & {\n    color: $c-ryanair-blue;\n  }\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _flightsListComponent = __webpack_require__(93);
+	
+	var _flightsListComponent2 = _interopRequireDefault(_flightsListComponent);
+	
+	var _flightsList = __webpack_require__(94);
+	
+	var _flightsList2 = _interopRequireDefault(_flightsList);
+	
+	__webpack_require__(222);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var FlightsListComponent = {
+	  bindings: {
+	    isLoading: '<',
+	    emptyMessage: '<',
+	    flights: '<',
+	    onFlightSelected: '&'
+	  },
+	  template: _flightsListComponent2.default,
+	  controller: _flightsList2.default
+	};
+	
+	exports.default = FlightsListComponent;
+
+/***/ },
+/* 93 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"flights-list\">\n  <div\n    ng-repeat=\"flight in $ctrl.flights track by $index\"\n    class=\"flights-list__item\"\n  >\n    <time\n      class=\"flights-list__date flights-list__date--liftoff\"\n      datetime=\"{{::flight.dateFrom}}\"\n      ng-bind=\"::$ctrl.getHumanDate(flight.dateFrom)\"\n    ></time>\n\n    <time\n      class=\"flights-list__date flights-list__date--landing\"\n      datetime=\"{{::flight.dateTo}}\"\n      ng-bind=\"::$ctrl.getHumanDate(flight.dateTo)\"\n    ></time>\n\n    <button\n      class=\"flights-list__buy-button\"\n      ng-click=\"$ctrl.onFlightSelected({flight})\"\n    >\n      <span\n        class=\"flights-list__buy-button-price\"\n        ng-bind=\"::$ctrl.getHumanPrice(flight.price, flight.currency)\"\n      ></span>\n\n      <span class=\"flights-list__buy-button-label\">\n        buy\n      </span>\n    </button>\n  </div>\n\n  <div\n    class=\"flights-list__item flights-list__item--empty-message\"\n    ng-bind=\"$ctrl.emptyMessage\"\n    ng-if=\"$ctrl.flights.length === 0\"\n  ></div>\n\n  <div class=\"flights-list__loading\" ng-if=$ctrl.isLoading>\n    <img ng-src=\"{{::$ctrl.planeSVG}}\" alt=\"Loading…\">\n  </div>\n</div>\n"
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = FlightsListController;
+	
+	var _moment = __webpack_require__(95);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	var _plane = __webpack_require__(221);
+	
+	var _plane2 = _interopRequireDefault(_plane);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function FlightsListController() {
+	  this.planeSVG = _plane2.default;
+	
+	  this.getHumanDate = function (dateString) {
+	    return (0, _moment2.default)(dateString).format('dddd lll');
+	  };
+	
+	  this.getHumanPrice = function (price, currency) {
+	    // TODO: given better API response (currency code) and application language
+	    // we should use Intl.NumberFormat
+	    var roundedPrice = Number(price).toFixed(2);
+	    return '' + roundedPrice + currency;
+	  };
+	}
+
+/***/ },
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -46728,7 +47509,7 @@
 	            try {
 	                oldLocale = globalLocale._abbr;
 	                var aliasedRequire = require;
-	                __webpack_require__(84)("./" + name);
+	                __webpack_require__(97)("./" + name);
 	                getSetGlobalLocale(oldLocale);
 	            } catch (e) {}
 	        }
@@ -49400,10 +50181,10 @@
 	
 	})));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(83)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(96)(module)))
 
 /***/ },
-/* 83 */
+/* 96 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -49419,256 +50200,256 @@
 
 
 /***/ },
-/* 84 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 85,
-		"./af.js": 85,
-		"./ar": 86,
-		"./ar-dz": 87,
-		"./ar-dz.js": 87,
-		"./ar-kw": 88,
-		"./ar-kw.js": 88,
-		"./ar-ly": 89,
-		"./ar-ly.js": 89,
-		"./ar-ma": 90,
-		"./ar-ma.js": 90,
-		"./ar-sa": 91,
-		"./ar-sa.js": 91,
-		"./ar-tn": 92,
-		"./ar-tn.js": 92,
-		"./ar.js": 86,
-		"./az": 93,
-		"./az.js": 93,
-		"./be": 94,
-		"./be.js": 94,
-		"./bg": 95,
-		"./bg.js": 95,
-		"./bm": 96,
-		"./bm.js": 96,
-		"./bn": 97,
-		"./bn.js": 97,
-		"./bo": 98,
-		"./bo.js": 98,
-		"./br": 99,
-		"./br.js": 99,
-		"./bs": 100,
-		"./bs.js": 100,
-		"./ca": 101,
-		"./ca.js": 101,
-		"./cs": 102,
-		"./cs.js": 102,
-		"./cv": 103,
-		"./cv.js": 103,
-		"./cy": 104,
-		"./cy.js": 104,
-		"./da": 105,
-		"./da.js": 105,
-		"./de": 106,
-		"./de-at": 107,
-		"./de-at.js": 107,
-		"./de-ch": 108,
-		"./de-ch.js": 108,
-		"./de.js": 106,
-		"./dv": 109,
-		"./dv.js": 109,
-		"./el": 110,
-		"./el.js": 110,
-		"./en-au": 111,
-		"./en-au.js": 111,
-		"./en-ca": 112,
-		"./en-ca.js": 112,
-		"./en-gb": 113,
-		"./en-gb.js": 113,
-		"./en-ie": 114,
-		"./en-ie.js": 114,
-		"./en-il": 115,
-		"./en-il.js": 115,
-		"./en-nz": 116,
-		"./en-nz.js": 116,
-		"./eo": 117,
-		"./eo.js": 117,
-		"./es": 118,
-		"./es-do": 119,
-		"./es-do.js": 119,
-		"./es-us": 120,
-		"./es-us.js": 120,
-		"./es.js": 118,
-		"./et": 121,
-		"./et.js": 121,
-		"./eu": 122,
-		"./eu.js": 122,
-		"./fa": 123,
-		"./fa.js": 123,
-		"./fi": 124,
-		"./fi.js": 124,
-		"./fo": 125,
-		"./fo.js": 125,
-		"./fr": 126,
-		"./fr-ca": 127,
-		"./fr-ca.js": 127,
-		"./fr-ch": 128,
-		"./fr-ch.js": 128,
-		"./fr.js": 126,
-		"./fy": 129,
-		"./fy.js": 129,
-		"./gd": 130,
-		"./gd.js": 130,
-		"./gl": 131,
-		"./gl.js": 131,
-		"./gom-latn": 132,
-		"./gom-latn.js": 132,
-		"./gu": 133,
-		"./gu.js": 133,
-		"./he": 134,
-		"./he.js": 134,
-		"./hi": 135,
-		"./hi.js": 135,
-		"./hr": 136,
-		"./hr.js": 136,
-		"./hu": 137,
-		"./hu.js": 137,
-		"./hy-am": 138,
-		"./hy-am.js": 138,
-		"./id": 139,
-		"./id.js": 139,
-		"./is": 140,
-		"./is.js": 140,
-		"./it": 141,
-		"./it.js": 141,
-		"./ja": 142,
-		"./ja.js": 142,
-		"./jv": 143,
-		"./jv.js": 143,
-		"./ka": 144,
-		"./ka.js": 144,
-		"./kk": 145,
-		"./kk.js": 145,
-		"./km": 146,
-		"./km.js": 146,
-		"./kn": 147,
-		"./kn.js": 147,
-		"./ko": 148,
-		"./ko.js": 148,
-		"./ky": 149,
-		"./ky.js": 149,
-		"./lb": 150,
-		"./lb.js": 150,
-		"./lo": 151,
-		"./lo.js": 151,
-		"./lt": 152,
-		"./lt.js": 152,
-		"./lv": 153,
-		"./lv.js": 153,
-		"./me": 154,
-		"./me.js": 154,
-		"./mi": 155,
-		"./mi.js": 155,
-		"./mk": 156,
-		"./mk.js": 156,
-		"./ml": 157,
-		"./ml.js": 157,
-		"./mn": 158,
-		"./mn.js": 158,
-		"./mr": 159,
-		"./mr.js": 159,
-		"./ms": 160,
-		"./ms-my": 161,
-		"./ms-my.js": 161,
-		"./ms.js": 160,
-		"./mt": 162,
-		"./mt.js": 162,
-		"./my": 163,
-		"./my.js": 163,
-		"./nb": 164,
-		"./nb.js": 164,
-		"./ne": 165,
-		"./ne.js": 165,
-		"./nl": 166,
-		"./nl-be": 167,
-		"./nl-be.js": 167,
-		"./nl.js": 166,
-		"./nn": 168,
-		"./nn.js": 168,
-		"./pa-in": 169,
-		"./pa-in.js": 169,
-		"./pl": 170,
-		"./pl.js": 170,
-		"./pt": 171,
-		"./pt-br": 172,
-		"./pt-br.js": 172,
-		"./pt.js": 171,
-		"./ro": 173,
-		"./ro.js": 173,
-		"./ru": 174,
-		"./ru.js": 174,
-		"./sd": 175,
-		"./sd.js": 175,
-		"./se": 176,
-		"./se.js": 176,
-		"./si": 177,
-		"./si.js": 177,
-		"./sk": 178,
-		"./sk.js": 178,
-		"./sl": 179,
-		"./sl.js": 179,
-		"./sq": 180,
-		"./sq.js": 180,
-		"./sr": 181,
-		"./sr-cyrl": 182,
-		"./sr-cyrl.js": 182,
-		"./sr.js": 181,
-		"./ss": 183,
-		"./ss.js": 183,
-		"./sv": 184,
-		"./sv.js": 184,
-		"./sw": 185,
-		"./sw.js": 185,
-		"./ta": 186,
-		"./ta.js": 186,
-		"./te": 187,
-		"./te.js": 187,
-		"./tet": 188,
-		"./tet.js": 188,
-		"./tg": 189,
-		"./tg.js": 189,
-		"./th": 190,
-		"./th.js": 190,
-		"./tl-ph": 191,
-		"./tl-ph.js": 191,
-		"./tlh": 192,
-		"./tlh.js": 192,
-		"./tr": 193,
-		"./tr.js": 193,
-		"./tzl": 194,
-		"./tzl.js": 194,
-		"./tzm": 195,
-		"./tzm-latn": 196,
-		"./tzm-latn.js": 196,
-		"./tzm.js": 195,
-		"./ug-cn": 197,
-		"./ug-cn.js": 197,
-		"./uk": 198,
-		"./uk.js": 198,
-		"./ur": 199,
-		"./ur.js": 199,
-		"./uz": 200,
-		"./uz-latn": 201,
-		"./uz-latn.js": 201,
-		"./uz.js": 200,
-		"./vi": 202,
-		"./vi.js": 202,
-		"./x-pseudo": 203,
-		"./x-pseudo.js": 203,
-		"./yo": 204,
-		"./yo.js": 204,
-		"./zh-cn": 205,
-		"./zh-cn.js": 205,
-		"./zh-hk": 206,
-		"./zh-hk.js": 206,
-		"./zh-tw": 207,
-		"./zh-tw.js": 207
+		"./af": 98,
+		"./af.js": 98,
+		"./ar": 99,
+		"./ar-dz": 100,
+		"./ar-dz.js": 100,
+		"./ar-kw": 101,
+		"./ar-kw.js": 101,
+		"./ar-ly": 102,
+		"./ar-ly.js": 102,
+		"./ar-ma": 103,
+		"./ar-ma.js": 103,
+		"./ar-sa": 104,
+		"./ar-sa.js": 104,
+		"./ar-tn": 105,
+		"./ar-tn.js": 105,
+		"./ar.js": 99,
+		"./az": 106,
+		"./az.js": 106,
+		"./be": 107,
+		"./be.js": 107,
+		"./bg": 108,
+		"./bg.js": 108,
+		"./bm": 109,
+		"./bm.js": 109,
+		"./bn": 110,
+		"./bn.js": 110,
+		"./bo": 111,
+		"./bo.js": 111,
+		"./br": 112,
+		"./br.js": 112,
+		"./bs": 113,
+		"./bs.js": 113,
+		"./ca": 114,
+		"./ca.js": 114,
+		"./cs": 115,
+		"./cs.js": 115,
+		"./cv": 116,
+		"./cv.js": 116,
+		"./cy": 117,
+		"./cy.js": 117,
+		"./da": 118,
+		"./da.js": 118,
+		"./de": 119,
+		"./de-at": 120,
+		"./de-at.js": 120,
+		"./de-ch": 121,
+		"./de-ch.js": 121,
+		"./de.js": 119,
+		"./dv": 122,
+		"./dv.js": 122,
+		"./el": 123,
+		"./el.js": 123,
+		"./en-au": 124,
+		"./en-au.js": 124,
+		"./en-ca": 125,
+		"./en-ca.js": 125,
+		"./en-gb": 126,
+		"./en-gb.js": 126,
+		"./en-ie": 127,
+		"./en-ie.js": 127,
+		"./en-il": 128,
+		"./en-il.js": 128,
+		"./en-nz": 129,
+		"./en-nz.js": 129,
+		"./eo": 130,
+		"./eo.js": 130,
+		"./es": 131,
+		"./es-do": 132,
+		"./es-do.js": 132,
+		"./es-us": 133,
+		"./es-us.js": 133,
+		"./es.js": 131,
+		"./et": 134,
+		"./et.js": 134,
+		"./eu": 135,
+		"./eu.js": 135,
+		"./fa": 136,
+		"./fa.js": 136,
+		"./fi": 137,
+		"./fi.js": 137,
+		"./fo": 138,
+		"./fo.js": 138,
+		"./fr": 139,
+		"./fr-ca": 140,
+		"./fr-ca.js": 140,
+		"./fr-ch": 141,
+		"./fr-ch.js": 141,
+		"./fr.js": 139,
+		"./fy": 142,
+		"./fy.js": 142,
+		"./gd": 143,
+		"./gd.js": 143,
+		"./gl": 144,
+		"./gl.js": 144,
+		"./gom-latn": 145,
+		"./gom-latn.js": 145,
+		"./gu": 146,
+		"./gu.js": 146,
+		"./he": 147,
+		"./he.js": 147,
+		"./hi": 148,
+		"./hi.js": 148,
+		"./hr": 149,
+		"./hr.js": 149,
+		"./hu": 150,
+		"./hu.js": 150,
+		"./hy-am": 151,
+		"./hy-am.js": 151,
+		"./id": 152,
+		"./id.js": 152,
+		"./is": 153,
+		"./is.js": 153,
+		"./it": 154,
+		"./it.js": 154,
+		"./ja": 155,
+		"./ja.js": 155,
+		"./jv": 156,
+		"./jv.js": 156,
+		"./ka": 157,
+		"./ka.js": 157,
+		"./kk": 158,
+		"./kk.js": 158,
+		"./km": 159,
+		"./km.js": 159,
+		"./kn": 160,
+		"./kn.js": 160,
+		"./ko": 161,
+		"./ko.js": 161,
+		"./ky": 162,
+		"./ky.js": 162,
+		"./lb": 163,
+		"./lb.js": 163,
+		"./lo": 164,
+		"./lo.js": 164,
+		"./lt": 165,
+		"./lt.js": 165,
+		"./lv": 166,
+		"./lv.js": 166,
+		"./me": 167,
+		"./me.js": 167,
+		"./mi": 168,
+		"./mi.js": 168,
+		"./mk": 169,
+		"./mk.js": 169,
+		"./ml": 170,
+		"./ml.js": 170,
+		"./mn": 171,
+		"./mn.js": 171,
+		"./mr": 172,
+		"./mr.js": 172,
+		"./ms": 173,
+		"./ms-my": 174,
+		"./ms-my.js": 174,
+		"./ms.js": 173,
+		"./mt": 175,
+		"./mt.js": 175,
+		"./my": 176,
+		"./my.js": 176,
+		"./nb": 177,
+		"./nb.js": 177,
+		"./ne": 178,
+		"./ne.js": 178,
+		"./nl": 179,
+		"./nl-be": 180,
+		"./nl-be.js": 180,
+		"./nl.js": 179,
+		"./nn": 181,
+		"./nn.js": 181,
+		"./pa-in": 182,
+		"./pa-in.js": 182,
+		"./pl": 183,
+		"./pl.js": 183,
+		"./pt": 184,
+		"./pt-br": 185,
+		"./pt-br.js": 185,
+		"./pt.js": 184,
+		"./ro": 186,
+		"./ro.js": 186,
+		"./ru": 187,
+		"./ru.js": 187,
+		"./sd": 188,
+		"./sd.js": 188,
+		"./se": 189,
+		"./se.js": 189,
+		"./si": 190,
+		"./si.js": 190,
+		"./sk": 191,
+		"./sk.js": 191,
+		"./sl": 192,
+		"./sl.js": 192,
+		"./sq": 193,
+		"./sq.js": 193,
+		"./sr": 194,
+		"./sr-cyrl": 195,
+		"./sr-cyrl.js": 195,
+		"./sr.js": 194,
+		"./ss": 196,
+		"./ss.js": 196,
+		"./sv": 197,
+		"./sv.js": 197,
+		"./sw": 198,
+		"./sw.js": 198,
+		"./ta": 199,
+		"./ta.js": 199,
+		"./te": 200,
+		"./te.js": 200,
+		"./tet": 201,
+		"./tet.js": 201,
+		"./tg": 202,
+		"./tg.js": 202,
+		"./th": 203,
+		"./th.js": 203,
+		"./tl-ph": 204,
+		"./tl-ph.js": 204,
+		"./tlh": 205,
+		"./tlh.js": 205,
+		"./tr": 206,
+		"./tr.js": 206,
+		"./tzl": 207,
+		"./tzl.js": 207,
+		"./tzm": 208,
+		"./tzm-latn": 209,
+		"./tzm-latn.js": 209,
+		"./tzm.js": 208,
+		"./ug-cn": 210,
+		"./ug-cn.js": 210,
+		"./uk": 211,
+		"./uk.js": 211,
+		"./ur": 212,
+		"./ur.js": 212,
+		"./uz": 213,
+		"./uz-latn": 214,
+		"./uz-latn.js": 214,
+		"./uz.js": 213,
+		"./vi": 215,
+		"./vi.js": 215,
+		"./x-pseudo": 216,
+		"./x-pseudo.js": 216,
+		"./yo": 217,
+		"./yo.js": 217,
+		"./zh-cn": 218,
+		"./zh-cn.js": 218,
+		"./zh-hk": 219,
+		"./zh-hk.js": 219,
+		"./zh-tw": 220,
+		"./zh-tw.js": 220
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -49681,17 +50462,17 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 84;
+	webpackContext.id = 97;
 
 
 /***/ },
-/* 85 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49762,13 +50543,13 @@
 
 
 /***/ },
-/* 86 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49901,13 +50682,13 @@
 
 
 /***/ },
-/* 87 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49964,13 +50745,13 @@
 
 
 /***/ },
-/* 88 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50027,13 +50808,13 @@
 
 
 /***/ },
-/* 89 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50153,13 +50934,13 @@
 
 
 /***/ },
-/* 90 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50216,13 +50997,13 @@
 
 
 /***/ },
-/* 91 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50324,13 +51105,13 @@
 
 
 /***/ },
-/* 92 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50387,13 +51168,13 @@
 
 
 /***/ },
-/* 93 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50496,13 +51277,13 @@
 
 
 /***/ },
-/* 94 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50632,13 +51413,13 @@
 
 
 /***/ },
-/* 95 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50726,13 +51507,13 @@
 
 
 /***/ },
-/* 96 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50788,13 +51569,13 @@
 
 
 /***/ },
-/* 97 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50911,13 +51692,13 @@
 
 
 /***/ },
-/* 98 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51034,13 +51815,13 @@
 
 
 /***/ },
-/* 99 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51146,13 +51927,13 @@
 
 
 /***/ },
-/* 100 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51301,13 +52082,13 @@
 
 
 /***/ },
-/* 101 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51393,13 +52174,13 @@
 
 
 /***/ },
-/* 102 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51576,13 +52357,13 @@
 
 
 /***/ },
-/* 103 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51643,13 +52424,13 @@
 
 
 /***/ },
-/* 104 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51727,13 +52508,13 @@
 
 
 /***/ },
-/* 105 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51791,13 +52572,13 @@
 
 
 /***/ },
-/* 106 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51871,13 +52652,13 @@
 
 
 /***/ },
-/* 107 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51951,13 +52732,13 @@
 
 
 /***/ },
-/* 108 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52031,13 +52812,13 @@
 
 
 /***/ },
-/* 109 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52134,13 +52915,13 @@
 
 
 /***/ },
-/* 110 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52238,13 +53019,13 @@
 
 
 /***/ },
-/* 111 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52309,13 +53090,13 @@
 
 
 /***/ },
-/* 112 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52376,13 +53157,13 @@
 
 
 /***/ },
-/* 113 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52447,13 +53228,13 @@
 
 
 /***/ },
-/* 114 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52518,13 +53299,13 @@
 
 
 /***/ },
-/* 115 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52584,13 +53365,13 @@
 
 
 /***/ },
-/* 116 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52655,13 +53436,13 @@
 
 
 /***/ },
-/* 117 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52730,13 +53511,13 @@
 
 
 /***/ },
-/* 118 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52826,13 +53607,13 @@
 
 
 /***/ },
-/* 119 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52922,13 +53703,13 @@
 
 
 /***/ },
-/* 120 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53009,13 +53790,13 @@
 
 
 /***/ },
-/* 121 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53093,13 +53874,13 @@
 
 
 /***/ },
-/* 122 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53163,13 +53944,13 @@
 
 
 /***/ },
-/* 123 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53273,13 +54054,13 @@
 
 
 /***/ },
-/* 124 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53386,13 +54167,13 @@
 
 
 /***/ },
-/* 125 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53450,13 +54231,13 @@
 
 
 /***/ },
-/* 126 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53537,13 +54318,13 @@
 
 
 /***/ },
-/* 127 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53615,13 +54396,13 @@
 
 
 /***/ },
-/* 128 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53697,13 +54478,13 @@
 
 
 /***/ },
-/* 129 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53776,13 +54557,13 @@
 
 
 /***/ },
-/* 130 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53856,13 +54637,13 @@
 
 
 /***/ },
-/* 131 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -53937,13 +54718,13 @@
 
 
 /***/ },
-/* 132 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54064,13 +54845,13 @@
 
 
 /***/ },
-/* 133 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54192,13 +54973,13 @@
 
 
 /***/ },
-/* 134 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54293,13 +55074,13 @@
 
 
 /***/ },
-/* 135 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54421,13 +55202,13 @@
 
 
 /***/ },
-/* 136 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54579,13 +55360,13 @@
 
 
 /***/ },
-/* 137 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54693,13 +55474,13 @@
 
 
 /***/ },
-/* 138 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54792,13 +55573,13 @@
 
 
 /***/ },
-/* 139 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -54878,13 +55659,13 @@
 
 
 /***/ },
-/* 140 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55014,13 +55795,13 @@
 
 
 /***/ },
-/* 141 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55087,13 +55868,13 @@
 
 
 /***/ },
-/* 142 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55183,13 +55964,13 @@
 
 
 /***/ },
-/* 143 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55269,13 +56050,13 @@
 
 
 /***/ },
-/* 144 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55362,13 +56143,13 @@
 
 
 /***/ },
-/* 145 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55453,13 +56234,13 @@
 
 
 /***/ },
-/* 146 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55567,13 +56348,13 @@
 
 
 /***/ },
-/* 147 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55697,13 +56478,13 @@
 
 
 /***/ },
-/* 148 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55782,13 +56563,13 @@
 
 
 /***/ },
-/* 149 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -55873,13 +56654,13 @@
 
 
 /***/ },
-/* 150 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56013,13 +56794,13 @@
 
 
 /***/ },
-/* 151 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56087,13 +56868,13 @@
 
 
 /***/ },
-/* 152 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56209,13 +56990,13 @@
 
 
 /***/ },
-/* 153 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56310,13 +57091,13 @@
 
 
 /***/ },
-/* 154 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56426,13 +57207,13 @@
 
 
 /***/ },
-/* 155 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56494,13 +57275,13 @@
 
 
 /***/ },
-/* 156 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56588,13 +57369,13 @@
 
 
 /***/ },
-/* 157 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56673,13 +57454,13 @@
 
 
 /***/ },
-/* 158 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56781,13 +57562,13 @@
 
 
 /***/ },
-/* 159 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -56945,13 +57726,13 @@
 
 
 /***/ },
-/* 160 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57031,13 +57812,13 @@
 
 
 /***/ },
-/* 161 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57117,13 +57898,13 @@
 
 
 /***/ },
-/* 162 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57181,13 +57962,13 @@
 
 
 /***/ },
-/* 163 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57278,13 +58059,13 @@
 
 
 /***/ },
-/* 164 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57344,13 +58125,13 @@
 
 
 /***/ },
-/* 165 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57471,13 +58252,13 @@
 
 
 /***/ },
-/* 166 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57562,13 +58343,13 @@
 
 
 /***/ },
-/* 167 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57653,13 +58434,13 @@
 
 
 /***/ },
-/* 168 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57717,13 +58498,13 @@
 
 
 /***/ },
-/* 169 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57845,13 +58626,13 @@
 
 
 /***/ },
-/* 170 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -57975,13 +58756,13 @@
 
 
 /***/ },
-/* 171 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58044,13 +58825,13 @@
 
 
 /***/ },
-/* 172 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58109,13 +58890,13 @@
 
 
 /***/ },
-/* 173 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58188,13 +58969,13 @@
 
 
 /***/ },
-/* 174 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58374,13 +59155,13 @@
 
 
 /***/ },
-/* 175 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58476,13 +59257,13 @@
 
 
 /***/ },
-/* 176 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58540,13 +59321,13 @@
 
 
 /***/ },
-/* 177 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58615,13 +59396,13 @@
 
 
 /***/ },
-/* 178 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58775,13 +59556,13 @@
 
 
 /***/ },
-/* 179 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -58952,13 +59733,13 @@
 
 
 /***/ },
-/* 180 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59024,13 +59805,13 @@
 
 
 /***/ },
-/* 181 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59139,13 +59920,13 @@
 
 
 /***/ },
-/* 182 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59254,13 +60035,13 @@
 
 
 /***/ },
-/* 183 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59346,13 +60127,13 @@
 
 
 /***/ },
-/* 184 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59419,13 +60200,13 @@
 
 
 /***/ },
-/* 185 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59482,13 +60263,13 @@
 
 
 /***/ },
-/* 186 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59615,13 +60396,13 @@
 
 
 /***/ },
-/* 187 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59708,13 +60489,13 @@
 
 
 /***/ },
-/* 188 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59779,13 +60560,13 @@
 
 
 /***/ },
-/* 189 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59899,13 +60680,13 @@
 
 
 /***/ },
-/* 190 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -59970,13 +60751,13 @@
 
 
 /***/ },
-/* 191 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60036,13 +60817,13 @@
 
 
 /***/ },
-/* 192 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60162,12 +60943,12 @@
 
 
 /***/ },
-/* 193 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60260,13 +61041,13 @@
 
 
 /***/ },
-/* 194 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60355,13 +61136,13 @@
 
 
 /***/ },
-/* 195 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60417,13 +61198,13 @@
 
 
 /***/ },
-/* 196 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60479,13 +61260,13 @@
 
 
 /***/ },
-/* 197 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js language configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60602,13 +61383,13 @@
 
 
 /***/ },
-/* 198 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60757,13 +61538,13 @@
 
 
 /***/ },
-/* 199 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60859,13 +61640,13 @@
 
 
 /***/ },
-/* 200 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60921,13 +61702,13 @@
 
 
 /***/ },
-/* 201 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -60983,13 +61764,13 @@
 
 
 /***/ },
-/* 202 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61066,13 +61847,13 @@
 
 
 /***/ },
-/* 203 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61138,13 +61919,13 @@
 
 
 /***/ },
-/* 204 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61202,13 +61983,13 @@
 
 
 /***/ },
-/* 205 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61316,13 +62097,13 @@
 
 
 /***/ },
-/* 206 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61423,13 +62204,13 @@
 
 
 /***/ },
-/* 207 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(82)) :
+	    true ? factory(__webpack_require__(95)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -61530,99 +62311,29 @@
 
 
 /***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.DateSelectorComponent = undefined;
-	
-	var _dateSelectorComponent = __webpack_require__(209);
-	
-	var _dateSelectorComponent2 = _interopRequireDefault(_dateSelectorComponent);
-	
-	var _dateSelector = __webpack_require__(210);
-	
-	var _dateSelector2 = _interopRequireDefault(_dateSelector);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var DateSelectorComponent = exports.DateSelectorComponent = {
-	  bindings: {
-	    date: '='
-	  },
-	  template: _dateSelectorComponent2.default,
-	  controller: _dateSelector2.default
-	};
-
-/***/ },
-/* 209 */
+/* 221 */
 /***/ function(module, exports) {
 
-	module.exports = "<input class=\"input is-medium\" type=\"date\" ng-model=\"$ctrl.date\">\n"
+	module.exports = "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDY4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im00MS42MTI0IDIyLjYzcy02LjU2Ni03LjAxNTEtMTEuNjg2MS0xMi4xMzUyIDQuMjc4OS0xMS4yODEyIDExLjY4NjEtMy44NzQxIDE2LjY3OSAxNi4wMDkzIDE2LjY3OSAxNi4wMDkzeiIgZmlsbD0iIzIwOTFlYiIvPjxwYXRoIGQ9Im00MS42MTI0IDYuNjIwN2MtNy40MDcxLTcuNDA3MS0xNi44MDYyLTEuMjQ2NC0xMS42ODYxIDMuODczNy43NzI2Ljc3MjUgMS41Nzg3IDEuNTkgMi4zOSAyLjQxNzloMTUuNzE3MWMtMi4xMjQ1LTIuMDQ4Ny00LjM0NDItNC4yMTQ3LTYuNDIxLTYuMjkxNnoiIGZpbGw9IiNmMWM5MzMiLz48cGF0aCBkPSJtMzkuNjEyNSA0MS42NzY0aC0xOC4yNDg5Yy02LjA5MjIgMC02LjUyNDUtOS4zNTMyLTE2LjI4NjYtMTkuMTE1NC01LjMxMTQtNS4zMTEgMS4zNTMtMTIuNzM0MSA4LjU4OTMtNS40OTggMy41NTUyIDMuNTU1MiA2LjI1MzcgNS41NjcgMTAuODc1IDUuNTY3aDU5LjUwODFjMTcuOTU3NSAwIDE2LjMzMDYgMTkuMDQ2OS0uODAyOCAxOS4wNDY5aC0yMC42MzgyYy01LjgxNTYgMC0xMC40NTA1IDcuODA1LTE5LjMxNTEgMTYuNjctMTIuNjIgMTIuNjItMjQuNDk2MiA0LjM5MDctMTUuNTAwNi00LjYwNDkgNi41NTM2LTYuNTU0NiAxMS44MTk4LTEyLjA2NTYgMTEuODE5OC0xMi4wNjU2eiIgZmlsbD0iIzIwOTFlYiIvPjxwYXRoIGQ9Im04NC4wNDkzIDIyLjYzaC01OS41MDhjLTQuNjIxNiAwLTcuMzItMi4wMTE0LTEwLjg3NS01LjU2NjctNy4yMzYzLTcuMjM2My0xMy45MDA2LjE4NjctOC41ODkzIDUuNDk3N2E0OC42MjEyIDQ4LjYyMTIgMCAwIDEgNy4xNDExIDkuMTk0OGg4NC41OTE5Yy4wNTctNC42MjU4LTQuMDMxOC05LjEyNTgtMTIuNzYwNy05LjEyNTh6IiBmaWxsPSIjZjFjOTMzIi8+PHBhdGggZD0ibTExLjQ5NzkgMjguMjI5M2g4NC44MjE0djIuMzczM2gtODQuODIxNHoiIGZpbGw9IiNmZmYiLz48ZyBmaWxsPSIjMmUyZTJlIj48cGF0aCBkPSJtOTQuNDIxNCAyNC41MDI3Yy0yLjUwMDctMS45OTU0LTYuMDg3NC0zLjA1LTEwLjM3MTktMy4wNWgtMjUuMjk1Yy0xLjY5LTEuNTczOS05Ljc2NzMtOS4xMjE2LTE2LjMxLTE1LjY2NDItMy4xMTMtMy4xMTM2LTcuMDU3Mi00LjQxMjgtMTAuNTUzLTMuNDc3NWE1Ljk1NTMgNS45NTUzIDAgMCAwIC00LjQ1MyAzLjk3IDUuMTY0NCA1LjE2NDQgMCAwIDAgMS42NTUxIDUuMDQ1N2MzLjM5OTEgMy4zOTkzIDcuNDcgNy42NzE0IDkuNzkxOCAxMC4xMjU5aC0xNC4zNDQyYy00LjA5OTQgMC02LjUwNDctMS42ODM4LTEwLjA0MjUtNS4yMjE2LTQuMzQzNy00LjM0NC04LjcwNTMtMy45MzU4LTEwLjkyMTUtMS43MjEtMS45OTEzIDEuOTkxNC0yLjQzNDYgNS43ODE1LjY2NzUgOC44ODM1YTUzLjUyMTQgNTMuNTIxNCAwIDAgMSA4LjY5ODQgMTEuODg2NWMyLjQ1NTMgNC4yMzExIDQuMzk0OSA3LjU3MzUgOC40MiA3LjU3MzVoMTUuNTk2OWMtMy40MTg4IDMuNDQ4MS03LjIwMzIgNy4yNTc4LTEwIDEwLjA1NDVhMTEuMTgwNyAxMS4xODA3IDAgMCAwIC0zLjQxNzEgNS45ODc5IDUuNzQ4IDUuNzQ4IDAgMCAwIDEuNTc3MSA1LjA1OTMgNy42Njk0IDcuNjY5NCAwIDAgMCA1LjU0MjMgMi4wMzE3IDEyLjQyNjcgMTIuNDI2NyAwIDAgMCAyLjUwMzYtLjI2NTZjMi41Mzc1LS41MjIgNi40OTktMi4wODExIDEwLjk2LTYuNTQyNyAyLjU2NzQtMi41NjY4IDQuNzk0NS01LjA1OTUgNi43Ni03LjI1ODQgNC43MDQyLTUuMjYzNSA4LjEwMjktOS4wNjYzIDExLjcyMjktOS4wNjYzaDIwLjYzOGM5LjU4MzIgMCAxNC43NTMyLTUuNzY3OCAxNC43NTMyLTExLjE5MzlhOS4wNjU4IDkuMDY1OCAwIDAgMCAtMy41Nzg2LTcuMTU3M3ptLTYzLjY2MjktMTQuODQxYTIuOTcgMi45NyAwIDAgMSAtMS4wNDUxLTIuNzcxNyAzLjcxMzYgMy43MTM2IDAgMCAxIDIuNzg3Ni0yLjMwNWMyLjY3MzctLjcxNTggNS43NjY1LjM1NjQgOC4yNzg3IDIuODY4IDUuMTg3NiA1LjE4OCAxMS4zMzEzIDExIDE0LjUyNzkgMTMuOTk5NGgtMTMuMTg2Yy0xLjQyMTYtMS41MTMyLTYuOTU0LTcuMzgxNy0xMS4zNjMxLTExLjc5MDd6bTUyLjQ4NzkgMzAuODM3NWgtMjAuNjM4Yy00LjY3MzIgMC04LjM2NjggNC4xMzIyLTEzLjQ3ODYgOS44NTIyLTEuOTQ0OCAyLjE3NTktNC4xNDg5IDQuNjQxNS02LjY2OTEgNy4xNjI0LTcuMDU0MyA3LjA1MTQtMTMuNDE0NyA3LjAzOTMtMTUuNjc2MyA0Ljc3Ni0xLjc4NS0xLjc4NDQtMS4wNjI0LTQuODEzNCAxLjg0MDctNy43MTY1IDYuNTU1NC02LjU1NTMgMTcuMzIzMS0xNy40NjE2IDE4LjUzMzUtMTguNjcyIDEuNDg2My0xLjQ4NjMtLjQ0Ny0yLjg4MjctMS42NzQxLTEuNjU1NnMtMi42NzYgMi43MDcxLTYuMTkgNi4yNTM1aC0xNy45MzEyYy0yLjU1NTkgMC0zLjg3NTItMi4wNzgyLTYuMzgzNC02LjQwMDdhNTUuNTQ0MiA1NS41NDQyIDAgMCAwIC05LjA3LTEyLjM3Yy0yLjA0Mi0yLjA0Mi0xLjg4MS00LjM0LS42Njc0LTUuNTUzMyAxLjQ2MjUtMS40NjI1IDQuMzc0Mi0xLjQ5NzYgNy41OTE4IDEuNzIgMy44MzM4IDMuODMzOSA2LjgzNDcgNS45MTE1IDExLjcwNzMgNS45MTE1aDU5LjUwODRjMy43NDUzIDAgNi44MjM4Ljg3NjcgOC45MDMxIDIuNTM1N2E2Ljc1NjIgNi43NTYyIDAgMCAxIDIuNjkyMiA1LjMxNzZjMCA0LjM5MjUtNC4yNTg3IDguODM5Mi0xMi4zOTg5IDguODM5MnoiLz48cGF0aCBkPSJtNjkuNDggMzQuMDk1NmEyLjM1MTMgMi4zNTEzIDAgMCAxIC0yLjM1NDctMi4zNTQ3IDIuNTk0MSAyLjU5NDEgMCAwIDEgLjE3NjUtLjkwNiAyLjE5MjggMi4xOTI4IDAgMCAxIC4yMTIxLS40MDA3IDMuMTM3MSAzLjEzNzEgMCAwIDEgLjI5NDQtLjM2NSAyLjQ1MTIgMi40NTEyIDAgMCAxIDMuMzMyIDAgMi4zNDU3IDIuMzQ1NyAwIDAgMSAwIDMuMzMyIDIuMTA4NiAyLjEwODYgMCAwIDEgLS4zNTM2LjI5NDMgMi44NDg4IDIuODQ4OCAwIDAgMSAtLjg0NzQuMzUzNiAzLjA0MjggMy4wNDI4IDAgMCAxIC0uNDU5My4wNDY1eiIvPjxwYXRoIGQ9Im04MC4wNzY1IDM0LjA5NTZhMi4zNjQyIDIuMzY0MiAwIDAgMSAtMS42NzE3LTQuMDI2NCAyLjQ1MTMgMi40NTEzIDAgMCAxIDMuMzMyIDAgMi4yNDQ5IDIuMjQ0OSAwIDAgMSAuMjk0My4zNjUgMi4xOTI4IDIuMTkyOCAwIDAgMSAuMjEyMS40MDA3IDIuODEyIDIuODEyIDAgMCAxIC4xNDA5LjQ0NzMgMi44OTA3IDIuODkwNyAwIDAgMSAuMDQ3MS40NTg3IDIuMzcxIDIuMzcxIDAgMCAxIC0yLjM1NDcgMi4zNTQ3eiIvPjwvZz48L3N2Zz4="
 
 /***/ },
-/* 210 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = DateSelectorController;
-	function DateSelectorController() {}
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.HomeComponent = undefined;
-	
-	var _homeComponent = __webpack_require__(212);
-	
-	var _homeComponent2 = _interopRequireDefault(_homeComponent);
-	
-	__webpack_require__(213);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var HomeComponent = exports.HomeComponent = {
-	  template: _homeComponent2.default
-	};
-
-/***/ },
-/* 212 */
-/***/ function(module, exports) {
-
-	module.exports = "<div>\n<nav class=\"nav\">\n  <div class=\"nav-left\">\n    <a class=\"nav-item is-brand\" href=\"#\">\n      CheapFlight\n    </a>\n  </div>\n\n  <div class=\"nav-center\">\n  </div>\n\n  <span class=\"nav-toggle\">\n    <span></span>\n    <span></span>\n    <span></span>\n  </span>\n\n  <div class=\"nav-right nav-menu\"></div>\n</nav>\n  <section>\n    <!-- TODO: Add your code here -->\n    <pre class=\"box\">\n<strong>\n  Tasks\n</strong>\n\nBuild a small web app that will find the cheapest flights around Europe.\nThe webapp needs to have at least the following components:\n\n<strong>\n  Styling\n</strong>\n\nApply a styleguide following the Ryanair branding ( colors )\n\n<strong>\n  Components\n</strong>\n\n<strong>\n  AirportSelector\n</strong>\n\nAn airport selector which will display the list of airports and allow the user\nto select an aiport.\n\nKeep in mind that origin is different from destination but the component needs to\nbe reusable for both scenarios.\n\nThe component needs to be a custom select with autocomplete support.\n\n<strong>\n  Flight List\n</strong>\n\nA component that will show all the information relative to the flights between the\norigin and destination selected.\n\n\nExtra points will be given for:\n\n* Styling\n* OneWay Dataflow\n* Mobile first design\n* No third party libraries\n\n<strong>\n  Services\n</strong>\n\nIn order to get the list of IATA codes ( airport codes )  with the relative destinations\nthe webapp will get those information from the following API:\n\n```\nhttps://murmuring-ocean-10826.herokuapp.com/en/api/2/forms/flight-booking-selector/\n```\n\nInstead to get the list of cheap flights:\n\n```\nhttps://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/2014-12-02/2015-02-02/250/unique/?limit=15&offset-0\n```\n\nwhere DUBis the originating IATA code, STNis the destination IATA code,\nthe first date range is the start of the period, and the second is the end.\n\n<strong>\n  Routing\n</strong>\n\nThe flight list page needs to be a child route of the home page, the search widget\nneeds to be accessibile even after a search\n\nThe flight list page needs to be deep linked, so i can share the URL and access\ndirectly the flights that i'm looking for.\n\n<strong>\n  Refactor\n</strong>\n\nThe `DateWrapper` and `DateSelector` component is not using a one-way dataflow approach\nrefactor the component using that dataflow avoiding two way binding\nbetween the two\n\n<strong>\n  Unit Testing ( not mandatory )\n</strong>\n\nExtra points will be given for unit testing all the functionality written.\n    </pre>\n    <date-wrapper\n      start-date=\"$ctrl.startDate\"\n      end-date=\"$ctrl.endDate\">\n    </date-wrapper>\n  </section>\n</div>\n"
-
-/***/ },
-/* 213 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(214);
+	var content = __webpack_require__(223);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(216)(content, {});
+	var update = __webpack_require__(85)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./home.component.scss", function() {
-				var newContent = require("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./home.component.scss");
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./flights-list.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./flights-list.component.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -61632,494 +62343,21 @@
 	}
 
 /***/ },
-/* 214 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(215)(true);
+	exports = module.exports = __webpack_require__(84)(true);
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "", "", {"version":3,"sources":[],"names":[],"mappings":"","file":"home.component.scss","sourceRoot":""}]);
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n@keyframes horizontal-flight-animation {\n  0% {\n    left: -10%; }\n  100% {\n    left: 110%; } }\n\n@keyframes float-animation {\n  0% {\n    transform: translate(0%, 0%); }\n  12.5% {\n    transform: translate(2%, 1%); }\n  25% {\n    transform: translate(3%, 0%); }\n  37.5% {\n    transform: translate(2%, -1%); }\n  50% {\n    transform: translate(0%, 0%); }\n  62.5% {\n    transform: translate(-2%, 1%); }\n  75% {\n    transform: translate(-3%, 0%); }\n  87.5% {\n    transform: translate(-2%, -1%); }\n  100% {\n    transform: translate(0%, 0%); } }\n\n.flights-list {\n  margin-bottom: 1.5rem; }\n  @media (min-width: 36rem) {\n    .flights-list {\n      margin-bottom: 3rem;\n      margin-top: 3rem; } }\n\n.flights-list__item {\n  -ms-flex-align: center;\n      align-items: center;\n  background-color: white;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: row;\n      flex-direction: row;\n  -ms-flex-pack: justify;\n      justify-content: space-between;\n  padding: 0.75rem 1.5rem; }\n  @media (max-width: 35.875rem) {\n    .flights-list__item {\n      border-bottom: 2px solid #e7e7e7; } }\n  @media (min-width: 36rem) {\n    .flights-list__item {\n      border-radius: 0.313rem;\n      box-shadow: 0 0 0 2px #e7e7e7;\n      margin: 0.75rem; } }\n  @media (min-width: 72rem) {\n    .flights-list__item {\n      margin: 1.5rem auto;\n      max-width: calc(100vw - 3rem);\n      width: 72rem; } }\n  .flights-list__item.flights-list__item--empty-message {\n    background-color: #f4f4f4;\n    -ms-flex-pack: center;\n        justify-content: center; }\n\n.flights-list__date::before {\n  color: #2091eb;\n  font-size: 1.5rem;\n  margin-right: 4px; }\n\n.flights-list__date.flights-list__date--liftoff::before {\n  content: \"\\2191\"; }\n\n.flights-list__date.flights-list__date--landing::before {\n  content: \"\\2193\"; }\n\n.flights-list__buy-button {\n  background-color: #f1c933;\n  border-radius: 0.313rem;\n  box-shadow: 0 0 0 1px #b28f0c;\n  color: rgba(46, 46, 46, 0.8);\n  cursor: pointer;\n  min-width: 10rem;\n  padding: 0.75rem; }\n  .flights-list__buy-button:hover, .flights-list__buy-button:focus {\n    color: rgba(46, 46, 46, 0.9); }\n  .flights-list__buy-button:active {\n    transform: translateY(1px); }\n\n.flights-list__buy-button-price {\n  font-weight: bold; }\n\n.flights-list__buy-button-label {\n  text-transform: uppercase; }\n\n.flights-list__loading {\n  height: 3rem;\n  overflow: hidden;\n  position: relative;\n  width: 100%; }\n  .flights-list__loading img {\n    animation-direction: normal;\n    animation-duration: 1s;\n    animation-fill-mode: forwards;\n    animation-iteration-count: 1;\n    animation-name: horizontal-flight-animation;\n    animation-play-state: running;\n    animation-timing-function: ease-in-out;\n    height: 3rem;\n    max-width: 100%;\n    position: absolute; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/flights-list/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/flights-list/src/config/animations.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/flights-list/src/components/flights-list/flights-list.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACFhF;EACE;IACE,WAAU,EAAA;EAEZ;IACE,WAAU,EAAA,EAAA;;AAiBd;EACE;IACE,6BAA4B,EAAA;EAE9B;IACE,6BAA0D,EAAA;EAE5D;IACE,6BAA2C,EAAA;EAE7C;IACE,8BAA2D,EAAA;EAE7D;IACE,6BAA4B,EAAA;EAE9B;IACE,8BAA2D,EAAA;EAE7D;IACE,8BAA4C,EAAA;EAE9C;IACE,+BAA4D,EAAA;EAE9D;IACE,6BAA4B,EAAA,EAAA;;AC7ChC;EACE,sBFuBiC,EEjBlC;EAJC;IAHF;MAII,oBAA2B;MAC3B,iBAAwB,EAE3B,EAAA;;AAED;EACE,uBAAmB;MAAnB,oBAAmB;EACnB,wBFF0B;EEG1B,qBAAa;EAAb,cAAa;EACb,wBAAmB;MAAnB,oBAAmB;EACnB,uBAA8B;MAA9B,+BAA8B;EAC9B,wBFSiC,EEalC;EApBC;IARF;MASI,iCAAuD,EAmB1D,EAAA;EAhBC;IAZF;MAaI,wBFKkB;MEJlB,8BAAoD;MACpD,gBAAoB,EAavB,EAAA;EAVC;IAlBF;MAmBI,oBAAuB;MACvB,8BAA0C;MAC1C,aFDS,EEQZ,EAAA;EA5BD;IAyBI,0BF1BkC;IE2BlC,sBAAuB;QAAvB,wBAAuB,EACxB;;AAGH;EAEI,eFrC6B;EEsC7B,kBAAiB;EACjB,kBAAiB,EAClB;;AALH;EAOI,iBAAgB,EACjB;;AARH;EAUI,iBAAgB,EACjB;;AAGH;EACE,0BFnDkC;EEoDlC,wBF5BoB;EE6BpB,8BAAoD;EACpD,6BFnD0B;EEoD1B,gBAAe;EACf,iBAAgB;EAChB,iBAAqB,EAUtB;EAjBD;IAWI,6BF1DwB,EE2DzB;EAZH;IAeI,2BAA0B,EAC3B;;AAGH;EACE,kBAAiB,EAClB;;AAED;EACE,0BAAyB,EAC1B;;AAED;EACE,aAAsB;EACtB,iBAAgB;EAChB,mBAAkB;EAClB,YAAW,EAQZ;EAZD;IDzEE,4BAA2B;IAC3B,uBAAsB;IACtB,8BAA6B;IAC7B,6BAA4B;IAC5B,4CAA2C;IAC3C,8BAA6B;IAC7B,uCAAsC;IC2EpC,aAAsB;IACtB,gBAAe;IACf,mBAAkB,EACnB","file":"flights-list.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@keyframes horizontal-flight-animation {\n  0% {\n    left: -10%;\n  }\n  100% {\n    left: 110%;\n  }\n}\n\n@mixin horizontal-flight {\n  animation-direction: normal;\n  animation-duration: 1s;\n  animation-fill-mode: forwards;\n  animation-iteration-count: 1;\n  animation-name: horizontal-flight-animation;\n  animation-play-state: running;\n  animation-timing-function: ease-in-out;\n}\n\n$s-float-x: 1%;\n$s-float-y: 0.5%;\n\n@keyframes float-animation {\n  0% {\n    transform: translate(0%, 0%);\n  }\n  12.5% {\n    transform: translate(#{$s-float-x * 2}, #{$s-float-y * 2});\n  }\n  25% {\n    transform: translate(#{$s-float-x * 3}, 0%);\n  }\n  37.5% {\n    transform: translate(#{$s-float-x * 2}, #{$s-float-y * -2});\n  }\n  50% {\n    transform: translate(0%, 0%);\n  }\n  62.5% {\n    transform: translate(#{$s-float-x * -2}, #{$s-float-y * 2});\n  }\n  75% {\n    transform: translate(#{$s-float-x * -3}, 0%);\n  }\n  87.5% {\n    transform: translate(#{$s-float-x * -2}, #{$s-float-y * -2});\n  }\n  100% {\n    transform: translate(0%, 0%);\n  }\n}\n\n@mixin float {\n  animation-direction: normal;\n  animation-duration: 20s;\n  animation-fill-mode: both;\n  animation-iteration-count: infinite;\n  animation-name: float-animation;\n  animation-play-state: running;\n  animation-timing-function: linear;\n}\n","@import \"../../config/variables\";\n@import \"../../config/animations\";\n\n.flights-list {\n  margin-bottom: $s-leading;\n\n  @media (min-width: #{$b-medium}) {\n    margin-bottom: $s-leading*2;\n    margin-top: $s-leading*2;\n  }\n}\n\n.flights-list__item {\n  align-items: center;\n  background-color: $c-white;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding: $s-leading/2 $s-leading;\n\n  @media (max-width: #{$b-medium - 0.125rem}) {\n    border-bottom: 2px solid darken($c-background-grey, 5%);\n  }\n\n  @media (min-width: #{$b-medium}) {\n    border-radius: $s-global-br;\n    box-shadow: 0 0 0 2px darken($c-background-grey, 5%);\n    margin: $s-leading/2;\n  }\n\n  @media (min-width: #{$b-big}) {\n    margin: $s-leading auto;\n    max-width: calc(100vw - #{$s-leading * 2});\n    width: $b-big;\n  }\n\n  &.flights-list__item--empty-message {\n    background-color: $c-background-grey;\n    justify-content: center;\n  }\n}\n\n.flights-list__date {\n  &::before {\n    color: $c-bright-blue;\n    font-size: 1.5rem;\n    margin-right: 4px;\n  }\n  &.flights-list__date--liftoff::before {\n    content: \"\\2191\";\n  }\n  &.flights-list__date--landing::before {\n    content: \"\\2193\";\n  }\n}\n\n.flights-list__buy-button {\n  background-color: $c-ryanair-yellow;\n  border-radius: $s-global-br;\n  box-shadow: 0 0 0 1px darken($c-ryanair-yellow, 20%);\n  color: rgba($c-charcoal, 0.8);\n  cursor: pointer;\n  min-width: 10rem;\n  padding: $s-leading/2;\n\n  &:hover,\n  &:focus {\n    color: rgba($c-charcoal, 0.9);\n  }\n\n  &:active {\n    transform: translateY(1px);\n  }\n}\n\n.flights-list__buy-button-price {\n  font-weight: bold;\n}\n\n.flights-list__buy-button-label {\n  text-transform: uppercase;\n}\n\n.flights-list__loading {\n  height: $s-leading * 2;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n\n  img {\n    @include horizontal-flight;\n    height: $s-leading * 2;\n    max-width: 100%;\n    position: absolute;\n  }\n}\n"],"sourceRoot":""}]);
 	
 	// exports
 
 
 /***/ },
-/* 215 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function(useSourceMap) {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			return this.map(function (item) {
-				var content = cssWithMappingToString(item, useSourceMap);
-				if(item[2]) {
-					return "@media " + item[2] + "{" + content + "}";
-				} else {
-					return content;
-				}
-			}).join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-	
-	function cssWithMappingToString(item, useSourceMap) {
-		var content = item[1] || '';
-		var cssMapping = item[3];
-		if (!cssMapping) {
-			return content;
-		}
-	
-		if (useSourceMap && typeof btoa === 'function') {
-			var sourceMapping = toComment(cssMapping);
-			var sourceURLs = cssMapping.sources.map(function (source) {
-				return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-			});
-	
-			return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-		}
-	
-		return [content].join('\n');
-	}
-	
-	// Adapted from convert-source-map (MIT)
-	function toComment(sourceMap) {
-		// eslint-disable-next-line no-undef
-		var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-		var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-	
-		return '/*# ' + data + ' */';
-	}
-
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			// Test for IE <= 9 as proposed by Browserhacks
-			// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-			// Tests for existence of standard globals is to allow style-loader 
-			// to operate correctly into non-standard environments
-			// @see https://github.com/webpack-contrib/style-loader/issues/177
-			return window && document && document.all && !window.atob;
-		}),
-		getElement = (function(fn) {
-			var memo = {};
-			return function(selector) {
-				if (typeof memo[selector] === "undefined") {
-					memo[selector] = fn.call(this, selector);
-				}
-				return memo[selector]
-			};
-		})(function (styleTarget) {
-			return document.querySelector(styleTarget)
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [],
-		fixUrls = __webpack_require__(217);
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-	
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the <head> element
-		if (typeof options.insertInto === "undefined") options.insertInto = "head";
-	
-		// By default, add <style> tags to the bottom of the target
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	};
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var styleTarget = getElement(options.insertInto)
-		if (!styleTarget) {
-			throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-		}
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				styleTarget.insertBefore(styleElement, styleTarget.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				styleTarget.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			styleTarget.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		options.attrs.type = "text/css";
-	
-		attachTagAttrs(styleElement, options.attrs);
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		options.attrs.type = "text/css";
-		options.attrs.rel = "stylesheet";
-	
-		attachTagAttrs(linkElement, options.attrs);
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function attachTagAttrs(element, attrs) {
-		Object.keys(attrs).forEach(function (key) {
-			element.setAttribute(key, attrs[key]);
-		});
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement, options);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, options, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-		*/
-		var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-	
-		if (options.convertToAbsoluteUrls || autoFixUrls){
-			css = fixUrls(css);
-		}
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 217 */
-/***/ function(module, exports) {
-
-	
-	/**
-	 * When source maps are enabled, `style-loader` uses a link element with a data-uri to
-	 * embed the css on the page. This breaks all relative urls because now they are relative to a
-	 * bundle instead of the current page.
-	 *
-	 * One solution is to only use full urls, but that may be impossible.
-	 *
-	 * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
-	 *
-	 * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
-	 *
-	 */
-	
-	module.exports = function (css) {
-	  // get current location
-	  var location = typeof window !== "undefined" && window.location;
-	
-	  if (!location) {
-	    throw new Error("fixUrls requires window.location");
-	  }
-	
-		// blank or null?
-		if (!css || typeof css !== "string") {
-		  return css;
-	  }
-	
-	  var baseUrl = location.protocol + "//" + location.host;
-	  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
-	
-		// convert each url(...)
-		/*
-		This regular expression is just a way to recursively match brackets within
-		a string.
-	
-		 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
-		   (  = Start a capturing group
-		     (?:  = Start a non-capturing group
-		         [^)(]  = Match anything that isn't a parentheses
-		         |  = OR
-		         \(  = Match a start parentheses
-		             (?:  = Start another non-capturing groups
-		                 [^)(]+  = Match anything that isn't a parentheses
-		                 |  = OR
-		                 \(  = Match a start parentheses
-		                     [^)(]*  = Match anything that isn't a parentheses
-		                 \)  = Match a end parentheses
-		             )  = End Group
-	              *\) = Match anything and then a close parens
-	          )  = Close non-capturing group
-	          *  = Match anything
-	       )  = Close capturing group
-		 \)  = Match a close parens
-	
-		 /gi  = Get all matches, not the first.  Be case insensitive.
-		 */
-		var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
-			// strip quotes (if they exist)
-			var unquotedOrigUrl = origUrl
-				.trim()
-				.replace(/^"(.*)"$/, function(o, $1){ return $1; })
-				.replace(/^'(.*)'$/, function(o, $1){ return $1; });
-	
-			// already a full url? no change
-			if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
-			  return fullMatch;
-			}
-	
-			// convert the url to a full url
-			var newUrl;
-	
-			if (unquotedOrigUrl.indexOf("//") === 0) {
-			  	//TODO: should we add protocol?
-				newUrl = unquotedOrigUrl;
-			} else if (unquotedOrigUrl.indexOf("/") === 0) {
-				// path should be relative to the base url
-				newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
-			} else {
-				// path should be relative to current directory
-				newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
-			}
-	
-			// send back the fixed url(...)
-			return "url(" + JSON.stringify(newUrl) + ")";
-		});
-	
-		// send back the fixed css
-		return fixedCss;
-	};
-
-
-/***/ },
-/* 218 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62128,55 +62366,886 @@
 	  value: true
 	});
 	
-	var _airports = __webpack_require__(219);
+	var _globalMenuComponent = __webpack_require__(225);
 	
-	Object.keys(_airports).forEach(function (key) {
-	  if (key === "default" || key === "__esModule") return;
-	  Object.defineProperty(exports, key, {
-	    enumerable: true,
-	    get: function get() {
-	      return _airports[key];
-	    }
-	  });
-	});
+	var _globalMenuComponent2 = _interopRequireDefault(_globalMenuComponent);
 	
-	var _cheapflights = __webpack_require__(220);
+	var _globalMenu = __webpack_require__(226);
 	
-	Object.keys(_cheapflights).forEach(function (key) {
-	  if (key === "default" || key === "__esModule") return;
-	  Object.defineProperty(exports, key, {
-	    enumerable: true,
-	    get: function get() {
-	      return _cheapflights[key];
-	    }
-	  });
-	});
+	var _globalMenu2 = _interopRequireDefault(_globalMenu);
+	
+	__webpack_require__(228);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var GlobalMenuComponent = {
+	  template: _globalMenuComponent2.default,
+	  controller: _globalMenu2.default
+	};
+	
+	exports.default = GlobalMenuComponent;
 
 /***/ },
-/* 219 */
+/* 225 */
 /***/ function(module, exports) {
 
-	"use strict";
+	module.exports = "<header class=\"global-menu\">\n  <a class=\"global-menu__logo\" ng-click=\"$ctrl.goHome()\">\n    <img src=\"{{::$ctrl.ryanairLogoSVG}}\" alt=\"RYANAIR\">\n  </a>\n</header>\n"
+
+/***/ },
+/* 226 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	GlobalMenuController.$inject = ["$state"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = GlobalMenuController;
+	
+	var _ryanairLogo = __webpack_require__(227);
+	
+	var _ryanairLogo2 = _interopRequireDefault(_ryanairLogo);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function GlobalMenuController($state) {
+	  'ngInject';
+	
+	  this.ryanairLogoSVG = _ryanairLogo2.default;
+	
+	  this.goHome = function () {
+	    $state.go('home');
+	  };
+	}
+
+/***/ },
+/* 227 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgOTQgMTMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0ibTIwLjggMTEuOC0yLjgtMy43aC0xLjF2My43aC0zLjN2LTkuN2g0LjljMy42IDAgNS45IDEgNS45IDMgMCAxLjQtMS4zIDIuMi0zLjEgMi43bDMuMiA0em0tMi41LThoLTEuNXYyLjdoMS42YzEuNyAwIDIuNi0uNSAyLjYtMS4zLjEtMS0uNy0xLjQtMi43LTEuNHptMTQuMyA0LjN2My43aC0zLjN2LTMuNmwtNC44LTYuMWgzLjZsMS40IDJjLjYuOCAxLjIgMS44IDEuNCAyLjMuMi0uNS44LTEuNSAxLjQtMi4zbDEuNC0yaDMuNnMtNC43IDYtNC43IDZ6bTEyLjUgMy43LS45LTJoLTQuMWwtLjkgMmgtMy40bDQuNy05LjdoMy4ybDQuNyA5Ljd6bS0yLjEtNC44Yy0uMy0uNy0uNy0xLjktLjktMi40LS4xLjUtLjUgMS41LS44IDIuM2wtLjUgMS4yaDIuN3ptMTQuNSA0LjgtMy40LTQuM2MtLjUtLjYtMS4xLTEuNC0xLjQtMiAwIC42LjEgMS42LjEgMi4ydjQuMWgtM3YtOS43aDMuM2wzLjIgNC4zYy40LjYgMS4xIDEuNSAxLjUgMiAwLS42LS4xLTEuNy0uMS0yLjN2LTRoM3Y5Ljd6bTEzLjggMC0uOS0yaC00LjFsLS45IDJoLTMuNGw0LjctOS43aDMuM2w0LjcgOS43em0tMi4xLTQuOGMtLjMtLjctLjctMS45LS45LTIuNC0uMS41LS41IDEuNS0uOCAyLjNsLS41IDEuMmgyLjdzLS41LTEuMS0uNS0xLjF6bTYuOCA0Ljh2LTkuN2gzLjN2OS43em0xMy40IDAtMi45LTMuN2gtMS4xdjMuN2gtMy4zdi05LjdoNC45YzMuNiAwIDUuOSAxIDUuOSAzIDAgMS40LTEuMyAyLjItMy4xIDIuN2wzLjIgNHptLTIuNS04aC0xLjV2Mi43aDEuNmMxLjcgMCAyLjYtLjUgMi42LTEuMy4xLTEtLjctMS40LTIuNy0xLjR6IiBmaWxsPSIjZmZmIi8+PGcgZmlsbD0iI2YxYzkzMSI+PHBhdGggZD0ibTguMiAxLjdjLjcuMiAxLjQuNCAyLjEuNWguNWMuMyAwIC41LS4xLjgtLjJoLjFjMCAuMSAwIC4xLS4xLjItLjQuMy0uOC41LTEuMi42LS4xIDAtLjMuMS0uNC4xLS41LjItMS4xLjItMS42LjItMS0uMS0xLjktLjQtMi45LS40LS45LS4xLTEuOC4zLTIuMyAxLS4xLjQtLjMuOC0uMyAxLjJzLjYuNS44LjhsLjMuNmMuMS40LjMuOC42IDEuMi4yLjIuNC41LjcuNi40LjMuNy42LjkgMXMuNC43LjUgMS4xYy4xLjIuMi40LjIuN3YuMWMuMS4yLjEuNC4yLjV2LjFjMCAuMS4xLjMgMCAuMy0uMi0uMi0uMy0uNC0uNC0uNi0uMS0uNC0uNC0uOC0uNy0xLjItLjItLjItLjQtLjUtLjYtLjctLjgtLjktMi0xLjUtMi45LTIuMyAwIDAgMC0uMS0uMS0uMi0uMS0uMi0uMi0uMy0uMy0uNS0uMi0uNC0uNS0uOC0uNy0xLjMgMC0uMi0uMS0uNC0uMS0uNnYtLjFjMC0uMi0uNS0uMy0uMi0uNy4yLS4yLjgtLjQgMS0uOHYtLjJzMC0uMS0uMS0uMS0uNC4yLS40LS4xdi0uM2MuMS0uMi4xLS40LjEtLjYgMC0uMS4xLS4xLjItLjFzLjMtLjEuNC0uMWMuMyAwIC43IDAgLjkuMi4xLjIgMCAuNCAwIC42cy0uMi4zLS4xLjRoLjJjLjQtLjMuOC0uNyAxLjItMS4xLjMtLjMuOC0uNCAxLjItLjMuOSAwIDEuNi4zIDIuNS41eiIvPjxwYXRoIGQ9Im01LjkgMy4zYy4xLjIgMCAuMy0uMS41LS41LjctLjcgMS42LTEgMi40aC0uMWMtLjEgMC0uMS0uMS0uMS0uMiAwLS45LjMtMS43LjctMi41LjEtLjEuMi0uMy40LS4yLjEtLjEuMSAwIC4yIDB6bTEuNC4yYy4xLjMtLjEuNS0uMi44LS41IDEtMS4xIDItMS40IDMuMSAwIDAgMCAuMS0uMS4xaC0uMWMtLjEtLjQgMC0uOS4xLTEuMy4zLS45LjYtMS44IDEuMS0yLjcuMSAwIC4xLS4xLjEtLjEuMiAwIC40IDAgLjUuMXptMS40LjFjLjEuMS4xLjMgMCAuNC0uNiAxLjMtMS41IDIuNC0xLjkgMy44bC0uMy45YzAgLjEtLjEuMS0uMSAwLS4xLS4xIDAtLjMgMC0uNC4xLTEuMS40LTIuMi45LTMuMS4yLS41LjUtLjkuNy0xLjQuMS0uMS4yLS4zLjQtLjMuMSAwIC4yIDAgLjMuMXptMS42LjFjLjEuMiAwIC4zIDAgLjUtLjQgMS0xLjEgMS45LTEuNiAyLjktLjUuOC0uOCAxLjctMS4xIDIuNS0uMS4zLS4yLjUtLjMuOGgtLjFjLS4xLS4xLS4xLS4yLS4xLS4zLjEtMS4xLjUtMiAuOS0zIC41LTEuMSAxLjEtMi4xIDEuNi0zLjIuMS0uMS4yLS4zLjQtLjQuMSAwIC4yIDAgLjMuMnoiLz48L2c+PC9zdmc+Cg=="
+
+/***/ },
+/* 228 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(229);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./global-menu.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./global-menu.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 229 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n.global-menu {\n  background-color: #073590;\n  border-bottom: 2px solid #f1c933;\n  padding: 1.5rem calc(calc(100vw - 72rem) * 0.5); }\n\n.global-menu__logo {\n  cursor: pointer;\n  display: block;\n  margin: 0 1.5rem; }\n  .global-menu__logo:hover {\n    opacity: 0.9; }\n  .global-menu__logo:active {\n    opacity: 0.8; }\n  .global-menu__logo img {\n    display: block;\n    height: 3rem;\n    margin: 0 auto;\n    max-width: 100%; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/global-menu/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/global-menu/src/components/global-menu/global-menu.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACAhF;EACE,0BDE8B;ECD9B,iCDEkC;ECDlC,gDAAuD,EACxD;;AAED;EACE,gBAAe;EACf,eAAc;EACd,iBDgBiC,ECAlC;EAnBD;IAMI,aAAY,EACb;EAPH;IAUI,aAAY,EACb;EAXH;IAcI,eAAc;IACd,aAAsB;IACtB,eAAc;IACd,gBAAe,EAChB","file":"global-menu.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@import \"../../config/variables\";\n\n.global-menu {\n  background-color: $c-ryanair-blue;\n  border-bottom: 2px solid $c-ryanair-yellow;\n  padding: $s-leading calc(calc(100vw - #{$b-big}) * 0.5);\n}\n\n.global-menu__logo {\n  cursor: pointer;\n  display: block;\n  margin: 0 $s-leading;\n\n  &:hover {\n    opacity: 0.9;\n  }\n\n  &:active {\n    opacity: 0.8;\n  }\n\n  img {\n    display: block;\n    height: $s-leading * 2;\n    margin: 0 auto;\n    max-width: 100%;\n  }\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 230 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var AiportsService = exports.AiportsService = function AiportsService() {
-	  //TODO: Write your own implementation
+	
+	var _globalFooterComponent = __webpack_require__(231);
+	
+	var _globalFooterComponent2 = _interopRequireDefault(_globalFooterComponent);
+	
+	var _globalFooter = __webpack_require__(232);
+	
+	var _globalFooter2 = _interopRequireDefault(_globalFooter);
+	
+	__webpack_require__(235);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var GlobalFooterComponent = {
+	  template: _globalFooterComponent2.default,
+	  controller: _globalFooter2.default
 	};
+	
+	exports.default = GlobalFooterComponent;
 
 /***/ },
-/* 220 */
+/* 231 */
 /***/ function(module, exports) {
 
-	"use strict";
+	module.exports = "<footer class=\"global-footer\">\n  <img\n    class=\"global-footer__clouds global-footer__clouds--back\"\n    src=\"{{::$ctrl.cloudsBackSVG}}\"\n  >\n\n  <div class=\"global-footer__text\">\n    <h1>Always Getting Better</h1>\n    <p>\n      <a href=\"https://github.com/magicznyleszek/cheap-flights\">source</a>\n      &bull;\n      <a href=\"https://magicznyleszek.xyz\">author</a>\n    </p>\n  </div>\n\n  <img\n    class=\"global-footer__clouds global-footer__clouds--front\"\n    src=\"{{::$ctrl.cloudsFrontSVG}}\"\n  >\n</footer>\n"
+
+/***/ },
+/* 232 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var CheapFlightService = exports.CheapFlightService = function CheapFlightService() {
-	  //TODO: Write your own implementation
+	exports.default = GlobalFooterController;
+	
+	var _cloudsFront = __webpack_require__(233);
+	
+	var _cloudsFront2 = _interopRequireDefault(_cloudsFront);
+	
+	var _cloudsBack = __webpack_require__(234);
+	
+	var _cloudsBack2 = _interopRequireDefault(_cloudsBack);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function GlobalFooterController() {
+	  'ngInject';
+	
+	  this.cloudsFrontSVG = _cloudsFront2.default;
+	  this.cloudsBackSVG = _cloudsBack2.default;
+	}
+
+/***/ },
+/* 233 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAyIDE2MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJtMTg0LjIwOTIgOTYuNjUxOWMxMS4wODMyLTcuMTE3LTUuNjY3NS0yNi4zMTI5LTE2Ljc5NTktOC43NDIxIDIuMDMtMTIuOTcwNS03LjEzMjgtMTkuMjEtMTcuMDE1NS04LjYxNTQuNTE3Ny0yOS45Mzc0LTI3LjgwNzktNDEuMTI3Ny00NS40ODI1LTIwLjg5ODggNS40MzUyLTQ4LjkwNDItODIuMzM5Mi00NC40LTYwLjM5NTcgMTEuNDU3OC0xMi4xNTE5LTE0LjIwMTgtMzMuMTMzOC0xLjYxMjYtMTcuODQ3MiAxNy45NDQ2LTE4LjA4NDItMTcuODA4Ny00MC43Njg2IDEyLjg4MjYtMTEuODg1MiAxOC42MyAyNi4xNzgxIDUuMjA5MyA1NS43NjI3IDMuNDc2NSA4Mi40MTEgMy42MjEzIDI4LjY3LjE1NTggNTcuODcuMzc0NyA4Ni41MDA5LTEuMzMgMTYuMTc0Mi0uOTYyNiAxNy41NzMtMTYuNjk5My41MTAxLTEyLjA2NzR6Ii8+PHBhdGggZD0ibTQ4Ny41MDIyIDEyNy4yMjUyYzMuMjAxNS0xNC4wNjMtMTQuMzE5My0yNC4yMTE3LTI0Ljk2NjctMTQuODkgMjIuMTA5LTMxLjgxODYtMzIuNTUxLTYxLjQyNTItNDIuODU1NS0yMC4zODUyIDQuNTM1LTc5LjYyMDctMTA4Ljc2MTctODMuODE2OS03OC4zMDQ0LjkxMjUtMjIuMDYyNC00MC41NjI1LTkyLjMyMDktMTYuODM1Mi03Mi4xNDggMjcuOTUwNy05Ljg2MzctMTIuOTU0OC0xOS4zNDg0IDMuMDM5My0xNi44NjYxIDExLjg5NTUtMjQuMzE3OC04LjY1NjgtMzUuMzMyNyAyNS45NjE2LTMuNjc2NSAyOC4yIDM5LjA0NTkgMi43NiA4Ni4zOTY0LTUuMjAzNyAxMjUuNzU2Mi01LjM4NTEgNDAuMTcyMS0uMTg1MiA3MS42NDg1LTMuODMwNSAxMTEuODg4NC00LjMxNzMgMzMuMzQ4MS0uNDAzOCAyNC40MzEyLTM0LjQ5NzcgMS4xNzI2LTIzLjk4MTF6Ii8+PHBhdGggZD0ibTc4Ni41NTQ5IDc5LjM5ODVjOC41NzM5LTE1LjMzMjUtNS4xMzMtMzkuNDgzMy0yNC4wNDI3LTE1LjQ0MSAyMi43NTY0LTM0LjE4MzYtMjQuODAyMi02My40NDY3LTQwLjg5MDEtMTcuMjA4MSA3LjY5NDctNjIuNzg2LTgxLjgyODEtNjAuMzM4MS03MC4yODYyLS41MTM4LTE1LjIyNTQtMjkuMzEwOC02MS4xOTMzLTE3Ljk0MjQtNjEuMjIgMTQuOTI1My0xNy4yMzA2LTUuOTQ4Mi0yMy40MDg1IDguODI4NC0xMi43MzI5IDI3LjkxMjYtMTEuMDI1My0xMi4wOS0zMS43NjM5IDE0Ljc0ODEgMy4zMTI0IDE0Ljc0MTggMjkuNzk1MS0uMDA1NCA2Ny45NjItMy45NTYzIDk3Ljc0MzktNC44NDY5IDMxLjM2MjItLjkzNzggNjIuNzE3Mi0xLjIyMyA5NC4wNzg3LS40MDYzIDQ0LjIyMzUgMS4xNTE1IDI3LjAwNi0yNi40NzQ2IDE0LjAzNjktMTkuMTYzNnoiLz48L2c+PC9zdmc+"
+
+/***/ },
+/* 234 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAyIDE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJtNjA0LjQyNzEgODguNzI1OWMxLjk4NzctMTIuMzE3NS0xMi44NDcxLTIwLjg4NDQtMjIuNTIyMS0xMy4wMDU5IDguODk0Ny0yMC41Ni0yNS45Ny0yOS40MDc0LTI4LjcxMTItNy4xNzQ2IDQuMjg3Ni0zNC43Njk1LTUxLjM5OTMtMjguMTE5LTM1LjMyNjUgMTIuMTItOC4zMDA3LTEwLjQ3MDctMjEuNzA1NC0uODgtMTMuNTIyMyAxNS43MjY2IDMuMTAxMyA2LjI5MzggMjUuMTEyMyA3LjIwODggMzQuMTMzMiA3LjIwODhzMjUuNzQ0MS0uMDc0OSAzNi45Nzg3LjI5YzE0LjI2LjQ2MjggMjkuMzY4Ni0xLjI4ODkgMzMuNzMxLTYuMDUzNSA4LjgxOTMtOS42MzI5IDEuMDU2NS0xOS4xOTM0LTQuNzYwOC05LjExMTR6Ii8+PHBhdGggZD0ibTI1Mi44MzggNTEuOTE0MmMyLjQzNTktMjEuNTY2Mi0zMi45My0yOS45NTUtMzMuMjI2Ni0zLjAxMjIuMjk2NS0zNy40MjQxLTM3LjQ2MTUtMTYuNjc1NC0zMi45NyAzLjIxNzgtMTEuMTEtMTIuNjM3Mi0yOS41MTg4IDEuNDk3My0xNi41MjY4IDE1LjM5NTYgNi4zNzggNi44MjI4IDI5Ljg4IDIuNTg0NyA1NS4xODYyIDIuNTg0N3MzOC45ODggMS4zMDA5IDQ0Ljc3NTEtMi4xNWMxMy4zMzMtNy45NDk0LTIuNTc4LTI3LjgwOS0xNy4yMzc5LTE2LjAzNTl6Ii8+PHBhdGggZD0ibTQzNy4wMiAxMjAuMDQ2M2M3LjUyLTI2Ljg1NjMtMTQuNDQxMy00Mi41NDMyLTM1Ljg0NDEtMjIuODMzNiAzLjcyLTIwLjk0NTUtMzcuNjM0OS0zMy42ODQ3LTQ4LjUwOTMtNC4yMzM0IDcuNDUyLTI5LjE2NjEtMzcuMzI1NC0yMS41NzgzLTMxLjA0MyAxLjMxMDgtMTUuNDA5LTE4LjAyMjktMzMuNjYyMiA0LjYwMzUtMjAuNjQyMiAyMy43OTQ1LTExLjYxMjEtNC4wOTg1LTEyLjYwNDggNy44MzMyLTkuMjQgMTQuNDgyNSAzLjczNzMgNy4zODQzIDE1LjgxOTIgNS41Nzg3IDI3LjI3NjkgNi4zNTgyczU4LjEwNDUuNDA0NyA3OS42MDA1LS4wNzljMTcuMTg2OS0uMzg2OCAzMi42MDY5IDEuMjk1NSA0OS4zMDI3LTUuNDkyNiAxNi4wMTIxLTYuNTA5OS44OTYyLTIyLjc2NjctMTAuOTAxNS0xMy4zMDc0eiIvPjxwYXRoIGQ9Im05OS4wMzUyIDkxLjUxMzhjMTMuODEtMjkuNDQ5MS00MC45NS00Ny42NjUtNTIuOTI4Ni0xMi4yOTk0LS44NTU3LTE5LjQ0MDYtMjQuMTcxMy0xMi45NzY5LTE4LjQ4ODEgMy40MDYzLTE0Ljk4NjUtOS40NS0zMC40MzUtLjAxNTItMjUuNzcyNSAxNy4xMjg1IDIuNjg2NSA5Ljg3OCAxOS41NTA1IDkuMzkzNSAzNi4yOTM3IDkuMzkzNXM1Mi4yNDA5LS43ODgzIDY1LjE4NDMtMi4zODE1IDcuNTcwMi0yMS4yMDEyLTQuMjg4OC0xNS4yNDc0eiIvPjxwYXRoIGQ9Im03NzcuMjc3OCA1My4yNTIzYzE0LjA3MjItMzEuMzY0NC0xNS44NzQxLTQ1LjYyNDctMzEuMjA0Mi0xNS44NjQyIDE3LjA0MTMtNDkuMTU0NS01OC44NDg2LTQ3Ljg4MS00Mi40OTg0LTIuOTY4LTE4LjAzNjQtMjYuNTA3My00MC4yODI1LS44Mzg3LTIyLjM0NjQgMjEuNTY2OS01Ljk1NzQtMTIuMTM4Mi0yNi4yMDcxLjY5NjEtMTAuMzUxMiA4LjQzMjggMTEuNTY1NyA1LjY0MzQgMzQuMjkzOSAzLjgzNjMgNTAuMTQ2MSAzLjgzNjNzNjMuOTQ3OSA1LjI1MzUgNzMuNzE5NC0uOTgxOWMxNy4xNjA3LTEwLjk1MDYtNS4xMDQtMzIuMjY2OC0xNy40NjUzLTE0LjAyMTl6Ii8+PC9nPjwvc3ZnPg=="
+
+/***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(236);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./global-footer.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./global-footer.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n@keyframes horizontal-flight-animation {\n  0% {\n    left: -10%; }\n  100% {\n    left: 110%; } }\n\n@keyframes float-animation {\n  0% {\n    transform: translate(0%, 0%); }\n  12.5% {\n    transform: translate(2%, 1%); }\n  25% {\n    transform: translate(3%, 0%); }\n  37.5% {\n    transform: translate(2%, -1%); }\n  50% {\n    transform: translate(0%, 0%); }\n  62.5% {\n    transform: translate(-2%, 1%); }\n  75% {\n    transform: translate(-3%, 0%); }\n  87.5% {\n    transform: translate(-2%, -1%); }\n  100% {\n    transform: translate(0%, 0%); } }\n\n.global-footer {\n  background-image: linear-gradient(to bottom, #f4f4f4 10%, #2091eb);\n  min-height: 7.5rem;\n  overflow: hidden;\n  padding: 1.5rem calc(calc(100vw - 72rem) * 0.5);\n  position: relative; }\n  .global-footer:hover .global-footer__clouds--back {\n    right: -100%; }\n  .global-footer:hover .global-footer__clouds--front {\n    left: -100%; }\n\n.global-footer__text {\n  margin: 0 auto;\n  max-width: calc(100vw - 3rem);\n  padding: 0.75rem 0;\n  position: relative;\n  text-align: center;\n  width: 72rem;\n  z-index: 102; }\n  .global-footer__text h1 {\n    font-weight: bold; }\n  .global-footer__text p {\n    font-size: 0.75rem; }\n\n.global-footer__clouds {\n  animation-direction: normal;\n  animation-duration: 20s;\n  animation-fill-mode: both;\n  animation-iteration-count: infinite;\n  animation-name: float-animation;\n  animation-play-state: running;\n  animation-timing-function: linear;\n  display: block;\n  height: 6rem;\n  pointer-events: none;\n  position: absolute;\n  transition-duration: 2s;\n  transition-timing-function: ease-in-out; }\n  .global-footer:hover .global-footer__clouds {\n    transition-delay: 200ms; }\n  .global-footer__clouds.global-footer__clouds--front {\n    animation-delay: -1s;\n    bottom: 0.75rem;\n    left: 0;\n    transition-property: left;\n    z-index: 103; }\n  .global-footer__clouds.global-footer__clouds--back {\n    animation-delay: -5s;\n    bottom: 1.5rem;\n    right: 0;\n    transition-property: right;\n    z-index: 101; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/global-footer/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/global-footer/src/config/animations.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/global-footer/src/components/global-footer/global-footer.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACFhF;EACE;IACE,WAAU,EAAA;EAEZ;IACE,WAAU,EAAA,EAAA;;AAiBd;EACE;IACE,6BAA4B,EAAA;EAE9B;IACE,6BAA0D,EAAA;EAE5D;IACE,6BAA2C,EAAA;EAE7C;IACE,8BAA2D,EAAA;EAE7D;IACE,6BAA4B,EAAA;EAE9B;IACE,8BAA2D,EAAA;EAE7D;IACE,8BAA4C,EAAA;EAE9C;IACE,+BAA4D,EAAA;EAE9D;IACE,6BAA4B,EAAA,EAAA;;AC7ChC;EACE,mEAA4E;EAC5E,mBAA0B;EAC1B,iBAAgB;EAChB,gDAAuD;EACvD,mBAAkB,EASnB;EAdD;IAQI,aAAY,EACb;EATH;IAYI,YAAW,EACZ;;AAGH;EACE,eAAc;EACd,8BAA0C;EAC1C,mBAAuB;EACvB,mBAAkB;EAClB,mBAAkB;EAClB,aFOW;EENX,aFQmB,EECpB;EAhBD;IAUI,kBAAiB,EAClB;EAXH;IAcI,mBAAkB,EACnB;;AAGH;EDgBE,4BAA2B;EAC3B,wBAAuB;EACvB,0BAAyB;EACzB,oCAAmC;EACnC,gCAA+B;EAC/B,8BAA6B;EAC7B,kCAAiC;ECpBjC,eAAc;EACd,aAAsB;EACtB,qBAAoB;EACpB,mBAAkB;EAClB,wBAAuB;EACvB,wCAAuC,EAqBxC;EAnBC;IACE,wBAAuB,EACxB;EAXH;IAcI,qBAAoB;IACpB,gBAAoB;IACpB,QAAO;IACP,0BAAyB;IACzB,aFrBiB,EEsBlB;EAnBH;IAsBI,qBAAoB;IACpB,eFjC+B;IEkC/B,SAAQ;IACR,2BAA0B;IAC1B,aF7BiB,EE8BlB","file":"global-footer.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@keyframes horizontal-flight-animation {\n  0% {\n    left: -10%;\n  }\n  100% {\n    left: 110%;\n  }\n}\n\n@mixin horizontal-flight {\n  animation-direction: normal;\n  animation-duration: 1s;\n  animation-fill-mode: forwards;\n  animation-iteration-count: 1;\n  animation-name: horizontal-flight-animation;\n  animation-play-state: running;\n  animation-timing-function: ease-in-out;\n}\n\n$s-float-x: 1%;\n$s-float-y: 0.5%;\n\n@keyframes float-animation {\n  0% {\n    transform: translate(0%, 0%);\n  }\n  12.5% {\n    transform: translate(#{$s-float-x * 2}, #{$s-float-y * 2});\n  }\n  25% {\n    transform: translate(#{$s-float-x * 3}, 0%);\n  }\n  37.5% {\n    transform: translate(#{$s-float-x * 2}, #{$s-float-y * -2});\n  }\n  50% {\n    transform: translate(0%, 0%);\n  }\n  62.5% {\n    transform: translate(#{$s-float-x * -2}, #{$s-float-y * 2});\n  }\n  75% {\n    transform: translate(#{$s-float-x * -3}, 0%);\n  }\n  87.5% {\n    transform: translate(#{$s-float-x * -2}, #{$s-float-y * -2});\n  }\n  100% {\n    transform: translate(0%, 0%);\n  }\n}\n\n@mixin float {\n  animation-direction: normal;\n  animation-duration: 20s;\n  animation-fill-mode: both;\n  animation-iteration-count: infinite;\n  animation-name: float-animation;\n  animation-play-state: running;\n  animation-timing-function: linear;\n}\n","@import \"../../config/variables\";\n@import \"../../config/animations\";\n\n.global-footer {\n  background-image: linear-gradient(to bottom, $c-root-bg 10%, $c-bright-blue);\n  min-height: $s-leading * 5;\n  overflow: hidden;\n  padding: $s-leading calc(calc(100vw - #{$b-big}) * 0.5);\n  position: relative;\n\n  &:hover .global-footer__clouds--back {\n    right: -100%;\n  }\n\n  &:hover .global-footer__clouds--front {\n    left: -100%;\n  }\n}\n\n.global-footer__text {\n  margin: 0 auto;\n  max-width: calc(100vw - #{$s-leading * 2});\n  padding: $s-leading/2 0;\n  position: relative;\n  text-align: center;\n  width: $b-big;\n  z-index: $z-global-bottom + 2;\n\n  h1 {\n    font-weight: bold;\n  }\n\n  p {\n    font-size: 0.75rem;\n  }\n}\n\n.global-footer__clouds {\n  @include float;\n  display: block;\n  height: $s-leading * 4;\n  pointer-events: none;\n  position: absolute;\n  transition-duration: 2s;\n  transition-timing-function: ease-in-out;\n\n  .global-footer:hover & {\n    transition-delay: 200ms;\n  }\n\n  &.global-footer__clouds--front {\n    animation-delay: -1s;\n    bottom: $s-leading/2;\n    left: 0;\n    transition-property: left;\n    z-index: $z-global-bottom + 3;\n  }\n\n  &.global-footer__clouds--back {\n    animation-delay: -5s;\n    bottom: $s-leading;\n    right: 0;\n    transition-property: right;\n    z-index: $z-global-bottom + 1;\n  }\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _searchWrapperComponent = __webpack_require__(238);
+	
+	var _searchWrapperComponent2 = _interopRequireDefault(_searchWrapperComponent);
+	
+	var _searchWrapper = __webpack_require__(239);
+	
+	var _searchWrapper2 = _interopRequireDefault(_searchWrapper);
+	
+	__webpack_require__(240);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var SearchWrapperComponent = {
+	  bindings: {
+	    onSubmit: '&'
+	  },
+	  template: _searchWrapperComponent2.default,
+	  controller: _searchWrapper2.default
 	};
+	
+	exports.default = SearchWrapperComponent;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports) {
+
+	module.exports = "<form class=\"search-wrapper\" ng-submit=\"$ctrl.onSafeSubmit()\">\n  <airport-selector\n    placeholder=\"'Source…'\"\n    airports=\"$ctrl.sourceAirports\"\n    selected-iata-code=\"$ctrl.sourceIataCode\"\n    on-selected-change=\"$ctrl.onSourceChange(iataCode)\"\n    ng-disabled=\"$ctrl.sourceAirports.length === 0\"\n  ></airport-selector>\n\n  <airport-selector\n    placeholder=\"'Destination…'\"\n    airports=\"$ctrl.destinationAirports\"\n    selected-iata-code=\"$ctrl.destinationIataCode\"\n    on-selected-change=\"$ctrl.onDestinationChange(iataCode)\"\n    ng-disabled=\"$ctrl.destinationAirports.length === 0\"\n  ></airport-selector>\n\n  <date-selector\n    label=\"'From:'\"\n    date=\"$ctrl.startDate\"\n    on-date-change=\"$ctrl.onStartDateChange(date)\"\n  ></date-selector>\n\n  <date-selector\n    label=\"'To:'\"\n    date=\"$ctrl.endDate\"\n    on-date-change=\"$ctrl.onEndDateChange(date)\"\n  ></date-selector>\n\n  <button\n    class=\"search-wrapper__submit-button\"\n    type=\"submit\"\n    name=\"button\"\n  >Find flights!</button>\n</form>\n"
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	SearchWrapperController.$inject = ["AirportsService", "SearchParamsService"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = SearchWrapperController;
+	
+	var _moment = __webpack_require__(95);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function SearchWrapperController(AirportsService, SearchParamsService) {
+	  'ngInject';
+	
+	  var _this = this;
+	
+	  this.$onInit = function () {
+	    AirportsService.getAirportsAsync().then(function (airports) {
+	      _this.sourceAirports = airports;
+	      _this.readURLParams();
+	    });
+	  };
+	
+	  this.readURLParams = function () {
+	    var source = SearchParamsService.getParam('source');
+	    var dest = SearchParamsService.getParam('dest');
+	    var from = SearchParamsService.getParam('from');
+	    var to = SearchParamsService.getParam('to');
+	
+	    if (source) {
+	      _this.onSourceChange(source);
+	    }
+	    if (dest) {
+	      _this.onDestinationChange(dest);
+	    }
+	    if (from) {
+	      _this.onStartDateChange(new Date(from));
+	    }
+	    if (to) {
+	      _this.onEndDateChange(new Date(to));
+	    }
+	
+	    if (source || dest || from || to) {
+	      _this.onSafeSubmit();
+	    }
+	  };
+	
+	  this.setURLParams = function () {
+	    if (_this.sourceIataCode) {
+	      SearchParamsService.setParam('source', _this.sourceIataCode);
+	    }
+	    if (_this.destinationIataCode) {
+	      SearchParamsService.setParam('dest', _this.destinationIataCode);
+	    }
+	    if (_this.startDate) {
+	      SearchParamsService.setParam('from', (0, _moment2.default)(_this.startDate).format('YYYY-MM-DD'));
+	    }
+	    if (_this.endDate) {
+	      SearchParamsService.setParam('to', (0, _moment2.default)(_this.endDate).format('YYYY-MM-DD'));
+	    }
+	  };
+	
+	  this.getSearchSubmitParams = function () {
+	    return {
+	      sourceIataCode: _this.sourceIataCode,
+	      destinationIataCode: _this.destinationIataCode,
+	      startDate: (0, _moment2.default)(_this.startDate).format('YYYY-MM-DD'),
+	      endDate: (0, _moment2.default)(_this.endDate).format('YYYY-MM-DD')
+	    };
+	  };
+	
+	  this.onSafeSubmit = function () {
+	    // TODO verify form and display errors
+	    var isValid = true;
+	    if (isValid) {
+	      _this.onSubmit({ params: _this.getSearchSubmitParams() });
+	      _this.setURLParams();
+	    }
+	  };
+	
+	  this.sourceIataCode = null;
+	  this.sourceAirports = [];
+	  this.onSourceChange = function (iataCode) {
+	    _this.sourceIataCode = iataCode;
+	    _this.destinationIataCode = null;
+	    _this.destinationAirports = AirportsService.getAirportDestinations(_this.sourceIataCode);
+	  };
+	
+	  this.destinationIataCode = null;
+	  this.destinationAirports = [];
+	  this.onDestinationChange = function (iataCode) {
+	    _this.destinationIataCode = iataCode;
+	  };
+	
+	  this.startDate = null;
+	  this.onStartDateChange = function (date) {
+	    _this.startDate = date;
+	    _this.fixDates();
+	  };
+	
+	  this.endDate = null;
+	  this.onEndDateChange = function (date) {
+	    _this.endDate = date;
+	    _this.fixDates();
+	  };
+	
+	  this.fixDates = function () {
+	    if ((0, _moment2.default)(_this.startDate) > (0, _moment2.default)(_this.endDate)) {
+	      _this.endDate = (0, _moment2.default)(_this.startDate).add(2, 'd').toDate();
+	    }
+	    if ((0, _moment2.default)(_this.endDate) < (0, _moment2.default)(_this.startDate)) {
+	      _this.startDate = (0, _moment2.default)(_this.endDate).subtract(2, 'd').toDate();
+	    }
+	  };
+	}
+
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(241);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./search-wrapper.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./search-wrapper.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n.search-wrapper {\n  background: #2091eb;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-flow: column wrap;\n      flex-flow: column wrap;\n  padding: 0.75rem; }\n  .search-wrapper > * {\n    margin: 0.75rem; }\n  @media (min-width: 36rem) {\n    .search-wrapper {\n      border-radius: 0.313rem;\n      box-shadow: 0 0 0 2px #1484de;\n      -ms-flex-direction: row;\n          flex-direction: row;\n      margin: 0.75rem; } }\n  @media (min-width: 36rem) and (max-width: 71.975rem) {\n    .search-wrapper > * {\n      width: calc(50% - 1.5rem); }\n    .search-wrapper > *:last-child:nth-child(odd) {\n      width: calc(100% - 1.5rem); } }\n  @media (min-width: 72rem) {\n    .search-wrapper {\n      -ms-flex-wrap: nowrap;\n          flex-wrap: nowrap;\n      -ms-flex-pack: center;\n          justify-content: center;\n      margin: 1.5rem auto;\n      max-width: calc(100vw - 3rem);\n      width: 72rem; }\n      .search-wrapper > * {\n        width: 16.66%; }\n      .search-wrapper .search-wrapper__submit-button {\n        -ms-flex: 1;\n            flex: 1; } }\n\n.search-wrapper__submit-button {\n  background-color: #f1c933;\n  border-radius: 0.313rem;\n  box-shadow: 0 0 0 1px #b28f0c;\n  color: rgba(46, 46, 46, 0.8);\n  cursor: pointer;\n  display: block;\n  font-size: 0.8rem;\n  font-weight: bold;\n  height: 2rem;\n  line-height: 1.5rem;\n  min-width: 8rem;\n  padding: 0.25rem 1.5rem;\n  text-align: center;\n  text-transform: uppercase;\n  white-space: nowrap; }\n  .search-wrapper__submit-button:hover, .search-wrapper__submit-button:focus {\n    color: rgba(46, 46, 46, 0.9); }\n  .search-wrapper__submit-button:active {\n    transform: translateY(1px); }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/search-wrapper/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/components/search-wrapper/src/components/search-wrapper/search-wrapper.component.scss"],"names":[],"mappings":"AAAA;;gFAEgF;ACAhF;EACE,oBDI+B;ECH/B,qBAAa;EAAb,cAAa;EACb,2BAAsB;MAAtB,uBAAsB;EACtB,iBAAqB,EAoCtB;EAxCD;IAOI,gBAAoB,EACrB;EAED;IAVF;MAWI,wBDiBkB;MChBlB,8BAAgD;MAChD,wBAAmB;UAAnB,oBAAmB;MACnB,gBAAoB,EA0BvB,EAAA;EAvBC;IAjBF;MAmBM,0BAAgC,EACjC;IApBL;MAsBM,2BAAiC,EAClC,EAAA;EAGH;IA1BF;MA2BI,sBAAiB;UAAjB,kBAAiB;MACjB,sBAAuB;UAAvB,wBAAuB;MACvB,oBAAuB;MACvB,8BAA0C;MAC1C,aDDS,ECUZ;MAxCD;QAkCM,cAAa,EACd;MAnCL;QAqCM,YAAO;YAAP,QAAO,EACR,EAAA;;AAIL;EACE,0BDvCkC;ECwClC,wBDhBoB;ECiBpB,8BAAoD;EACpD,6BDvC0B;ECwC1B,gBAAe;EACf,eAAc;EACd,kBAAiB;EACjB,kBAAiB;EACjB,aAAgC;EAChC,oBD3BiC;EC4BjC,gBAAe;EACf,wBAAuB;EACvB,mBAAkB;EAClB,0BAAyB;EACzB,oBAAmB,EAUpB;EAzBD;IAmBI,6BDtDwB,ECuDzB;EApBH;IAuBI,2BAA0B,EAC3B","file":"search-wrapper.component.scss","sourcesContent":["/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","@import \"../../config/variables\";\n\n.search-wrapper {\n  background: $c-bright-blue;\n  display: flex;\n  flex-flow: column wrap;\n  padding: $s-leading/2;\n\n  & > * {\n    margin: $s-leading/2;\n  }\n\n  @media (min-width: #{$b-medium}) {\n    border-radius: $s-global-br;\n    box-shadow: 0 0 0 2px darken($c-bright-blue, 5%);\n    flex-direction: row;\n    margin: $s-leading/2;\n  }\n\n  @media (min-width: #{$b-medium}) and (max-width: #{$b-big - 0.025rem}) {\n    & > * {\n      width: calc(50% - #{$s-leading});\n    }\n    & > *:last-child:nth-child(odd) {\n      width: calc(100% - #{$s-leading});\n    }\n  }\n\n  @media (min-width: #{$b-big}) {\n    flex-wrap: nowrap;\n    justify-content: center;\n    margin: $s-leading auto;\n    max-width: calc(100vw - #{$s-leading * 2});\n    width: $b-big;\n\n    & > * {\n      width: 16.66%;\n    }\n    & .search-wrapper__submit-button {\n      flex: 1;\n    }\n  }\n}\n\n.search-wrapper__submit-button {\n  background-color: $c-ryanair-yellow;\n  border-radius: $s-global-br;\n  box-shadow: 0 0 0 1px darken($c-ryanair-yellow, 20%);\n  color: rgba($c-charcoal, 0.8);\n  cursor: pointer;\n  display: block;\n  font-size: 0.8rem;\n  font-weight: bold;\n  height: $s-leading + 2 * 0.25rem;\n  line-height: $s-leading;\n  min-width: 8rem;\n  padding: 0.25rem 1.5rem;\n  text-align: center;\n  text-transform: uppercase;\n  white-space: nowrap;\n\n  &:hover,\n  &:focus {\n    color: rgba($c-charcoal, 0.9);\n  }\n\n  &:active {\n    transform: translateY(1px);\n  }\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	__webpack_require__(243);
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(244);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./layout.component.scss", function() {
+				var newContent = require("!!../../../node_modules/css-loader/index.js?sourceMap!../../../node_modules/postcss-loader/index.js!../../../node_modules/sass-loader/index.js?config=sassLoader!./layout.component.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".layout__wrapper {\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-direction: column;\n      flex-direction: column;\n  min-height: 100vh; }\n\n.layout__content {\n  -ms-flex: 1;\n      flex: 1; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/components/layout/src/components/layout/layout.component.scss"],"names":[],"mappings":"AAAA;EACE,qBAAa;EAAb,cAAa;EACb,2BAAsB;MAAtB,uBAAsB;EACtB,kBAAiB,EAClB;;AAED;EACE,YAAO;MAAP,QAAO,EACR","file":"layout.component.scss","sourcesContent":[".layout__wrapper {\n  display: flex;\n  flex-direction: column;\n  min-height: 100vh;\n}\n\n.layout__content {\n  flex: 1;\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _homeComponent = __webpack_require__(246);
+	
+	var _homeComponent2 = _interopRequireDefault(_homeComponent);
+	
+	var _home = __webpack_require__(247);
+	
+	var _home2 = _interopRequireDefault(_home);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var HomeComponent = {
+	  template: _homeComponent2.default,
+	  controller: _home2.default
+	};
+	
+	exports.default = HomeComponent;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"layout__wrapper\">\n  <global-menu></global-menu>\n\n  <section class=\"layout__content\">\n    <search-wrapper on-submit=\"$ctrl.onSearchSubmit(params)\"></search-wrapper>\n  </section>\n\n  <global-footer></global-footer>\n</div>\n"
+
+/***/ },
+/* 247 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	HomePageController.$inject = ["$state"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = HomePageController;
+	function HomePageController($state) {
+	  'ngInject';
+	
+	  this.onSearchSubmit = function (params) {
+	    $state.go('results', {
+	      source: params.sourceIataCode,
+	      dest: params.destinationIataCode,
+	      from: params.startDate,
+	      to: params.endDate
+	    });
+	  };
+	}
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _resultsComponent = __webpack_require__(249);
+	
+	var _resultsComponent2 = _interopRequireDefault(_resultsComponent);
+	
+	var _results = __webpack_require__(250);
+	
+	var _results2 = _interopRequireDefault(_results);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ResultsComponent = {
+	  template: _resultsComponent2.default,
+	  controller: _results2.default
+	};
+	
+	exports.default = ResultsComponent;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"layout__wrapper\">\n  <global-menu></global-menu>\n\n  <section class=\"layout__content\">\n    <search-wrapper on-submit=\"$ctrl.onSearchSubmit(params)\"></search-wrapper>\n\n    <flights-list\n      flights=\"$ctrl.flights\"\n      is-loading=\"$ctrl.isLoading\"\n      empty-message=\"'Could not find any flights :('\"\n      on-flight-selected=\"$ctrl.onFlightSelected(flight)\"\n    ></flights-list>\n  </section>\n\n  <global-footer></global-footer>\n</div>\n"
+
+/***/ },
+/* 250 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	ResultsPageController.$inject = ["AirportsService", "CheapFlightsService"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = ResultsPageController;
+	function ResultsPageController(AirportsService, CheapFlightsService) {
+	  'ngInject';
+	
+	  var _this = this;
+	
+	  this.flights = null;
+	  this.isLoading = true;
+	  this.currentParams = null;
+	
+	  this.onSearchSubmit = function (params) {
+	    _this.currentParams = params;
+	    _this.clearData();
+	    _this.loadFlights(_this.currentPage);
+	  };
+	
+	  this.clearData = function () {
+	    _this.flights = null;
+	    _this.isLoading = true;
+	  };
+	
+	  this.loadFlights = function () {
+	    _this.isLoading = true;
+	    CheapFlightsService.findFlights(_this.currentParams.sourceIataCode, _this.currentParams.destinationIataCode, _this.currentParams.startDate, _this.currentParams.endDate).then(_this.onFindFlightsCompleted.bind(_this), _this.onFindFlightsFailed.bind(_this));
+	  };
+	
+	  this.onFindFlightsCompleted = function (flights) {
+	    _this.isLoading = false;
+	    if (_this.flights === null) {
+	      _this.flights = flights;
+	    } else {
+	      _this.flights = _this.flights.concat(flights);
+	    }
+	  };
+	
+	  this.onFindFlightsFailed = function () {
+	    _this.isLoading = false;
+	  };
+	
+	  this.onFlightSelected = function (flight) {
+	    var sourceAirport = AirportsService.getAirport(_this.currentParams.sourceIataCode);
+	    var destinationAirport = AirportsService.getAirport(_this.currentParams.destinationIataCode);
+	    console.info('From: ' + sourceAirport.name + '\nTo: ' + destinationAirport.name + '\nFlight data: ' + JSON.stringify(flight));
+	  };
+	}
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _airports = __webpack_require__(252);
+	
+	Object.defineProperty(exports, 'AirportsService', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_airports).default;
+	  }
+	});
+	
+	var _cheapFlights = __webpack_require__(253);
+	
+	Object.defineProperty(exports, 'CheapFlightsService', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_cheapFlights).default;
+	  }
+	});
+	
+	var _searchParams = __webpack_require__(254);
+	
+	Object.defineProperty(exports, 'SearchParamsService', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_searchParams).default;
+	  }
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 252 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	AirportsService.$inject = ["$q", "$http"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = AirportsService;
+	/*
+	This service works on assumption that you require API data to know airports and
+	that API data doesn't change during lifetime of the application
+	*/
+	
+	function AirportsService($q, $http) {
+	  'ngInject';
+	
+	  var _this = this;
+	
+	  var baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/forms/flight-booking-selector/';
+	  var APIData = null;
+	
+	  this.getAPIData = function () {
+	    return $http({ method: 'get', url: baseURL, cache: true });
+	  };
+	
+	  this.getAirportsAsync = function () {
+	    var deferred = $q.defer();
+	
+	    if (APIData !== null) {
+	      deferred.resolve(APIData.airports);
+	    } else {
+	      _this.getAPIData().then(_this.onGetAPIDataCompleted.bind(_this, deferred), _this.onGetAPIDataFailed.bind(_this, deferred));
+	    }
+	
+	    return deferred.promise;
+	  };
+	
+	  this.onGetAPIDataCompleted = function (deferred, response) {
+	    APIData = response.data;
+	    deferred.resolve(response.data.airports);
+	  };
+	
+	  this.onGetAPIDataFailed = function (deferred, response) {
+	    deferred.reject(response);
+	    throw new Error('Failed getting Airports API Data!');
+	  };
+	
+	  this.getAirport = function (iataCode) {
+	    if (APIData === null) {
+	      throw new Error('Airports API Data not ready yet!');
+	    }
+	    return APIData.airports.find(function (airport) {
+	      return airport.iataCode === iataCode;
+	    });
+	  };
+	
+	  this.getAirportDestinations = function (iataCode) {
+	    if (APIData === null) {
+	      throw new Error('Airports API Data not ready yet!');
+	    }
+	    var destinations = [];
+	    APIData.routes[iataCode].forEach(function (routeIataCode) {
+	      destinations.push(APIData.airports.find(function (airport) {
+	        return airport.iataCode === routeIataCode;
+	      }));
+	    });
+	    return destinations;
+	  };
+	}
+
+/***/ },
+/* 253 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	CheapFlightsService.$inject = ["$q", "$http"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = CheapFlightsService;
+	function CheapFlightsService($q, $http) {
+	  'ngInject';
+	
+	  var _this = this;
+	
+	  var baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/2014-12-02/2015-02-02/250/unique/?limit=15&offset-0';
+	  var pageSize = 15;
+	
+	  this.getURL = function (sourceIataCode, destinationIataCode, startDate, endDate) {
+	    var page = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+	
+	    var offset = page * pageSize;
+	    var finalURL = baseURL;
+	    finalURL += '/from/' + sourceIataCode;
+	    finalURL += '/to/' + destinationIataCode;
+	    finalURL += '/' + startDate;
+	    finalURL += '/' + endDate;
+	    finalURL += '/250/unique/?limit=' + pageSize + '&offset=' + offset;
+	    return finalURL;
+	  };
+	
+	  this.findFlights = function (sourceIataCode, destinationIataCode, startDate, endDate, page) {
+	    var deferred = $q.defer();
+	
+	    if (!sourceIataCode || !destinationIataCode || !startDate || !endDate) {
+	      deferred.reject();
+	    } else {
+	      var queryURL = _this.getURL(sourceIataCode, destinationIataCode, startDate, endDate, page);
+	      $http({ method: 'get', url: queryURL, cache: false }).then(_this.onFindFlightsCompleted.bind(_this, deferred), _this.onFindFlightsFailed.bind(_this, deferred));
+	    }
+	
+	    return deferred.promise;
+	  };
+	
+	  this.onFindFlightsCompleted = function (deferred, response) {
+	    deferred.resolve(response.data.flights);
+	  };
+	
+	  this.onFindFlightsFailed = function (deferred, response) {
+	    deferred.reject(response);
+	  };
+	}
+
+/***/ },
+/* 254 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	SearchParamsService.$inject = ["$location", "$state", "$stateParams"];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = SearchParamsService;
+	function SearchParamsService($location, $state, $stateParams) {
+	  'ngInject';
+	
+	  this.getParam = function (name) {
+	    return $location.search()[name];
+	  };
+	
+	  // sets url params without causing reloads
+	  this.setParam = function (name, value) {
+	    $stateParams[name] = value;
+	    $state.params[name] = value;
+	    $location.search(name, value);
+	  };
+	}
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(256);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./reset.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./reset.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\na simple reset\n*******************************************************************************/\n* {\n  background-color: transparent;\n  border: 0;\n  box-sizing: inherit;\n  color: inherit;\n  font-family: inherit;\n  font-size: inherit;\n  font-style: inherit;\n  font-weight: inherit;\n  line-height: inherit;\n  margin: 0;\n  padding: 0;\n  vertical-align: baseline; }\n\nhtml {\n  box-sizing: border-box; }\n\na {\n  text-decoration: none; }\n\nul,\nol {\n  list-style: none; }\n\nsvg {\n  color: inherit;\n  fill: currentColor;\n  shape-rendering: geometricPrecision; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/config/src/config/reset.scss"],"names":[],"mappings":"AAAA;;gFAEgF;AAEhF;EACE,8BAA6B;EAC7B,UAAS;EACT,oBAAmB;EACnB,eAAc;EACd,qBAAoB;EACpB,mBAAkB;EAClB,oBAAmB;EACnB,qBAAoB;EACpB,qBAAoB;EACpB,UAAS;EACT,WAAU;EACV,yBAAwB,EACzB;;AAED;EACE,uBAAsB,EACvB;;AAED;EACE,sBAAqB,EACtB;;AAED;;EAEE,iBAAgB,EACjB;;AAED;EACE,eAAc;EACd,mBAAkB;EAClB,oCAAmC,EACpC","file":"reset.scss","sourcesContent":["/*******************************************************************************\na simple reset\n*******************************************************************************/\n\n* {\n  background-color: transparent;\n  border: 0;\n  box-sizing: inherit;\n  color: inherit;\n  font-family: inherit;\n  font-size: inherit;\n  font-style: inherit;\n  font-weight: inherit;\n  line-height: inherit;\n  margin: 0;\n  padding: 0;\n  vertical-align: baseline;\n}\n\nhtml {\n  box-sizing: border-box;\n}\n\na {\n  text-decoration: none;\n}\n\nul,\nol {\n  list-style: none;\n}\n\nsvg {\n  color: inherit;\n  fill: currentColor;\n  shape-rendering: geometricPrecision;\n}\n"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(258);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(85)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./root.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js?sourceMap!../../node_modules/postcss-loader/index.js!../../node_modules/sass-loader/index.js?config=sassLoader!./root.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(84)(true);
+	// imports
+	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin-ext);", ""]);
+	
+	// module
+	exports.push([module.id, "/*******************************************************************************\nroot stuff and normalizations\n\nNOTE: Root line height is being used in many places throughout the project.\nIt is recommended to keep all vertical margins and heights of elements to match\nthe leading. Use caution when adding borders or when using vertical-align middle\nas they tend to add unwanted pixels, thus braking the flow.\n*******************************************************************************/\n/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\nhtml {\n  background-color: #f4f4f4;\n  color: #2e2e2e;\n  font-family: \"Roboto\", sans-serif;\n  /*\n  clever page scaling with root font size changes:\n  https://www.smashingmagazine.com/2016/05/fluid-typography/\n  calc(AZ + (B - A) * (100vw - CZ) / (D - C))\n  - A: min font size\n  - B: max font size\n  - C: min screen size\n  - D: max screen size\n  - Z: unit (px, rem, etc.)\n  */\n  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (160 - 30));\n  font-weight: normal;\n  line-height: 1.5;\n  min-height: 100%;\n  text-rendering: optimizeLegibility; }\n\n/*******************************************************************************\nuser-action influenced states\n*******************************************************************************/\na {\n  color: inherit;\n  text-decoration: underline; }\n\na:visited {\n  color: inherit; }\n\na:hover {\n  color: #073590; }\n\na:active {\n  color: #2091eb; }\n\n::-moz-focus-inner {\n  border: 0; }\n\n:focus {\n  background-color: #f1c933;\n  outline: none; }\n\n:focus svg {\n  background-color: #f1c933; }\n\n::-moz-selection {\n  background-color: #073590;\n  color: #f1c933; }\n\n::selection {\n  background-color: #073590;\n  color: #f1c933; }\n\n[disabled] {\n  opacity: 0.5;\n  pointer-events: none;\n  /* avoid adding up opacity on nested disabled elements */ }\n  [disabled] [disabled] {\n    opacity: 1; }\n", "", {"version":3,"sources":["/Users/leszek/Sites/priv/cheap-flights/src/config/src/config/root.scss","/Users/leszek/Sites/priv/cheap-flights/src/config/src/config/variables.scss","/Users/leszek/Sites/priv/cheap-flights/src/config/root.scss"],"names":[],"mappings":"AAAA;;;;;;;gFAOgF;ACPhF;;gFAEgF;ADUhF;EACE,0BCFoC;EDGpC,eCL0B;EDM1B,kCCAmC;EDEnC;;;;;;;;;IASE;EACF,iEAAgE;EAChE,oBAAmB;EACnB,iBCHmB;EDInB,iBAAgB;EAChB,mCAAkC,EACnC;;AAED;;gFAEgF;AAEhF;EACE,eAAc;EACd,2BAA0B,EAC3B;;AAED;EACE,eAAc,EACf;;AAED;EACE,eC3C8B,ED4C/B;;AAED;EACE,eC7C+B,ED8ChC;;AAED;EACE,UAAS,EACV;;AAED;EACE,0BCtDkC;EDuDlC,cAAa,EACd;;AAED;EACE,0BC3DkC,ED4DnC;;AAED;EACE,0BChE8B;EDiE9B,eChEkC,EDiEnC;;AAHD;EACE,0BChE8B;EDiE9B,eChEkC,EDiEnC;;AETD;EFYE,aAAY;EACZ,qBAAoB;EAEpB,yDAAyD,EAI1D;EEfC;IFaE,WAAU,EACX","file":"root.scss","sourcesContent":["/*******************************************************************************\nroot stuff and normalizations\n\nNOTE: Root line height is being used in many places throughout the project.\nIt is recommended to keep all vertical margins and heights of elements to match\nthe leading. Use caution when adding borders or when using vertical-align middle\nas they tend to add unwanted pixels, thus braking the flow.\n*******************************************************************************/\n\n@import url(\"https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin-ext\");\n@import \"./variables\";\n\nhtml {\n  background-color: $c-root-bg;\n  color: $c-root-txt;\n  font-family: $font-sansSerif;\n\n  /*\n  clever page scaling with root font size changes:\n  https://www.smashingmagazine.com/2016/05/fluid-typography/\n  calc(AZ + (B - A) * (100vw - CZ) / (D - C))\n  - A: min font size\n  - B: max font size\n  - C: min screen size\n  - D: max screen size\n  - Z: unit (px, rem, etc.)\n  */\n  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (160 - 30));\n  font-weight: normal;\n  line-height: $root-lineHeight;\n  min-height: 100%;\n  text-rendering: optimizeLegibility;\n}\n\n/*******************************************************************************\nuser-action influenced states\n*******************************************************************************/\n\na {\n  color: inherit;\n  text-decoration: underline;\n}\n\na:visited {\n  color: inherit;\n}\n\na:hover {\n  color: $c-ryanair-blue;\n}\n\na:active {\n  color: $c-bright-blue;\n}\n\n::-moz-focus-inner {\n  border: 0;\n}\n\n:focus {\n  background-color: $c-root-focus;\n  outline: none;\n}\n\n:focus svg {\n  background-color: $c-root-focus;\n}\n\n::selection {\n  background-color: $c-ryanair-blue;\n  color: $c-ryanair-yellow;\n}\n\n[disabled] {\n  opacity: 0.5;\n  pointer-events: none;\n\n  /* avoid adding up opacity on nested disabled elements */\n  [disabled] {\n    opacity: 1;\n  }\n}\n","/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\n\n// primary brand colors\n$c-ryanair-blue: rgb(7, 53, 144);\n$c-ryanair-yellow: rgb(241, 201, 51);\n$c-bright-blue: rgb(32, 145, 235);\n// secondary colors\n$c-charcoal: rgb(46, 46, 46);\n$c-pale-grey: rgb(180, 180, 180);\n$c-background-grey: rgb(244, 244, 244);\n$c-white: rgb(255, 255, 255);\n\n// font families palette\n$font-sansSerif: \"Roboto\", sans-serif;\n$font-monospace: \"Input\", \"Office Code Pro\", \"Source Code Pro\", \"Fira Mono\",\n  \"Inconsolata\", \"Monaco\", \"Consolas\", \"Lucida Console\", \"Liberation Mono\",\n  \"DejaVu Sans Mono\", monospace;\n\n// base\n$c-root-txt: $c-charcoal;\n$c-root-bg: $c-background-grey;\n$c-root-focus: $c-ryanair-yellow;\n\n/// leading size for all spacing between elements to be pretty\n$root-lineHeight: 1.5;\n$s-leading: $root-lineHeight * 1rem;\n\n// globals\n$s-global-br: 0.313rem;\n$b-medium: 36rem;\n$b-big: 72rem;\n$z-global-top: 900;\n$z-global-bottom: 100;\n","/*******************************************************************************\nroot stuff and normalizations\n\nNOTE: Root line height is being used in many places throughout the project.\nIt is recommended to keep all vertical margins and heights of elements to match\nthe leading. Use caution when adding borders or when using vertical-align middle\nas they tend to add unwanted pixels, thus braking the flow.\n*******************************************************************************/\n@import url(\"https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin-ext\");\n/*******************************************************************************\nvariables - all global and pallete variables for project\n*******************************************************************************/\nhtml {\n  background-color: #f4f4f4;\n  color: #2e2e2e;\n  font-family: \"Roboto\", sans-serif;\n  /*\n  clever page scaling with root font size changes:\n  https://www.smashingmagazine.com/2016/05/fluid-typography/\n  calc(AZ + (B - A) * (100vw - CZ) / (D - C))\n  - A: min font size\n  - B: max font size\n  - C: min screen size\n  - D: max screen size\n  - Z: unit (px, rem, etc.)\n  */\n  font-size: calc(1rem + (1.5 - 1) * (100vw - 30rem) / (160 - 30));\n  font-weight: normal;\n  line-height: 1.5;\n  min-height: 100%;\n  text-rendering: optimizeLegibility; }\n\n/*******************************************************************************\nuser-action influenced states\n*******************************************************************************/\na {\n  color: inherit;\n  text-decoration: underline; }\n\na:visited {\n  color: inherit; }\n\na:hover {\n  color: #073590; }\n\na:active {\n  color: #2091eb; }\n\n::-moz-focus-inner {\n  border: 0; }\n\n:focus {\n  background-color: #f1c933;\n  outline: none; }\n\n:focus svg {\n  background-color: #f1c933; }\n\n::selection {\n  background-color: #073590;\n  color: #f1c933; }\n\n[disabled] {\n  opacity: 0.5;\n  pointer-events: none;\n  /* avoid adding up opacity on nested disabled elements */ }\n  [disabled] [disabled] {\n    opacity: 1; }\n"],"sourceRoot":""}]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);
