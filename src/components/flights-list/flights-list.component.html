@@ -3,17 +3,33 @@
     ng-repeat="flight in $ctrl.flights track by $index"
     class="flights-list__item"
   >
-    <time
-      class="flights-list__date flights-list__date--liftoff"
-      datetime="{{::flight.dateFrom}}"
-      ng-bind="::$ctrl.getHumanDate(flight.dateFrom)"
-    ></time>
+    <div class="flights-list__airports">
+      <div class="flights-list__airport flights-list__airport--liftoff">
+        <label
+          class="flights-list__airport-name"
+          ng-bind="$ctrl.sourceName"
+        ></label>
 
-    <time
-      class="flights-list__date flights-list__date--landing"
-      datetime="{{::flight.dateTo}}"
-      ng-bind="::$ctrl.getHumanDate(flight.dateTo)"
-    ></time>
+        <time
+          class="flights-list__date flights-list__date"
+          datetime="{{::flight.dateFrom}}"
+          ng-bind="::$ctrl.getHumanDate(flight.dateFrom)"
+        ></time>
+      </div>
+
+      <div class="flights-list__airport flights-list__airport--landing">
+        <label
+          class="flights-list__airport-name"
+          ng-bind="$ctrl.destinationName"
+        ></label>
+
+        <time
+          class="flights-list__date"
+          datetime="{{::flight.dateTo}}"
+          ng-bind="::$ctrl.getHumanDate(flight.dateTo)"
+        ></time>
+      </div>
+    </div>
 
     <button
       class="flights-list__buy-button"

@@ -39,6 +39,7 @@
   @include float;
   display: block;
   height: $s-leading * 4;
+  opacity: 0.95;
   pointer-events: none;
   position: absolute;
   transition-duration: 2s;

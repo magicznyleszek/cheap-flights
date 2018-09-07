@@ -16,42 +16,78 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: $s-leading/2 $s-leading;
+  overflow: auto;
+  padding: 0 $s-leading/2;
 
   @media (max-width: #{$b-medium - 0.125rem}) {
     border-bottom: 2px solid darken($c-background-grey, 5%);
+
+    .flights-list__buy-button {
+      float: right;
+    }
   }
 
   @media (min-width: #{$b-medium}) {
     border-radius: $s-global-br;
     box-shadow: 0 0 0 2px darken($c-background-grey, 5%);
     margin: $s-leading/2;
+
+    .flights-list__buy-button {
+      min-width: 10rem;
+    }
   }
 
   @media (min-width: #{$b-big}) {
     margin: $s-leading auto;
     max-width: calc(100vw - #{$s-leading * 2});
     width: $b-big;
+
+    .flights-list__airports {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+    }
+
+    .flights-list__airport {
+      width: 50%;
+    }
   }
 
   &.flights-list__item--empty-message {
     background-color: $c-background-grey;
     justify-content: center;
+    padding: $s-leading;
   }
 }
 
+.flights-list__airport,
+.flights-list__buy-button {
+  margin: $s-leading/2;
+}
+
+.flights-list__airport-name {
+  color: $c-pale-grey;
+}
+
+.flights-list__airport-name,
 .flights-list__date {
-  &::before {
-    color: $c-bright-blue;
-    font-size: 1.5rem;
-    margin-right: 4px;
-  }
-  &.flights-list__date--liftoff::before {
-    content: "\2191";
-  }
-  &.flights-list__date--landing::before {
-    content: "\2193";
-  }
+  display: block;
+  line-height: $s-leading;
+}
+
+.flights-list__date::before {
+  color: $c-bright-blue;
+  font-size: 1.5rem;
+  line-height: $s-leading;
+  margin-right: 4px;
+}
+
+.flights-list__airport--liftoff .flights-list__date::before {
+  content: "\2191";
+}
+
+.flights-list__airport--landing .flights-list__date::before {
+  content: "\2193";
 }
 
 .flights-list__buy-button {
@@ -60,8 +96,8 @@
   box-shadow: 0 0 0 1px darken($c-ryanair-yellow, 20%);
   color: rgba($c-charcoal, 0.8);
   cursor: pointer;
-  min-width: 10rem;
   padding: $s-leading/2;
+  white-space: nowrap;
 
   &:hover,
   &:focus {

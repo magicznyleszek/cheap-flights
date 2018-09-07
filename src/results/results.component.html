@@ -5,6 +5,8 @@
     <search-wrapper on-submit="$ctrl.onSearchSubmit(params)"></search-wrapper>
 
     <flights-list
+      source-name="$ctrl.sourceAirport.name"
+      destination-name="$ctrl.destinationAirport.name"
       flights="$ctrl.flights"
       is-loading="$ctrl.isLoading"
       empty-message="'Could not find any flights :('"

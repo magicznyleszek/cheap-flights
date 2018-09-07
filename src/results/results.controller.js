@@ -8,7 +8,9 @@ export default function ResultsPageController(AirportsService, CheapFlightsServi
   this.onSearchSubmit = (params) => {
     this.currentParams = params;
     this.clearData();
-    this.loadFlights(this.currentPage);
+    this.sourceAirport = AirportsService.getAirport(params.sourceIataCode);
+    this.destinationAirport = AirportsService.getAirport(params.destinationIataCode);
+    this.loadFlights();
   };
 
   this.clearData = () => {
@@ -43,8 +45,6 @@ export default function ResultsPageController(AirportsService, CheapFlightsServi
   };
 
   this.onFlightSelected = (flight) => {
-    const sourceAirport = AirportsService.getAirport(this.currentParams.sourceIataCode);
-    const destinationAirport = AirportsService.getAirport(this.currentParams.destinationIataCode);
-    console.info(`From: ${sourceAirport.name}\nTo: ${destinationAirport.name}\nFlight data: ${JSON.stringify(flight)}`);
+    console.info(`From: ${this.sourceAirport.name}\nTo: ${this.destinationAirport.name}\nFlight data: ${JSON.stringify(flight)}`);
   };
 }
