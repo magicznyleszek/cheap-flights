@@ -5,10 +5,10 @@
   min-width: 8rem;
   position: relative;
   width: 100%;
-  z-index: 1;
+  z-index: $z-global-top + 1;
 
   &.airport-selector--active {
-    z-index: 2;
+    z-index: $z-global-top + 2;
   }
 }
 

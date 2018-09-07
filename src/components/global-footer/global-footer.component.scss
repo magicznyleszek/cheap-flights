@@ -9,11 +9,11 @@
   position: relative;
 
   &:hover .global-footer__clouds--back {
-    right: -40%;
+    right: -100%;
   }
 
   &:hover .global-footer__clouds--front {
-    left: -40%;
+    left: -100%;
   }
 }
 
@@ -24,7 +24,7 @@
   position: relative;
   text-align: center;
   width: $b-big;
-  z-index: 2;
+  z-index: $z-global-bottom + 2;
 
   h1 {
     font-weight: bold;
@@ -37,12 +37,12 @@
 
 .global-footer__clouds {
   @include float;
-  bottom: $s-leading;
   display: block;
   height: $s-leading * 4;
   pointer-events: none;
   position: absolute;
-  transition-duration: 5s;
+  transition-duration: 2s;
+  transition-timing-function: ease-in-out;
 
   .global-footer:hover & {
     transition-delay: 200ms;
@@ -50,15 +50,17 @@
 
   &.global-footer__clouds--front {
     animation-delay: -1s;
+    bottom: $s-leading/2;
     left: 0;
     transition-property: left;
-    z-index: 3;
+    z-index: $z-global-bottom + 3;
   }
 
   &.global-footer__clouds--back {
     animation-delay: -5s;
+    bottom: $s-leading;
     right: 0;
     transition-property: right;
-    z-index: 1;
+    z-index: $z-global-bottom + 1;
   }
 }

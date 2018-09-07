@@ -1,13 +1,15 @@
-<div class="results-page">
+<div class="layout__wrapper">
   <global-menu></global-menu>
 
-  <search-wrapper on-submit="$ctrl.onSearchSubmit(params)"></search-wrapper>
+  <section class="layout__content">
+    <search-wrapper on-submit="$ctrl.onSearchSubmit(params)"></search-wrapper>
 
-  <flights-list
-    flights="$ctrl.flights"
-    is-loading="$ctrl.isLoading"
-    empty-message="'Could not find any flights :('"
-  ></flights-list>
+    <flights-list
+      flights="$ctrl.flights"
+      is-loading="$ctrl.isLoading"
+      empty-message="'Could not find any flights :('"
+    ></flights-list>
+  </section>
 
   <global-footer></global-footer>
 </div>
