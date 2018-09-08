@@ -34,7 +34,8 @@ module.exports = function (config) {
           { test: /\.html/, loader: 'raw' },
           { test: /\.styl$/, loader: 'style!css!stylus' },
           { test: /\.css$/, loader: 'style!css' },
-          { test: /\.scss$/, loaders: ['raw-loader', 'sass-loader'] }
+          { test: /\.scss$/, loaders: ['raw-loader', 'sass-loader'] },
+          { test: /\.svg/, loaders: ['raw'] }
         ]
       }
     },
