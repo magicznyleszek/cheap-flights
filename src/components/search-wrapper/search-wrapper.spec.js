@@ -1,4 +1,8 @@
 import SearchWrapperComponent from './search-wrapper.component';
+import {
+  AirportsService,
+  SearchParamsService
+} from '../../services';
 
 describe('Component searchWrapper', () => {
   let $compile;
@@ -6,7 +10,9 @@ describe('Component searchWrapper', () => {
   let componentEl;
 
   beforeEach(() => {
-    angular.module('cheapFlightsApp', ['ng', 'ngMock'])
+    angular.module('cheapFlightsApp', ['ng', 'ngMock', 'ui.router'])
+      .service('AirportsService', AirportsService)
+      .service('SearchParamsService', SearchParamsService)
       .component('searchWrapper', SearchWrapperComponent);
     angular.mock.module('cheapFlightsApp');
   });
@@ -28,7 +34,7 @@ describe('Component searchWrapper', () => {
     expect(false).to.equal(true);
   });
 
-  it('should read params from url', () => {
+  it('should read and apply params from url', () => {
     expect(false).to.equal(true);
   });
 
