@@ -11,10 +11,18 @@
         ></label>
 
         <time
-          class="flights-list__date flights-list__date"
+          class="flights-list__date"
           datetime="{{::flight.dateFrom}}"
-          ng-bind="::$ctrl.getHumanDate(flight.dateFrom)"
-        ></time>
+        >
+          <span
+            class="flights-list__date-short"
+            ng-bind="::$ctrl.getHumanDateShort(flight.dateFrom)"
+          ></span>
+          <span
+            class="flights-list__date-long"
+            ng-bind="::$ctrl.getHumanDateLong(flight.dateFrom)"
+          ></span>
+        </time>
       </div>
 
       <div class="flights-list__airport flights-list__airport--landing">
@@ -26,8 +34,16 @@
         <time
           class="flights-list__date"
           datetime="{{::flight.dateTo}}"
-          ng-bind="::$ctrl.getHumanDate(flight.dateTo)"
-        ></time>
+        >
+          <span
+            class="flights-list__date-short"
+            ng-bind="::$ctrl.getHumanDateShort(flight.dateTo)"
+          ></span>
+          <span
+            class="flights-list__date-long"
+            ng-bind="::$ctrl.getHumanDateLong(flight.dateTo)"
+          ></span>
+        </time>
       </div>
     </div>
 

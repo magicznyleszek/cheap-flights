@@ -75,11 +75,24 @@
   line-height: $s-leading;
 }
 
-.flights-list__date::before {
-  color: $c-bright-blue;
-  font-size: 1.5rem;
-  line-height: $s-leading;
-  margin-right: 4px;
+.flights-list__date {
+  .flights-list__date-short {
+    @media (min-width: #{$b-medium}) {
+      display: none;
+    }
+  }
+  .flights-list__date-long {
+    @media (max-width: #{$b-medium - 0.125rem}) {
+      display: none;
+    }
+  }
+
+  &::before {
+    color: $c-bright-blue;
+    font-size: 1.5rem;
+    line-height: $s-leading;
+    margin-right: 4px;
+  }
 }
 
 .flights-list__airport--liftoff .flights-list__date::before {
