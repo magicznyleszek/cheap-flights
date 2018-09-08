@@ -7,7 +7,11 @@ describe('SearchParamsService', () => {
     angular.mock.module('cheapFlightsApp');
   });
 
-  it('should ?', () => {
+  it('should return url param with getParam', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should update url param with setParam', () => {
     expect(false).to.equal(true);
   });
 });

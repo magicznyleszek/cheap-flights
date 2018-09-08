@@ -13,7 +13,19 @@ describe('AirportsService', () => {
     $httpBackend = $injector.get('$httpBackend');
   }));
 
-  it('should ?', () => {
+  it('should store main API data after first fetch', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should throw errors when trying to use sync methods before API Data is ready', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should return airport with getAirport', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should return airport destinations with getAirportDestinations', () => {
     expect(false).to.equal(true);
   });
 });

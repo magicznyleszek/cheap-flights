@@ -64,7 +64,7 @@
 
   <div
     class="flights-list__item flights-list__item--empty-message"
-    ng-bind="$ctrl.emptyMessage"
+    ng-bind="$ctrl.emptyMessage || 'No results'"
     ng-if="$ctrl.flights.length === 0"
   ></div>
 

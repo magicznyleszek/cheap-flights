@@ -20,7 +20,7 @@ describe('Component resultsPage', () => {
     scope.$digest();
   }));
 
-  it('should ?', () => {
+  it('should clear data and start loading flights on submitting search', () => {
     expect(false).to.equal(true);
   });
 });

@@ -16,11 +16,15 @@ describe('Component airportSelector', () => {
     $compile = $injector.get('$compile');
 
     scope.airports = [];
+    scope.placeholder = null;
+    scope.error = null;
     scope.selectedIataCode = null;
     scope.callback = angular.noop;
 
     const el = angular.element(`
       <airport-selector
+        placeholder="placeholder"
+        error="error"
         airports="airports"
         selected-iata-code="selectedIataCode"
         on-selected-change="callback(iataCode)"
@@ -60,6 +64,10 @@ describe('Component airportSelector', () => {
   });
 
   it('should close on ESC key', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should display provided placeholder', () => {
     expect(false).to.equal(true);
   });
 

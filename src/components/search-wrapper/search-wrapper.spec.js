@@ -20,7 +20,27 @@ describe('Component searchWrapper', () => {
     scope.$digest();
   }));
 
-  it('should ?', () => {
+  it('should not call provided callback when submitting invalid form', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should call provided callback when submitting valid form', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should read params from url', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should update url params when submitting valid form', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should set errors for invalid partials when submitting', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should override invalid end date', () => {
     expect(false).to.equal(true);
   });
 });

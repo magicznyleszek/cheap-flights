@@ -15,9 +15,19 @@ describe('Component dateSelector', () => {
     scope = $injector.get('$rootScope').$new();
     $compile = $injector.get('$compile');
 
+    scope.label = null;
+    scope.error = null;
     scope.date = null;
+    scope.onDateChange = angular.noop;
 
-    const el = angular.element('<date-selector date="date"></date-selector>');
+    const el = angular.element(`
+      <date-selector
+        label="label"
+        error="error"
+        date="date"
+        on-date-change="onDateChange"
+      ></date-selector>
+    `);
     componentEl = $compile(el)(scope);
     scope.$digest();
   }));
@@ -29,6 +39,10 @@ describe('Component dateSelector', () => {
   });
 
   it('should call provided callback with selected date', () => {
+    expect(false).to.equal(true);
+  });
+
+  it('should display provided label', () => {
     expect(false).to.equal(true);
   });
 

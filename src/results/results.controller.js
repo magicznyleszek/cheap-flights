@@ -6,8 +6,8 @@ export default function ResultsPageController(AirportsService, CheapFlightsServi
   this.currentParams = null;
 
   this.onSearchSubmit = (params) => {
-    this.currentParams = params;
     this.clearData();
+    this.currentParams = params;
     this.sourceAirport = AirportsService.getAirport(params.sourceIataCode);
     this.destinationAirport = AirportsService.getAirport(params.destinationIataCode);
     this.loadFlights();
@@ -16,6 +16,7 @@ export default function ResultsPageController(AirportsService, CheapFlightsServi
   this.clearData = () => {
     this.flights = null;
     this.isLoading = true;
+    this.currentParams = null;
   };
 
   this.loadFlights = () => {

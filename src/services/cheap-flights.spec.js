@@ -13,7 +13,7 @@ describe('CheapFlightsService', () => {
     $httpBackend = $injector.get('$httpBackend');
   }));
 
-  it('should ?', () => {
+  it('should return flights array with findFlights method', () => {
     expect(false).to.equal(true);
   });
 });
