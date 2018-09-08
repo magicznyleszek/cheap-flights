@@ -17,7 +17,7 @@ describe('Component dateSelector', () => {
 
     scope.date = null;
 
-    const el = angular.element('<date-selector date="date"/>');
+    const el = angular.element('<date-selector date="date"></date-selector>');
     componentEl = $compile(el)(scope);
     scope.$digest();
   }));

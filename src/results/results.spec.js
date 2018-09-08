@@ -1,13 +1,13 @@
-import FlightsListComponent from './flights-list.component';
+import ResultsPageComponent from './results.component';
 
-describe('Component flightsList', () => {
+describe('Component resultsPage', () => {
   let $compile;
   let scope;
   let componentEl;
 
   beforeEach(() => {
     angular.module('cheapFlightsApp', ['ng', 'ngMock'])
-      .component('flightsList', FlightsListComponent);
+      .component('resultsPage', ResultsPageComponent);
     angular.mock.module('cheapFlightsApp');
   });
 
@@ -15,9 +15,7 @@ describe('Component flightsList', () => {
     scope = $injector.get('$rootScope').$new();
     $compile = $injector.get('$compile');
 
-    scope.flights = [];
-
-    const el = angular.element('<flights-list flights="flights"></flights-list>');
+    const el = angular.element('<results></results>');
     componentEl = $compile(el)(scope);
     scope.$digest();
   }));

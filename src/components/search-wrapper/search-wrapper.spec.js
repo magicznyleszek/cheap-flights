@@ -15,7 +15,7 @@ describe('Component searchWrapper', () => {
     scope = $injector.get('$rootScope').$new();
     $compile = $injector.get('$compile');
 
-    const el = angular.element('<search-wrapper/>');
+    const el = angular.element('<search-wrapper></search-wrapper>');
     componentEl = $compile(el)(scope);
     scope.$digest();
   }));
