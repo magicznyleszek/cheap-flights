@@ -14,7 +14,7 @@
     border-radius: $s-global-br;
     box-shadow: 0 0 0 2px darken($c-bright-blue, 5%);
     flex-direction: row;
-    margin: $s-leading/2;
+    margin: $s-leading $s-leading/2;
   }
 
   @media (min-width: #{$b-medium}) and (max-width: #{$b-big - 0.025rem}) {
@@ -29,7 +29,7 @@
   @media (min-width: #{$b-big}) {
     flex-wrap: nowrap;
     justify-content: center;
-    margin: $s-leading auto;
+    margin: $s-leading*2 auto;
     max-width: calc(100vw - #{$s-leading * 2});
     width: $b-big;
 

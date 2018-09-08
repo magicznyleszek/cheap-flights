@@ -5,6 +5,10 @@
   margin-bottom: $s-leading;
 
   @media (min-width: #{$b-medium}) {
+    margin-top: $s-leading;
+  }
+
+  @media (min-width: #{$b-big}) {
     margin-bottom: $s-leading*2;
     margin-top: $s-leading*2;
   }
