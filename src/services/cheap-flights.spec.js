@@ -26,9 +26,13 @@ describe('CheapFlightsService', () => {
   it('should return flights array with findFlights method', () => {
     const testUrl = cheapFlights.getURL('a', 'b', 'c', 'd');
 
-    $httpBackend.expectGET(testUrl).respond(200, { data: { flights: [] } });
+    $httpBackend.expectGET(testUrl).respond(200, { flights: [
+      { currency: '$' },
+      { currency: '$' }
+    ] });
 
-    const foo = { successCallback: angular.noop };
+    let foundFlights = [];
+    const foo = { successCallback: (flights) => { foundFlights = flights; } };
     sinon.spy(foo, 'successCallback');
 
     cheapFlights.findFlights('a', 'b', 'c', 'd').then(
@@ -39,5 +43,7 @@ describe('CheapFlightsService', () => {
     $rootScope.$digest();
 
     expect(foo.successCallback.called).to.equal(true);
+    expect(foundFlights.length).to.equal(2);
+    expect(foundFlights[0].currency).to.equal('$');
   });
 });
