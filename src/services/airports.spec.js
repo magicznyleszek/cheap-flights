@@ -3,7 +3,20 @@ import AirportsService from './airports.service';
 describe('AirportsService', () => {
   let $httpBackend;
   let $rootScope;
-  let airports;
+  let airportsSrv;
+
+  const mockResponse = {
+    routes: {
+      AAA: ['BBB', 'CCC'],
+      BBB: ['AAA'],
+      CCC: ['AAA']
+    },
+    airports: [
+      { iataCode: 'AAA', name: 'Alpha' },
+      { iataCode: 'BBB', name: 'Beta' },
+      { iataCode: 'CCC', name: 'Ceta' }
+    ]
+  };
 
   beforeEach(() => {
     angular.module('cheapFlightsApp', ['ng', 'ngMock'])
@@ -14,7 +27,7 @@ describe('AirportsService', () => {
   beforeEach(inject(($injector) => {
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
-    airports = $injector.get('AirportsService');
+    airportsSrv = $injector.get('AirportsService');
   }));
 
   afterEach(() => {
@@ -23,19 +36,64 @@ describe('AirportsService', () => {
     $httpBackend.resetExpectations();
   });
 
-  it('should store main API data after first fetch', () => {
-    expect(false).to.equal(true);
+  it('should return airports from server', () => {
+    $httpBackend.expectGET(new RegExp('/flight-booking-selector/')).respond(200, mockResponse);
+
+    let airportsData = [];
+    const foo = { successCallback: (airports) => { airportsData = airports; } };
+    sinon.spy(foo, 'successCallback');
+
+    airportsSrv.getAirportsAsync().then(foo.successCallback);
+
+    $httpBackend.flush();
+    $rootScope.$digest();
+
+    expect(foo.successCallback.called).to.equal(true);
+    expect(airportsData.length).to.equal(3);
+  });
+
+  it('should store API data after first call', () => {
+    $httpBackend.expectGET(new RegExp('/flight-booking-selector/')).respond(200, mockResponse);
+
+    sinon.spy(airportsSrv, 'getAPIData');
+
+    airportsSrv.getAirportsAsync();
+    $httpBackend.flush();
+    $rootScope.$digest();
+
+    expect(airportsSrv.getAPIData.calledOnce).to.equal(true);
+
+    airportsSrv.getAirportsAsync();
+
+    expect(airportsSrv.getAPIData.calledOnce).to.equal(true);
   });
 
   it('should throw errors when trying to use sync methods before API Data is ready', () => {
-    expect(false).to.equal(true);
+    const clb1 = () => { airportsSrv.getAirport('LND'); };
+    const clb2 = () => { airportsSrv.getAirportDestinations('LND'); };
+    expect(clb1).to.throw();
+    expect(clb2).to.throw();
   });
 
-  it('should return airport with getAirport', () => {
-    expect(false).to.equal(true);
-  });
+  describe('with API Data ready', () => {
+    beforeEach(() => {
+      $httpBackend.expectGET(new RegExp('/flight-booking-selector/')).respond(200, mockResponse);
+      airportsSrv.getAirportsAsync();
+      $httpBackend.flush();
+      $rootScope.$digest();
+    });
 
-  it('should return airport destinations with getAirportDestinations', () => {
-    expect(false).to.equal(true);
+    it('should return airport with getAirport', () => {
+      const alpha = airportsSrv.getAirport('AAA');
+      expect(alpha.iataCode).to.equal('AAA');
+      expect(alpha.name).to.equal('Alpha');
+    });
+
+    it('should return airport destinations with getAirportDestinations', () => {
+      const dests = airportsSrv.getAirportDestinations('AAA');
+      expect(dests.length).to.equal(2);
+      expect(dests[0].name).to.equal('Beta');
+      expect(dests[1].name).to.equal('Ceta');
+    });
   });
 });
