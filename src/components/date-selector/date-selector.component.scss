@@ -17,10 +17,14 @@
   border-radius: $s-global-br;
   color: $c-ruby;
   font-size: 0.75rem;
+  max-width: 100%;
+  overflow: hidden;
   padding: 0 0.5rem;
   position: absolute;
   right: 0;
+  text-overflow: ellipsis;
   top: calc(100% + 1px);
+  white-space: nowrap;
 }
 
 .date-selector__input {
