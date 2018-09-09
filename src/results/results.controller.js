@@ -46,6 +46,7 @@ export default function ResultsPageController(AirportsService, CheapFlightsServi
   };
 
   this.onFlightSelected = (flight) => {
+    // TODO create a route fore displaying chosen "ticket"
     console.info(`From: ${this.sourceAirport.name}\nTo: ${this.destinationAirport.name}\nFlight data: ${JSON.stringify(flight)}`);
   };
 }

@@ -44893,7 +44893,7 @@
 /* 80 */
 /***/ function(module, exports) {
 
-	module.exports = "<div\n  class=\"airport-selector\"\n  ng-class=\"{\n    'airport-selector--active': $ctrl.isActive,\n    'airport-selector--has-value': $ctrl.selectedIataCode,\n    'airport-selector--has-error': $ctrl.error\n  }\"\n  ng-keyup=\"$ctrl.onSelectKeyup($event)\"\n>\n  <span\n    class=\"airport-selector__error\"\n    ng-if=\"$ctrl.error\"\n    ng-bind=\"$ctrl.error\"\n  ></span>\n\n  <label\n    class=\"airport-selector__value\"\n    ng-click=\"$ctrl.activate()\"\n    ng-focus=\"$ctrl.onInputFocus($event)\"\n    tabindex=\"0\"\n  >\n    {{$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'}}\n  </label>\n\n  <input\n    class=\"airport-selector__filter\"\n    js-airport-selector-filter\n    type=\"text\"\n    ng-model=\"$ctrl.filterValue\"\n    ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n  ></input>\n\n  <ol class=\"airport-selector__options\">\n    <li\n      class=\"airport-selector__option\"\n      ng-class=\"{'airport-selector__option--selected': airport.iataCode === $ctrl.selectedIataCode}\"\n      ng-repeat=\"airport in $ctrl.filteredAirports() as filteredAirports\"\n      ng-click=\"$ctrl.selectAirport(airport.iataCode)\"\n      ng-keyup=\"$ctrl.onOptionKeyup($event, airport.iataCode)\"\n      ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n      tabindex=\"0\"\n    >{{airport.name}}</li>\n\n    <li\n      class=\"airport-selector__option airport-selector__option--message\"\n      ng-if=\"filteredAirports.length === 0\"\n    >No airport</li>\n  </ol>\n</div>\n"
+	module.exports = "<div\n  class=\"airport-selector\"\n  ng-class=\"{\n    'airport-selector--active': $ctrl.isActive,\n    'airport-selector--has-value': $ctrl.selectedIataCode,\n    'airport-selector--has-error': $ctrl.error\n  }\"\n  ng-keyup=\"$ctrl.onSelectKeyup($event)\"\n>\n  <span\n    class=\"airport-selector__error\"\n    ng-if=\"$ctrl.error\"\n    ng-bind=\"$ctrl.error\"\n  ></span>\n\n  <label\n    class=\"airport-selector__value\"\n    ng-click=\"$ctrl.activate()\"\n    ng-focus=\"$ctrl.onInputFocus($event)\"\n    tabindex=\"0\"\n    ng-bind=\"$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'\"\n  ></label>\n\n  <input\n    class=\"airport-selector__filter\"\n    js-airport-selector-filter\n    type=\"text\"\n    ng-model=\"$ctrl.filterValue\"\n    ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n  ></input>\n\n  <ol class=\"airport-selector__options\">\n    <li\n      class=\"airport-selector__option\"\n      ng-class=\"{'airport-selector__option--selected': airport.iataCode === $ctrl.selectedIataCode}\"\n      ng-repeat=\"airport in $ctrl.filteredAirports() as filteredAirports\"\n      ng-click=\"$ctrl.selectAirport(airport.iataCode)\"\n      ng-keyup=\"$ctrl.onOptionKeyup($event, airport.iataCode)\"\n      ng-blur=\"$ctrl.onFocusableChildBlur($event)\"\n      tabindex=\"0\"\n    >{{airport.name}}</li>\n\n    <li\n      class=\"airport-selector__option airport-selector__option--message\"\n      ng-if=\"filteredAirports.length === 0\"\n    >No airport</li>\n  </ol>\n</div>\n"
 
 /***/ },
 /* 81 */
@@ -63014,6 +63014,7 @@
 	  };
 	
 	  this.onFlightSelected = function (flight) {
+	    // TODO create a route fore displaying chosen "ticket"
 	    console.info('From: ' + _this.sourceAirport.name + '\nTo: ' + _this.destinationAirport.name + '\nFlight data: ' + JSON.stringify(flight));
 	  };
 	}
@@ -63146,7 +63147,7 @@
 	
 	  var _this = this;
 	
-	  var baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights/from/DUB/to/STN/2014-12-02/2015-02-02/250/unique/?limit=15&offset-0';
+	  var baseURL = 'https://murmuring-ocean-10826.herokuapp.com/en/api/2/flights';
 	  var pageSize = 15;
 	
 	  this.getURL = function (sourceIataCode, destinationIataCode, startDate, endDate) {
