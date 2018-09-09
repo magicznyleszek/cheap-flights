@@ -1,3 +1,6 @@
 {
-  "extends": "eslint-config-ryanair"
+  "extends": "eslint-config-ryanair",
+  "globals": {
+    "sinon": true
+  }
 }
