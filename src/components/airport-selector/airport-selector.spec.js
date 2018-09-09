@@ -42,8 +42,8 @@ describe('Component airportSelector', () => {
 
   it('should display provided list of airports', () => {
     scope.airports = [
-      { name: 'Lisbon', iataCode: 'lsb' },
-      { name: 'Warsaw', iataCode: 'waw' }
+      { name: 'Lisbon', iataCode: 'LSB' },
+      { name: 'Warsaw', iataCode: 'WAW' }
     ];
     scope.$apply();
     expect(componentEl[0].querySelectorAll('.airport-selector__option').length).to.equal(2);
@@ -51,27 +51,43 @@ describe('Component airportSelector', () => {
 
   it('should preselect provided airport', () => {
     scope.airports = [
-      { name: 'Lisbon', iataCode: 'lsb' },
-      { name: 'Warsaw', iataCode: 'waw' }
+      { name: 'Lisbon', iataCode: 'LSB' },
+      { name: 'Warsaw', iataCode: 'WAW' }
     ];
-    scope.selectedIataCode = 'lsb';
+    scope.selectedIataCode = 'LSB';
     scope.$apply();
     expect(componentEl[0].querySelector('.airport-selector__option--selected').innerText).to.equal('Lisbon');
   });
 
   it('should call provided callback with selected airport', () => {
-    expect(false).to.equal(true);
+    const ctrl = componentEl.controller('airport-selector');
+    scope.airports = [
+      { name: 'Lisbon', iataCode: 'LSB' },
+      { name: 'Warsaw', iataCode: 'WAW' }
+    ];
+    scope.$apply();
+    sinon.spy(scope, 'callback');
+    ctrl.selectAirport('LSB');
+    expect(scope.callback.called).to.equal(true);
   });
 
   it('should close on ESC key', () => {
-    expect(false).to.equal(true);
+    const ctrl = componentEl.controller('airport-selector');
+    ctrl.activate();
+    expect(ctrl.isActive).to.equal(true);
+    ctrl.onSelectKeyup({ key: 'Escape' });
+    expect(ctrl.isActive).to.equal(false);
   });
 
   it('should display provided placeholder', () => {
-    expect(false).to.equal(true);
+    scope.placeholder = 'Hai!';
+    scope.$apply();
+    expect(componentEl[0].querySelector('.airport-selector__value').innerText).to.equal('Hai!');
   });
 
   it('should display provided error message', () => {
-    expect(false).to.equal(true);
+    scope.error = 'Oh noes!';
+    scope.$apply();
+    expect(componentEl[0].querySelector('.airport-selector__error').innerText).to.equal('Oh noes!');
   });
 });

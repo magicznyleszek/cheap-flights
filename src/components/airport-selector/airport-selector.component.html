@@ -18,9 +18,8 @@
     ng-click="$ctrl.activate()"
     ng-focus="$ctrl.onInputFocus($event)"
     tabindex="0"
-  >
-    {{$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'}}
-  </label>
+    ng-bind="$ctrl.getSelectedAirportName() || $ctrl.placeholder || 'Select…'"
+  ></label>
 
   <input
     class="airport-selector__filter"
