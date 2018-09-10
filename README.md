@@ -18,6 +18,7 @@ Commands:
 - `npm run lint`: lint code
 
 Notes:
+- time spent on task: 34h
 - given more time I would like to add Cypress e2e tests
 - most of the code is tested
 - initial task code wasn't building and required fixes in many places (probably part of the test?)
